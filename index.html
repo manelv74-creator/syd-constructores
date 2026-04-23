@@ -579,13 +579,10 @@ function updateGantt() {
         const th=document.getElementById(`gh-${i}`);
         if(th) th.className=i===currentWeek?'active-col':'';
     }
-    const rows = session.role==='client' ? [projectData[session.zoneIndex]] : projectData;
-    const offset = session.role==='client' ? session.zoneIndex : 0;
-    rows.forEach((row,ri)=>{
-        const ri2=ri+offset;
+    projectData.forEach((row,ri)=>{
         row.tasks.forEach((_,ci)=>{
             const w=ci+1;
-            const cell=document.getElementById(`gc-${ri2}-${w}`);
+            const cell=document.getElementById(`gc-${ri}-${w}`);
             if(!cell) return;
             const prog=row.progress[w-1];
             if(w===currentWeek){
@@ -604,7 +601,6 @@ function updateGantt() {
 // RENDER VIEWS
 // ══════════════════════════════════════
 function getVisibleZones() {
-    if(session.role==='client') return [{ data: projectData[session.zoneIndex], idx: session.zoneIndex }];
     return projectData.map((d,i)=>({data:d,idx:i}));
 }
 
@@ -621,15 +617,16 @@ function renderTareas() {
         <div class="stat-card animate-in"><div class="stat-value" style="color:#8b5cf6">${16-currentWeek}</div><div class="stat-label">Semanas restantes</div></div>
     `;
 
-    // Client zone header
-    if(session.role==='client') {
-        const z = projectData[session.zoneIndex];
+    // Readonly banner for non-master
+    if(session.role !== 'master') {
         document.getElementById('clientZoneHeader').style.display='block';
         document.getElementById('clientZoneHeader').innerHTML=`
             <div class="client-zone-header">
-                <div class="client-zone-icon">${z.emoji}</div>
-                <div><div class="client-zone-name">${z.zone}</div><div class="client-zone-sub">Vista de seguimiento · Solo lectura</div></div>
+                <div class="client-zone-icon">🔒</div>
+                <div><div class="client-zone-name">Proyecto SAUCES</div><div class="client-zone-sub">Vista de seguimiento · Solo lectura</div></div>
             </div>`;
+    } else {
+        document.getElementById('clientZoneHeader').style.display='none';
     }
 
     let html='';
@@ -639,7 +636,7 @@ function renderTareas() {
         const color = ZONE_COLORS[idx];
         const sliderHtml = canEdit
             ? `<div class="edit-slider-row"><label>Avance:</label><input type="range" min="0" max="100" step="5" value="${prog}" oninput="updateProgress(${idx},this.value)" style="flex:1"></div>`
-            : `<span class="readonly-badge">🔒 Solo lectura</span>`;
+            : ``;
         html+=`
         <div class="zone-card animate-in" style="animation-delay:${i*0.05}s">
             <div style="position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:4px 0 0 4px;background:${color}"></div>
@@ -670,7 +667,7 @@ function renderDetalle() {
         const color=ZONE_COLORS[idx];
         const sliderHtml = canEdit
             ? `<div class="edit-slider-row"><label>Avance:</label><input type="range" min="0" max="100" step="5" value="${prog}" oninput="updateProgress(${idx},this.value)" style="flex:1"></div>`
-            : `<span class="readonly-badge">🔒 Solo lectura</span>`;
+            : ``;
         html+=`
         <div class="detail-card animate-in" style="animation-delay:${i*0.05}s;border-left:4px solid ${color}">
             <div class="detail-card-zone">${row.zone}</div>
