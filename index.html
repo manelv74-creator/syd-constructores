@@ -321,25 +321,7 @@
 </div><!-- end appShell -->
 
 <script>
-// ══════════════════════════════════════
-// AUTH CONFIG  — cambia estos valores
-// ══════════════════════════════════════
-const AUTH = {
-    master:   { code: "MASTER2025" },
-    observer: { code: "SAUCES2025" },
-    // clientes: el "código" es el nombre clave de su zona (sin acentos, minúsculas)
-    clientZones: {
-        "cochera":    0,
-        "baño ppal":  1,
-        "recamara 2": 2,
-        "recamara 1": 3,
-        "sala tv":    4,
-        // aliases
-        "bano ppal":  1,
-        "recámara 2": 2,
-        "recámara 1": 3,
-    }
-};
+
 
 // ══════════════════════════════════════
 // DATA
@@ -450,9 +432,18 @@ const projectData = [
 ];
 
 // ══════════════════════════════════════
+// AUTH CONFIG  — cambia estos valores
+// ══════════════════════════════════════
+const AUTH = {
+    master:   { code: 'MASTER2025' },
+    observer: { code: 'SAUCES2025' },
+    client:   { code: 'SAUCES' }    // clave del proyecto para clientes
+};
+
+// ══════════════════════════════════════
 // STATE
 // ══════════════════════════════════════
-let session = null;   // { role, email, zoneIndex (client only) }
+let session = null;   // { role, email }
 let currentWeek = 1;
 let currentTab = 'tareas';
 let selectedRole = 'client';
@@ -461,12 +452,12 @@ let selectedRole = 'client';
 // LOGIN UI
 // ══════════════════════════════════════
 const HINTS = {
-    client:   '<strong>Cliente:</strong> Ingresa el nombre de tu obra (Cochera, Baño Ppal, Recámara 2, Recámara 1 o Sala TV). Solo verás el avance de tu zona.',
+    client:   '<strong>Cliente · Proyecto SAUCES:</strong> Ingresa la clave <b>SAUCES</b> para acceder al seguimiento completo de tu obra en modo lectura.',
     observer: '<strong>Supervisor:</strong> Usa el código especial que te proporcionó el maestro de obra. Acceso de lectura a todas las obras.',
     master:   '<strong>Master:</strong> Acceso total con código de administrador. Puedes actualizar el avance de todas las zonas.'
 };
-const DYN_LABEL = {client:'Nombre de tu obra', observer:'Código de acceso', master:'Código maestro'};
-const DYN_PLACEHOLDER = {client:'Ej: Cochera', observer:'Código supervisor', master:'Código master'};
+const DYN_LABEL = {client:'Clave del proyecto', observer:'Código de acceso', master:'Código maestro'};
+const DYN_PLACEHOLDER = {client:'SAUCES', observer:'Código supervisor', master:'Código master'};
 
 function selectRole(role, btn) {
     selectedRole = role;
@@ -494,10 +485,8 @@ function doLogin() {
         if(code !== AUTH.observer.code) { err.textContent='Código de supervisor incorrecto.'; err.classList.add('show'); return; }
         session = { role:'observer', email };
     } else {
-        const key = code.toLowerCase().trim();
-        const zoneIndex = AUTH.clientZones[key];
-        if(zoneIndex === undefined) { err.textContent='Nombre de obra no encontrado. Verifica el nombre.'; err.classList.add('show'); return; }
-        session = { role:'client', email, zoneIndex };
+        if(code.toUpperCase() !== AUTH.client.code) { err.textContent='Clave de proyecto incorrecta. Usa: SAUCES'; err.classList.add('show'); return; }
+        session = { role:'client', email };
     }
 
     localStorage.setItem('sauces_session', JSON.stringify(session));
@@ -527,12 +516,7 @@ function launchApp() {
     rb.className = 'role-badge ' + session.role;
 
     // Subtitle
-    if(session.role === 'client') {
-        const z = projectData[session.zoneIndex];
-        document.getElementById('appSubtitle').textContent = `${z.emoji} ${z.zone}`;
-    } else {
-        document.getElementById('appSubtitle').textContent = 'Ampliación · 5 zonas · 16 semanas';
-    }
+    document.getElementById('appSubtitle').textContent = 'Proyecto SAUCES · 5 zonas · 16 semanas';
 
     buildWeekDots();
     buildGanttTable();
@@ -559,12 +543,9 @@ function buildGanttTable() {
     let html = '<thead><tr><th style="min-width:80px;text-align:left;padding-left:8px">Zona</th>';
     for(let i=1;i<=16;i++) html+=`<th id="gh-${i}">S${i}</th>`;
     html+='</tr></thead><tbody>';
-    const rows = session.role==='client' ? [projectData[session.zoneIndex]] : projectData;
-    const offset = session.role==='client' ? session.zoneIndex : 0;
-    rows.forEach((row,ri)=>{
-        const ri2 = ri + offset;
-        html+=`<tr><td class="zone-cell">${row.emoji} Z${ri2+1}</td>`;
-        row.tasks.forEach((_,ci)=>{html+=`<td id="gc-${ri2}-${ci+1}">${row.tasks[ci]}</td>`;});
+    projectData.forEach((row,ri)=>{
+        html+=`<tr><td class="zone-cell">${row.emoji} Z${ri+1}</td>`;
+        row.tasks.forEach((_,ci)=>{html+=`<td id="gc-${ri}-${ci+1}">${row.tasks[ci]}</td>`;});
         html+='</tr>';
     });
     html+='</tbody>';
