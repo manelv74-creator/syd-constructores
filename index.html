@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Cronograma Maestro con especificaciones técnicas por semana para Ampliación Sauces">
+    <title>Cronograma Sauces</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0e1a;
+            --surface: #111827;
+            --surface2: #1a2235;
+            --border: rgba(255,255,255,0.08);
+            --accent: #3b82f6;
+            --accent2: #f59e0b;
+            --accent3: #10b981;
+            --text: #f1f5f9;
+            --text-muted: #64748b;
+            --text-soft: #94a3b8;
+            --done: #1e3a2f;
+            --done-text: #4ade80;
+            --future: #1e2433;
+            --active: rgba(245,158,11,0.15);
+            --radius: 16px;
+            --radius-sm: 10px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ── Top Header ── */
+        .top-header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+            padding: 18px 20px 14px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(20px);
+        }
+
+        .header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .app-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.02em;
+        }
+
+        .app-subtitle {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .week-badge {
+            background: linear-gradient(135deg, var(--accent2), #ef4444);
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 20px;
+            letter-spacing: 0.03em;
+        }
+
+        /* ── Week Navigation ── */
+        .week-nav {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .week-nav-btn {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.06);
+            color: var(--text);
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .week-nav-btn:active { transform: scale(0.9); background: var(--accent); }
+
+        .week-slider-wrap {
+            flex: 1;
+            position: relative;
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: linear-gradient(90deg, var(--accent) var(--pct, 0%), rgba(255,255,255,0.1) var(--pct, 0%));
+            outline: none;
+            cursor: pointer;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px; height: 22px;
+            border-radius: 50%;
+            background: var(--accent2);
+            box-shadow: 0 0 0 4px rgba(245,158,11,0.25);
+            cursor: grab;
+            transition: box-shadow 0.2s;
+        }
+        input[type=range]:active::-webkit-slider-thumb {
+            box-shadow: 0 0 0 8px rgba(245,158,11,0.3);
+        }
+
+        .week-dots {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0 0;
+        }
+        .week-dot {
+            width: 4px; height: 4px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            transition: background 0.3s, transform 0.3s;
+        }
+        .week-dot.active { background: var(--accent2); transform: scale(1.6); }
+        .week-dot.past { background: var(--accent); }
+
+        /* ── Tab Bar ── */
+        .tab-bar {
+            display: flex;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .tab-bar::-webkit-scrollbar { display: none; }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 90px;
+            padding: 12px 8px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 0.72rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.25s;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+        }
+        .tab-btn.active {
+            color: var(--accent2);
+            border-bottom-color: var(--accent2);
+        }
+
+        /* ── Main Content Area ── */
+        .main {
+            padding: 16px;
+        }
+
+        /* ── View Panels ── */
+        .view { display: none; }
+        .view.active { display: block; }
+
+        /* ── Overview Cards ── */
+        .overview-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--accent);
+            line-height: 1;
+        }
+        .stat-label {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* ── Zone Cards ── */
+        .zone-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        .zone-card::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 4px;
+            border-radius: 4px 0 0 4px;
+        }
+
+        .zone-card:nth-child(1)::before { background: #3b82f6; }
+        .zone-card:nth-child(2)::before { background: #8b5cf6; }
+        .zone-card:nth-child(3)::before { background: #10b981; }
+        .zone-card:nth-child(4)::before { background: #f59e0b; }
+        .zone-card:nth-child(5)::before { background: #ef4444; }
+
+        .zone-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .zone-name-text {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--text);
+            flex: 1;
+            padding-right: 10px;
+        }
+
+        .zone-pct-badge {
+            font-size: 0.8rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: rgba(245,158,11,0.15);
+            color: var(--accent2);
+            flex-shrink: 0;
+        }
+
+        .task-chip {
+            display: inline-block;
+            background: rgba(59,130,246,0.15);
+            color: #93c5fd;
+            font-size: 0.68rem;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .task-desc-mini {
+            font-size: 0.78rem;
+            color: var(--text-soft);
+            line-height: 1.5;
+            margin-bottom: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .progress-bar-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .progress-track {
+            flex: 1;
+            height: 8px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+        }
+
+        .progress-pct {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--accent2);
+            width: 36px;
+            text-align: right;
+        }
+
+        /* ── Editable Progress Slider inside card ── */
+        .edit-slider-row {
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .edit-slider-row label {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            flex-shrink: 0;
+        }
+        .edit-slider-row input[type=range] { height: 4px; }
+
+        /* ── Gantt Mini View ── */
+        .gantt-scroll-wrap {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: var(--radius);
+            background: var(--surface);
+            border: 1px solid var(--border);
+        }
+
+        .gantt-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        .gantt-table th, .gantt-table td {
+            padding: 8px 6px;
+            text-align: center;
+            font-size: 0.65rem;
+            border: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        .gantt-table th {
+            background: #0f172a;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .gantt-table th.active-col {
+            background: rgba(245,158,11,0.25);
+            color: var(--accent2);
+        }
+
+        .gantt-table td.zone-cell {
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.68rem;
+            color: var(--text-soft);
+            background: #0f172a;
+            position: sticky;
+            left: 0;
+            min-width: 90px;
+            max-width: 90px;
+            z-index: 2;
+            white-space: normal;
+            line-height: 1.3;
+        }
+
+        .gantt-table td.cell-done {
+            background: var(--done);
+            color: var(--done-text);
+        }
+        .gantt-table td.cell-future {
+            background: var(--future);
+            color: var(--text-muted);
+        }
+        .gantt-table td.cell-active {
+            font-weight: 700;
+            color: #fff;
+        }
+
+        /* ── Detail View ── */
+        .detail-section-title {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 12px;
+        }
+
+        .detail-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 10px;
+        }
+
+        .detail-card-zone {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 4px;
+        }
+
+        .detail-card-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .detail-card-desc {
+            font-size: 0.8rem;
+            color: var(--text-soft);
+            line-height: 1.6;
+            padding: 10px 12px;
+            background: rgba(245,158,11,0.06);
+            border-left: 3px solid var(--accent2);
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 12px;
+        }
+
+        /* ── Progress Summary View ── */
+        .summary-zone {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 10px;
+        }
+
+        .summary-zone-name {
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+
+        .week-progress-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 4px;
+        }
+
+        .week-pip {
+            height: 28px;
+            border-radius: 4px;
+            background: var(--future);
+            display: flex;
+            align-items: flex-end;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .week-pip-fill {
+            width: 100%;
+            background: linear-gradient(180deg, var(--accent), var(--accent2));
+            border-radius: 4px;
+            transition: height 0.4s;
+        }
+
+        .week-pip-num {
+            position: absolute;
+            top: 2px;
+            left: 0; right: 0;
+            text-align: center;
+            font-size: 0.5rem;
+            color: rgba(255,255,255,0.4);
+        }
+
+        .week-pip.pip-current { outline: 2px solid var(--accent2); outline-offset: 1px; }
+
+        /* ── Floating FAB ── */
+        .fab-area {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: linear-gradient(transparent, var(--bg) 40%);
+            padding: 16px 16px 24px;
+            pointer-events: none;
+        }
+
+        /* ── Utility ── */
+        .section-gap { height: 80px; }
+
+        /* ── Animations ── */
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-in { animation: fadeSlideUp 0.35s ease both; }
+
+        @keyframes pulse-ring {
+            0% { box-shadow: 0 0 0 0 rgba(245,158,11,0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(245,158,11,0); }
+            100% { box-shadow: 0 0 0 0 rgba(245,158,11,0); }
+        }
+        .pulse { animation: pulse-ring 2s infinite; }
+
+        /* ── Responsive tweaks ── */
+        @media (max-width: 360px) {
+            .overview-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ══════════════ HEADER ══════════════ -->
+<header class="top-header">
+    <div class="header-row">
+        <div>
+            <div class="app-title">📐 Cronograma Sauces</div>
+            <div class="app-subtitle">Ampliación · 5 zonas · 16 semanas</div>
+        </div>
+        <div class="week-badge" id="weekBadge">Sem 1</div>
+    </div>
+
+    <div class="week-nav">
+        <button class="week-nav-btn" onclick="changeWeek(-1)" aria-label="Semana anterior">‹</button>
+        <div class="week-slider-wrap">
+            <input type="range" id="weekSlider" min="1" max="16" value="1"
+                   oninput="updateDashboard()"
+                   style="--pct: 0%">
+            <div class="week-dots" id="weekDots"></div>
+        </div>
+        <button class="week-nav-btn" onclick="changeWeek(1)" aria-label="Semana siguiente">›</button>
+    </div>
+</header>
+
+<!-- ══════════════ TABS ══════════════ -->
+<nav class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('tareas', this)" id="tab-tareas">📋 Tareas</button>
+    <button class="tab-btn" onclick="switchTab('gantt', this)" id="tab-gantt">📊 Gantt</button>
+    <button class="tab-btn" onclick="switchTab('detalle', this)" id="tab-detalle">📌 Detalle</button>
+    <button class="tab-btn" onclick="switchTab('avance', this)" id="tab-avance">📈 Avance</button>
+</nav>
+
+<!-- ══════════════ MAIN ══════════════ -->
+<main class="main">
+
+    <!-- ── Vista: TAREAS ── -->
+    <div class="view active" id="view-tareas">
+        <!-- Stats overview -->
+        <div class="overview-grid" id="statsGrid"></div>
+        <!-- Zone cards with progress editing -->
+        <div id="zoneCards"></div>
+        <div class="section-gap"></div>
+    </div>
+
+    <!-- ── Vista: GANTT ── -->
+    <div class="view" id="view-gantt">
+        <div class="gantt-scroll-wrap">
+            <table class="gantt-table" id="ganttTable"></table>
+        </div>
+        <div class="section-gap"></div>
+    </div>
+
+    <!-- ── Vista: DETALLE ── -->
+    <div class="view" id="view-detalle">
+        <div class="detail-section-title" id="detailTitle"></div>
+        <div id="detailCards"></div>
+        <div class="section-gap"></div>
+    </div>
+
+    <!-- ── Vista: AVANCE GLOBAL ── -->
+    <div class="view" id="view-avance">
+        <div class="detail-section-title">Avance acumulado por zona</div>
+        <div id="avanceContent"></div>
+        <div class="section-gap"></div>
+    </div>
+
+</main>
+
+<script>
+    // ══════════════════════════════════════
+    // DATA
+    // ══════════════════════════════════════
+    const ZONE_COLORS = ['#3b82f6','#8b5cf6','#10b981','#f59e0b','#ef4444'];
+
+    const projectData = [
+        { zone: "Zona 1: Cochera", 
+          emoji: "🏠",
+          tasks: ["Trazo/Excava","Zapata/Dado","Ancla/Placa","Columna CM","Viga V-1","Pérgola","Terracerías","Firme","Aplanados","Instalaciones","Pintura base","Piso","Herrería","Detallado","Limpieza","Entrega"], 
+          details: [
+            {title:"Trazo y excavación",desc:"Trazo topográfico y excavación manual para cepas de 1.00x1.00m según plano E-01."},
+            {title:"Zapatas",desc:"Vaciado de plantilla de concreto pobre. Armado de acero y colado de zapatas aisladas y dados D-1/D-2."},
+            {title:"Anclajes",desc:"Presentación, nivelación y fijación de anclas de 5/8\" y placas base PL-1 y PL-2."},
+            {title:"Columnas",desc:"Izaje, montaje y plomeo de columnas metálicas de tubo cuadrado (CM, 14.88 kg/m) con soldadura a penetración."},
+            {title:"Vigas principales",desc:"Montaje y soldadura de vigas principales V-1 (I Rectangular IPS 5\")."},
+            {title:"Pérgola",desc:"Colocación de vigas secundarias V-2, V-4 y estándar V-3 para conformar el entramado del pergolado metálico."},
+            {title:"Terracerías",desc:"Excavación menor, relleno compactado con material de banco y nivelación de terreno natural para estacionamiento."},
+            {title:"Firme",desc:"Colocación de malla electrosoldada y vaciado de concreto para firme de 10 cm de espesor."},
+            {title:"Aplanados",desc:"Resane y aplicación de aplanados (enjarres) base cemento-arena a plomo y regla en muros colindantes."},
+            {title:"Instalaciones",desc:"Ranurado y tendido de poliducto para salidas eléctricas de iluminación en la cubierta de la pérgola."},
+            {title:"Pintura base",desc:"Aplicación de sellador acrílico en muros y primario anticorrosivo en toda la estructura metálica."},
+            {title:"Piso",desc:"Instalación de acabado en piso (cerámico para tráfico pesado o concreto estampado)."},
+            {title:"Herrería",desc:"Instalación de portón de herrería corredizo o abatible y detallado de fachada principal."},
+            {title:"Detallado",desc:"Aplicación de pintura final tipo esmalte en estructura metálica y pintura vinílica en muros exteriores."},
+            {title:"Limpieza",desc:"Retiro de cimbra restante, recolección de escombro y limpieza general del área de estacionamiento."},
+            {title:"Entrega",desc:"Recorrido de revisión de soldaduras, acabados, pintura e iluminación con el cliente."}
+          ],
+          progress: Array(16).fill(0) 
+        },
+        { zone: "Zona 2: Baño Ppal",
+          emoji: "🚿",
+          tasks: ["Demolición","Muros","Castillos","Inst. Hidro","Inst. Elec","Firme","Enjarres","Yeso","Azulejo","Carpintería","Muebles","Canceles","Pintura","Limpieza","Detalles","Entrega"], 
+          details: [
+            {title:"Demolición",desc:"Demolición de recubrimientos cerámicos existentes, desmantelamiento de muebles de baño y clósets viejos."},
+            {title:"Muros",desc:"Trazo y desplante de nuevos muros divisorios de block ligero asentado con mortero para nueva distribución."},
+            {title:"Castillos",desc:"Armado, cimbrado y colado de castillos de confinamiento (K-1, K-2) para asegurar los muros nuevos."},
+            {title:"Inst. Hidro",desc:"Ranurado de muros y piso para tendido de tubería de PVC sanitario y CPVC para agua fría/caliente."},
+            {title:"Inst. Elec",desc:"Canalización de ductos eléctricos para contactos de lavabo, iluminación general y extractores."},
+            {title:"Firme",desc:"Vaciado de firme de compresión y formación de charola impermeabilizada con pendiente en área de regadera."},
+            {title:"Enjarres",desc:"Aplicación de enjarre rústico y repellado plomeado en muros nuevos y áreas reparadas."},
+            {title:"Yeso",desc:"Aplicación de pasta fina o yeso en muros fuera de las áreas húmedas y en plafones."},
+            {title:"Azulejo",desc:"Instalación de piso cerámico antiderrapante y azulejo en muros de la zona de regadera."},
+            {title:"Carpintería",desc:"Ensamblaje e instalación de módulos de madera para el vestidor y marcos para puertas de intercomunicación."},
+            {title:"Muebles",desc:"Instalación de inodoro, lavabo sobre cubierta, mezcladoras y accesorios de grifería empotrada."},
+            {title:"Canceles",desc:"Colocación de cancel de baño de cristal templado, espejos y placas eléctricas/luminarias."},
+            {title:"Pintura",desc:"Aplicación de pintura vinílica lavable especial para zonas húmedas en vestidor y techo."},
+            {title:"Limpieza",desc:"Limpieza profunda con ácido muriático diluido para retiro de manchas de boquilla, pintura y polvo fino."},
+            {title:"Detalles",desc:"Aplicación de sellador de silicón anti-hongos en juntas y revisión de presión en instalaciones hidrosanitarias."},
+            {title:"Entrega",desc:"Pruebas de funcionamiento eléctrico y de flujo de agua. Entrega de la zona habitable."}
+          ],
+          progress: Array(16).fill(0) 
+        },
+        { zone: "Zona 3: Recámara 2",
+          emoji: "🛏",
+          tasks: ["Excavación","Cimentación","Muros PB","Castillos PB","Cimbra PB","Losa PB","Muros PA","Anclaje PA","Cimbra PA","Acero PA","Losa PA","Ranurados","Aplanados","Firmes","Carpintería","Entrega"], 
+          details: [
+            {title:"Excavación",desc:"Trazo y excavación de zanjas para cimentación corrida (ZC-1) con profundidad según mecánica de suelos."},
+            {title:"Cimentación",desc:"Vaciado de plantilla, habilitado de acero, cimbrado y colado de dalas de desplante (DL-1, DL-2)."},
+            {title:"Muros PB",desc:"Desplante y levantamiento de muros de carga de block/tabique rojo recocido en planta baja a plomo y nivel."},
+            {title:"Castillos PB",desc:"Armado, cimbrado y colado de castillos (K-1) para confinar los muros perimetrales e interiores de PB."},
+            {title:"Cimbra PB",desc:"Apuntalamiento y cimbrado de madera alomada para recibir la losa nervada de entrepiso."},
+            {title:"Losa PB",desc:"Colocación de casetones de poliestireno, armado de trabes (T-1 a T-3) y colado de capa de compresión."},
+            {title:"Muros PA",desc:"Periodo de curado de losa y desplante de nuevos muros de mampostería en la nueva Planta Alta."},
+            {title:"Anclaje PA",desc:"Ejecución de detalle estructural de anclaje dentado para conectar castillos nuevos con la estructura existente."},
+            {title:"Cimbra PA",desc:"Apuntalamiento, nivelación y colocación de tarimas/cimbra para la losa de azotea propuesta en Planta Alta."},
+            {title:"Acero PA",desc:"Habilitado de acero para trabes perimetrales (T-6 a T-9), nervaduras (N-7 a N-11) y casetones de poliestireno."},
+            {title:"Losa PA",desc:"Colado de losa nervada de azotea con concreto premezclado, levantamiento de pretiles y formación de pendientes pluviales."},
+            {title:"Ranurados",desc:"Ranurado de muros para ahogar bajantes pluviales, tubería sanitaria, hidráulica y ductos eléctricos en ambos niveles."},
+            {title:"Aplanados",desc:"Aplicación de enjarre a plomo y regla en muros interiores y aplanado impermeable en fachadas exteriores."},
+            {title:"Firmes",desc:"Vaciado de firmes niveladores en PB y PA. Preparación de superficie para instalación de pisos de porcelanato."},
+            {title:"Carpintería",desc:"Instalación de piso, zoclos, puertas de intercomunicación de tambor/madera y frentes de clóset."},
+            {title:"Entrega",desc:"Aplicación de pasta fina y pintura vinílica, cableado final, prueba de luminarias y limpieza profunda de entrega."}
+          ],
+          progress: Array(16).fill(0) 
+        },
+        { zone: "Zona 4: Recámara 1",
+          emoji: "🛏",
+          tasks: ["Demolición","Muros","Castillos","Inst. Hidro","Inst. Elec","Firmes","Enjarres","Yeso","Piso","Azulejo","Carpintería","Muebles","Pintura","Cancelería","Limpieza","Entrega"], 
+          details: [
+            {title:"Demolición",desc:"Desmontaje de puertas, retiro de piso cerámico antiguo y demolición parcial de muros para ampliación de vanos."},
+            {title:"Muros",desc:"Levantamiento de muros divisorios de block para integrar el baño completo a la habitación."},
+            {title:"Castillos",desc:"Armado y colado de dalas de cerramiento y castillos para refuerzo de nuevos vanos de puertas y ventanas."},
+            {title:"Inst. Hidro",desc:"Ruptura parcial de firme existente para conectar nueva red de drenaje sanitario y alimentación de agua."},
+            {title:"Inst. Elec",desc:"Tendido de poliducto flexible corrugado en muros y losa para nuevos apagadores de escalera y contactos."},
+            {title:"Firmes",desc:"Relleno de zanjas de instalaciones, compactación y vaciado de firme autonivelante para recibir piso nuevo."},
+            {title:"Enjarres",desc:"Aplicación de repellado base en áreas de muros intervenidos para emparejar con plomos existentes."},
+            {title:"Yeso",desc:"Aplicación de acabado de yeso en muros interiores de la recámara y plafones."},
+            {title:"Piso",desc:"Instalación de piso cerámico o formato tipo madera en recámara, respetando juntas de dilatación."},
+            {title:"Azulejo",desc:"Colocación de recubrimiento cerámico en formato grande en muros de zona de regadera y lavabo."},
+            {title:"Carpintería",desc:"Instalación de clóset a medida y montaje de puerta principal de la recámara con chambranas."},
+            {title:"Muebles",desc:"Instalación de muebles sanitarios, monomandos, regadera de teléfono y accesorios de baño."},
+            {title:"Pintura",desc:"Aplicación de sellador y dos manos de pintura vinílica acrílica en muros y plafones."},
+            {title:"Cancelería",desc:"Instalación de ventanas de aluminio con mosquiteros y cancel corredizo de baño en cristal inastillable."},
+            {title:"Limpieza",desc:"Limpieza general de obra, retiro de plásticos protectores y cintas de enmascarar."},
+            {title:"Entrega",desc:"Verificación de acabados, revisión de caída de agua en regadera y entrega funcional."}
+          ],
+          progress: Array(16).fill(0) 
+        },
+        { zone: "Zona 5: Sala TV",
+          emoji: "📺",
+          tasks: ["Excavación","Cimentación","Muros PB","Castillos PB","Cimbra PB","Losa PB","Muros PA","Anclaje PA","Cimbra PA","Acero PA","Losa PA","Ranurados","Aplanados","Firmes","Yeso","Entrega"], 
+          details: [
+            {title:"Excavación",desc:"Excavación de cepas para extensión de cimentación corrida y zapatas según lineamientos de plano estructural E-01."},
+            {title:"Cimentación",desc:"Armado de acero estructural, cimbrado y colado de cimiento de mampostería/concreto y dalas perimetrales."},
+            {title:"Muros PB",desc:"Desplante de muros de carga de ladrillo o block pesado en el área de expansión de la Sala de TV en Planta Baja."},
+            {title:"Castillos PB",desc:"Colado de castillos (K-1) para dar rigidez a la estructura nueva e integración con muros existentes."},
+            {title:"Cimbra PB",desc:"Montaje de andamios y cimbra de madera o metálica para soportar el colado de la losa de entrepiso."},
+            {title:"Losa PB",desc:"Armado de sistema de losa nervada, colocación de casetones aligerantes y vaciado de concreto premezclado."},
+            {title:"Muros PA",desc:"Desplante de muros perimetrales en Planta Alta para el área de cuarto de juegos."},
+            {title:"Anclaje PA",desc:"Ejecución técnica de anclaje dentado de mampostería para integrar muros nuevos con la casa actual."},
+            {title:"Cimbra PA",desc:"Preparación estructural de la cubierta final (azotea) mediante apuntalamiento perimetral y central."},
+            {title:"Acero PA",desc:"Armado y amarre de acero para trabes de carga principales (T-6 a T-9) y nervaduras estructurales secundarias."},
+            {title:"Losa PA",desc:"Vaciado de concreto en losa de azotea, construcción de pretiles de protección y pendientes para lluvia."},
+            {title:"Ranurados",desc:"Ranurado con esmeril para ocultar preparaciones de cableado para TV, internet, contactos y salidas de audio."},
+            {title:"Aplanados",desc:"Aplicación de mortero cemento-arena en fachadas y muros interiores para recibir acabado."},
+            {title:"Firmes",desc:"Vaciado de firmes de concreto en Planta Baja y Planta Alta. Aplicación de impermeabilizante en azotea nueva."},
+            {title:"Yeso",desc:"Aplicación de pasta fina en interiores e instalación de piso porcelánico en gran formato."},
+            {title:"Entrega",desc:"Instalación de luminarias LED, aplicación de pintura vinílica, retiro de andamios exteriores y limpieza final."}
+          ],
+          progress: Array(16).fill(0) 
+        }
+    ];
+
+    // ══════════════════════════════════════
+    // STATE
+    // ══════════════════════════════════════
+    let currentWeek = 1;
+    let currentTab = 'tareas';
+
+    // ══════════════════════════════════════
+    // INIT
+    // ══════════════════════════════════════
+    function init() {
+        buildWeekDots();
+        buildGanttTable();
+        updateDashboard();
+    }
+
+    function buildWeekDots() {
+        const container = document.getElementById('weekDots');
+        for(let i = 1; i <= 16; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'week-dot';
+            dot.id = `dot-${i}`;
+            container.appendChild(dot);
+        }
+    }
+
+    function buildGanttTable() {
+        const t = document.getElementById('ganttTable');
+        let html = '<thead><tr><th style="min-width:90px;text-align:left;padding-left:10px">Zona</th>';
+        for(let i=1; i<=16; i++) html += `<th id="gh-${i}">S${i}</th>`;
+        html += '</tr></thead><tbody>';
+        projectData.forEach((row, ri) => {
+            html += `<tr><td class="zone-cell">${row.emoji} Z${ri+1}</td>`;
+            row.tasks.forEach((task, ci) => {
+                html += `<td id="gc-${ri}-${ci+1}">${task}</td>`;
+            });
+            html += '</tr>';
+        });
+        html += '</tbody>';
+        t.innerHTML = html;
+    }
+
+    // ══════════════════════════════════════
+    // MAIN UPDATE
+    // ══════════════════════════════════════
+    function updateDashboard() {
+        const slider = document.getElementById('weekSlider');
+        currentWeek = parseInt(slider.value);
+        const pct = ((currentWeek - 1) / 15) * 100;
+        slider.style.setProperty('--pct', pct + '%');
+
+        document.getElementById('weekBadge').textContent = `Sem ${currentWeek}`;
+
+        updateWeekDots();
+        updateGantt();
+
+        if (currentTab === 'tareas') renderTareas();
+        else if (currentTab === 'detalle') renderDetalle();
+        else if (currentTab === 'avance') renderAvance();
+    }
+
+    function updateWeekDots() {
+        for(let i=1; i<=16; i++){
+            const d = document.getElementById(`dot-${i}`);
+            d.className = 'week-dot' + (i === currentWeek ? ' active' : i < currentWeek ? ' past' : '');
+        }
+    }
+
+    function updateGantt() {
+        for(let i=1; i<=16; i++){
+            const th = document.getElementById(`gh-${i}`);
+            if(th) th.className = i === currentWeek ? 'active-col' : '';
+        }
+        projectData.forEach((row, ri) => {
+            row.tasks.forEach((_, ci) => {
+                const w = ci + 1;
+                const cell = document.getElementById(`gc-${ri}-${w}`);
+                if(!cell) return;
+                const prog = row.progress[w-1];
+
+                if(w === currentWeek) {
+                    cell.className = 'cell-active';
+                    cell.style.background = `linear-gradient(90deg, rgba(245,158,11,0.5) ${prog}%, rgba(245,158,11,0.08) ${prog}%)`;
+                } else if(w < currentWeek) {
+                    cell.className = 'cell-done';
+                    cell.style.background = '';
+                } else {
+                    cell.className = 'cell-future';
+                    cell.style.background = '';
+                }
+            });
+        });
+    }
+
+    // ══════════════════════════════════════
+    // RENDER VIEWS
+    // ══════════════════════════════════════
+    function renderTareas() {
+        // Stats
+        const totalTasks = projectData.length;
+        const avgProgress = Math.round(projectData.reduce((s,r) => s + r.progress[currentWeek-1], 0) / totalTasks);
+        const doneWeeks = currentWeek - 1;
+
+        document.getElementById('statsGrid').innerHTML = `
+            <div class="stat-card animate-in">
+                <div class="stat-value">${currentWeek}</div>
+                <div class="stat-label">Semana actual</div>
+            </div>
+            <div class="stat-card animate-in">
+                <div class="stat-value" style="color:var(--accent2)">${avgProgress}%</div>
+                <div class="stat-label">Avance promedio</div>
+            </div>
+            <div class="stat-card animate-in">
+                <div class="stat-value" style="color:var(--accent3)">${doneWeeks}</div>
+                <div class="stat-label">Semanas completadas</div>
+            </div>
+            <div class="stat-card animate-in">
+                <div class="stat-value" style="color:#8b5cf6">${16 - currentWeek}</div>
+                <div class="stat-label">Semanas restantes</div>
+            </div>
+        `;
+
+        // Zone cards
+        let html = '';
+        projectData.forEach((row, idx) => {
+            const detail = row.details[currentWeek - 1];
+            const prog = row.progress[currentWeek - 1];
+            const color = ZONE_COLORS[idx];
+            html += `
+            <div class="zone-card animate-in" style="animation-delay:${idx * 0.06}s">
+                <div class="zone-card-header">
+                    <div class="zone-name-text">${row.emoji} ${row.zone}</div>
+                    <div class="zone-pct-badge" style="color:${color};background:${color}22">${prog}%</div>
+                </div>
+                <span class="task-chip">${detail.title}</span>
+                <div class="task-desc-mini">${detail.desc}</div>
+                <div class="progress-bar-wrap">
+                    <div class="progress-track" style="flex:1">
+                        <div class="progress-fill" id="pf-${idx}" style="width:${prog}%;background:linear-gradient(90deg,${color},${color}88)"></div>
+                    </div>
+                    <div class="progress-pct" style="color:${color}" id="pv-${idx}">${prog}%</div>
+                </div>
+                <div class="edit-slider-row">
+                    <label>Avance:</label>
+                    <input type="range" min="0" max="100" step="5" value="${prog}"
+                           oninput="updateProgress(${idx}, this.value)"
+                           style="flex:1;background:linear-gradient(90deg,${color} var(--pct,${prog}%),rgba(255,255,255,0.1) var(--pct,${prog}%))">
+                </div>
+            </div>`;
+        });
+        document.getElementById('zoneCards').innerHTML = html;
+    }
+
+    function renderDetalle() {
+        document.getElementById('detailTitle').textContent = `Órdenes de trabajo · Semana ${currentWeek}`;
+        let html = '';
+        projectData.forEach((row, idx) => {
+            const detail = row.details[currentWeek - 1];
+            const prog = row.progress[currentWeek - 1];
+            const color = ZONE_COLORS[idx];
+            html += `
+            <div class="detail-card animate-in" style="animation-delay:${idx * 0.06}s;border-left:4px solid ${color}">
+                <div class="detail-card-zone">${row.zone}</div>
+                <div class="detail-card-title">📌 ${detail.title}</div>
+                <div class="detail-card-desc">${detail.desc}</div>
+                <div class="progress-bar-wrap">
+                    <div class="progress-track" style="flex:1">
+                        <div class="progress-fill" id="dpf-${idx}" style="width:${prog}%;background:linear-gradient(90deg,${color},${color}88)"></div>
+                    </div>
+                    <div class="progress-pct" style="color:${color}" id="dpv-${idx}">${prog}%</div>
+                </div>
+                <div class="edit-slider-row">
+                    <label>Avance:</label>
+                    <input type="range" min="0" max="100" step="5" value="${prog}"
+                           oninput="updateProgress(${idx}, this.value)"
+                           style="flex:1">
+                </div>
+            </div>`;
+        });
+        document.getElementById('detailCards').innerHTML = html;
+    }
+
+    function renderAvance() {
+        let html = '';
+        projectData.forEach((row, idx) => {
+            const color = ZONE_COLORS[idx];
+            const overall = Math.round(row.progress.reduce((s,v)=>s+parseFloat(v),0) / 16);
+            let pipsHtml = '';
+            for(let w=1; w<=16; w++){
+                const p = row.progress[w-1];
+                const h = Math.max(4, (p/100)*28);
+                pipsHtml += `
+                <div class="week-pip ${w===currentWeek?'pip-current':''}" title="Sem ${w}: ${p}%">
+                    <span class="week-pip-num">${w}</span>
+                    <div class="week-pip-fill" style="height:${h}px;background:linear-gradient(180deg,${color},${color}66)"></div>
+                </div>`;
+            }
+            html += `
+            <div class="summary-zone animate-in" style="animation-delay:${idx*0.07}s;border-left:4px solid ${color}">
+                <div class="summary-zone-name">${row.emoji} ${row.zone} <span style="color:${color};float:right">${overall}% global</span></div>
+                <div class="week-progress-grid">${pipsHtml}</div>
+            </div>`;
+        });
+        document.getElementById('avanceContent').innerHTML = html;
+    }
+
+    // ══════════════════════════════════════
+    // ACTIONS
+    // ══════════════════════════════════════
+    function updateProgress(zIdx, val) {
+        val = parseFloat(val);
+        projectData[zIdx].progress[currentWeek - 1] = val;
+
+        // Update Gantt cell
+        const w = currentWeek;
+        const cell = document.getElementById(`gc-${zIdx}-${w}`);
+        if(cell) {
+            cell.style.background = `linear-gradient(90deg, rgba(245,158,11,0.5) ${val}%, rgba(245,158,11,0.08) ${val}%)`;
+        }
+
+        // Update stats badge
+        const badge = document.querySelector(`#zoneCards .zone-card:nth-child(${zIdx+1}) .zone-pct-badge`);
+        if(badge) badge.textContent = val + '%';
+
+        // Update progress bar and value
+        const pf = document.getElementById(`pf-${zIdx}`);
+        const pv = document.getElementById(`pv-${zIdx}`);
+        if(pf) pf.style.width = val + '%';
+        if(pv) pv.textContent = val + '%';
+
+        const dpf = document.getElementById(`dpf-${zIdx}`);
+        const dpv = document.getElementById(`dpv-${zIdx}`);
+        if(dpf) dpf.style.width = val + '%';
+        if(dpv) dpv.textContent = val + '%';
+
+        // Update slider gradient
+        const sliders = document.querySelectorAll(`input[type=range][oninput*="updateProgress(${zIdx}"]`);
+        sliders.forEach(sl => {
+            sl.style.setProperty('--pct', val + '%');
+        });
+
+        // Refresh stats row
+        const avgProgress = Math.round(projectData.reduce((s,r) => s + r.progress[currentWeek-1], 0) / projectData.length);
+        const avgEl = document.querySelector('#statsGrid .stat-card:nth-child(2) .stat-value');
+        if(avgEl) avgEl.textContent = avgProgress + '%';
+    }
+
+    function changeWeek(delta) {
+        const slider = document.getElementById('weekSlider');
+        const next = Math.min(16, Math.max(1, currentWeek + delta));
+        slider.value = next;
+        updateDashboard();
+    }
+
+    function switchTab(tabId, btn) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(`view-${tabId}`).classList.add('active');
+        btn.classList.add('active');
+        currentTab = tabId;
+
+        if(tabId === 'tareas') renderTareas();
+        else if(tabId === 'detalle') renderDetalle();
+        else if(tabId === 'avance') renderAvance();
+    }
+
+    // Touch swipe for week navigation
+    let touchStartX = 0;
+    document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, {passive: true});
+    document.addEventListener('touchend', e => {
+        const dx = touchStartX - e.changedTouches[0].clientX;
+        if(Math.abs(dx) > 60 && e.target.closest('.view')) {
+            changeWeek(dx > 0 ? 1 : -1);
+        }
+    }, {passive: true});
+
+    window.onload = init;
+</script>
+</body>
+</html>
