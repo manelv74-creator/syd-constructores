@@ -685,12 +685,12 @@ let selectedRole = 'client';
 // LOGIN UI
 // ══════════════════════════════════════
 const HINTS = {
-    client:   '<strong>Cliente · Proyecto SAUCES:</strong> Ingresa la clave <b>SAUCES</b> para acceder al seguimiento completo de tu obra en modo lectura.',
-    observer: '<strong>Supervisor:</strong> Usa el código especial que te proporcionó el maestro de obra. Acceso de lectura a todas las obras.',
+    client:   '<strong>Cliente:</strong> Ingresa tu correo y la clave de acceso que te proporcionó SYD Constructores. Acceso en modo lectura a tu obra.',
+    observer: '<strong>Supervisor:</strong> Usa el código especial que te proporcionó el responsable de obra. Acceso de lectura a todas las obras.',
     master:   '<strong>Master:</strong> Acceso total con código de administrador. Puedes actualizar el avance de todas las zonas.'
 };
-const DYN_LABEL = {client:'Clave del proyecto', observer:'Código de acceso', master:'Código maestro'};
-const DYN_PLACEHOLDER = {client:'SAUCES', observer:'Código supervisor', master:'Código master'};
+const DYN_LABEL = {client:'Clave de acceso', observer:'Código de acceso', master:'Código maestro'};
+const DYN_PLACEHOLDER = {client:'Tu clave de acceso', observer:'Código supervisor', master:'Código master'};
 
 function selectRole(role, btn) {
     selectedRole = role;
