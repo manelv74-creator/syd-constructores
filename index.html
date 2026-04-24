@@ -1451,17 +1451,13 @@ window.onload = function() {
 
 <script>
 // ══════════════════════════════════════
-// FIREBASE STORAGE — FOTOS (Punto 4)
+// IMGBB — FOTOS (Punto 4, sin tarjeta)
 // ══════════════════════════════════════
-let storage = null;
-try {
-    if(db) {
-        storage = firebase.storage();
-        console.log('[SYD] Storage conectado');
-    }
-} catch(e) { console.warn('[SYD] Storage no disponible:', e.message); }
+// Obtén tu clave GRATIS en: https://api.imgbb.com/
+// Crea cuenta → My Account → API → copia la clave
+const IMGBB_API_KEY = 'PEGA_AQUI_TU_CLAVE_IMGBB';
 
-let _uploadContext = null; // {zIdx, semana, tarea, zona}
+let _uploadContext = null;
 
 // — Abre selector de archivo para una tarea
 function triggerFotoUpload(zIdx) {
@@ -1481,58 +1477,60 @@ async function handleFotoSelected(e) {
     const file = e.target.files[0];
     e.target.value = '';
     if(!file || !_uploadContext) return;
-    if(!storage) {
-        alert('Firebase Storage no está activado aún.\n\nSigue las instrucciones para activarlo en la consola de Firebase.');
+
+    if(IMGBB_API_KEY === 'PEGA_AQUI_TU_CLAVE_IMGBB') {
+        alert('⚠️ Configura tu clave de ImgBB.\n\n1. Ve a https://api.imgbb.com/\n2. Crea cuenta gratis\n3. Copia tu API key\n4. Pégala en IMGBB_API_KEY del código');
         return;
     }
+
     const ctx = _uploadContext;
     const progEl = document.getElementById('up-prog-' + ctx.zIdx);
-    if(progEl) { progEl.style.display='block'; progEl.textContent='⏳ Subiendo...'; }
+    if(progEl) { progEl.style.display='block'; progEl.textContent='⏳ Procesando imagen...'; }
 
     try {
-        // Compress image if too large
-        const blob = await compressImage(file, 1200, 0.82);
-        const fileName = `${Date.now()}_${file.name.replace(/[^a-z0-9.]/gi,'_')}`;
-        const path = `obras/${session.obra || 'SAUCES'}/z${ctx.zIdx}_s${ctx.semana}/${fileName}`;
-        const ref = storage.ref(path);
+        // Comprimir y convertir a base64
+        const base64 = await imageToBase64(file, 1200, 0.82);
+        if(progEl) progEl.textContent = '⏳ Subiendo a ImgBB...';
 
-        const task = ref.put(blob);
-        task.on('state_changed',
-            snap => {
-                const pct = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
-                if(progEl) progEl.textContent = `⏳ Subiendo ${pct}%...`;
-            },
-            err => {
-                if(progEl) { progEl.textContent='❌ Error: ' + err.message; }
-                console.error('Upload error:', err);
-            },
-            async () => {
-                const url = await task.snapshot.ref.getDownloadURL();
-                // Save reference to Firestore
-                if(db) {
-                    await db.collection('obras').doc(session.obra || 'SAUCES')
-                        .collection('fotos').add({
-                            zona:      ctx.zona,
-                            zona_idx:  ctx.zIdx,
-                            semana:    ctx.semana,
-                            tarea:     ctx.tarea,
-                            url,
-                            fileName,
-                            storagePath: path,
-                            subidoPor:  session.email,
-                            timestamp:  firebase.firestore.FieldValue.serverTimestamp(),
-                            fecha:      new Date().toLocaleDateString('es-MX'),
-                            hora:       new Date().toLocaleTimeString('es-MX')
-                        });
-                }
-                if(progEl) { progEl.textContent='✅ Foto subida'; setTimeout(()=>{ progEl.style.display='none'; },2000); }
-                // Refresh gallery
-                loadFotosGallery(ctx.zIdx, ctx.semana, 'gallery-' + ctx.zIdx);
-            }
-        );
+        const formData = new FormData();
+        formData.append('key', IMGBB_API_KEY);
+        formData.append('image', base64);
+        formData.append('name', `SYD_z${ctx.zIdx}_s${ctx.semana}_${Date.now()}`);
+
+        const resp = await fetch('https://api.imgbb.com/1/upload', {
+            method: 'POST', body: formData
+        });
+        const result = await resp.json();
+
+        if(!result.success) throw new Error(result.error?.message || 'Error ImgBB');
+
+        const url = result.data.display_url;
+        const thumb = result.data.thumb?.url || url;
+
+        // Guardar referencia en Firestore
+        if(db) {
+            await db.collection('obras').doc(session.obra || 'SAUCES')
+                .collection('fotos').add({
+                    zona:      ctx.zona,
+                    zona_idx:  ctx.zIdx,
+                    semana:    ctx.semana,
+                    tarea:     ctx.tarea,
+                    url,
+                    thumb,
+                    subidoPor: session.email,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    fecha:     new Date().toLocaleDateString('es-MX'),
+                    hora:      new Date().toLocaleTimeString('es-MX')
+                });
+        }
+        if(progEl) { progEl.textContent='✅ Foto subida'; setTimeout(()=>{ progEl.style.display='none'; },2500); }
+        // Refrescar galería
+        loadFotosGallery(ctx.zIdx, ctx.semana, 'gallery-' + ctx.zIdx);
+        loadFotosGallery(ctx.zIdx, ctx.semana, 'dgallery-' + ctx.zIdx);
+
     } catch(err) {
-        if(progEl) progEl.textContent = '❌ Error al procesar la imagen';
-        console.error(err);
+        if(progEl) { progEl.textContent='❌ Error: ' + err.message; }
+        console.error('ImgBB upload error:', err);
     }
 }
 
@@ -1549,14 +1547,15 @@ async function loadFotosGallery(zIdx, semana, containerId) {
             .orderBy('timestamp','desc')
             .limit(10).get();
         if(snap.empty) { el.innerHTML = ''; return; }
-        const zona = projectData[zIdx];
-        const tarea = zona.tasks[semana-1] || '';
+        const tarea = projectData[zIdx].tasks[semana-1] || '';
         let html = `<div class="foto-count-badge">📷 ${snap.size} foto(s) · ${tarea}</div>
                     <div class="foto-gallery">`;
         snap.forEach(doc => {
             const d = doc.data();
-            html += `<img class="foto-thumb" src="${d.url}"
-                          onclick="openLightbox('${d.url}','${d.zona} · Sem ${d.semana} · ${d.tarea || ''}')"
+            const thumbSrc = d.thumb || d.url;
+            const caption = `${d.zona} · Sem ${d.semana} · ${d.tarea||''}`;
+            html += `<img class="foto-thumb" src="${thumbSrc}"
+                          onclick="openLightbox('${d.url}','${caption}')"
                           alt="Foto de avance">`;
         });
         html += '</div>';
@@ -1578,8 +1577,8 @@ function closeLightbox() {
     document.getElementById('lightboxImg').src = '';
 }
 
-// — Comprimir imagen antes de subir
-function compressImage(file, maxWidth, quality) {
+// — Convertir imagen a base64 comprimida
+function imageToBase64(file, maxWidth, quality) {
     return new Promise(resolve => {
         const reader = new FileReader();
         reader.onload = ev => {
@@ -1590,7 +1589,9 @@ function compressImage(file, maxWidth, quality) {
                 if(w > maxWidth) { h = Math.round(h * maxWidth / w); w = maxWidth; }
                 canvas.width = w; canvas.height = h;
                 canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                canvas.toBlob(blob => resolve(blob), 'image/jpeg', quality);
+                // Return base64 without the data:image/...;base64, prefix
+                const dataUrl = canvas.toDataURL('image/jpeg', quality);
+                resolve(dataUrl.split(',')[1]);
             };
             img.src = ev.target.result;
         };
