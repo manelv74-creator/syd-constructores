@@ -249,6 +249,107 @@
         .client-zone-icon{font-size:1.8rem}
         .client-zone-name{font-size:1rem;font-weight:700;color:var(--text)}
         .client-zone-sub{font-size:0.72rem;color:var(--muted);margin-top:2px}
+
+        /* ══ OBRA SELECTOR ══ */
+        #obraSelector{
+            display:none;min-height:100vh;
+            background:var(--bg);
+            padding:0;
+            flex-direction:column;
+        }
+        .selector-header{
+            padding:18px 18px 14px;
+            background:var(--surface);
+            border-bottom:1px solid var(--border);
+            display:flex;align-items:center;justify-content:space-between;
+        }
+        .selector-header-left{
+            display:flex;align-items:center;gap:10px;
+        }
+        .selector-logo-small{
+            width:36px;height:36px;object-fit:contain;
+            background:#fff;border-radius:8px;padding:3px;
+        }
+        .selector-title{
+            font-size:1rem;font-weight:800;
+            background:linear-gradient(135deg,#f1f5f9,#94a3b8);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+            background-clip:text;
+        }
+        .selector-subtitle{
+            font-size:0.65rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-top:2px;
+        }
+        .selector-role-badge{
+            font-size:0.65rem;font-weight:700;padding:4px 12px;border-radius:20px;
+            text-transform:uppercase;letter-spacing:0.06em;
+        }
+        .selector-role-badge.master{background:rgba(245,158,11,0.15);color:#fbbf24;border:1px solid rgba(245,158,11,0.3)}
+        .selector-role-badge.observer{background:rgba(99,102,241,0.15);color:#a5b4fc;border:1px solid rgba(99,102,241,0.3)}
+        .selector-body{
+            padding:16px;
+            flex:1;
+        }
+        .selector-section-title{
+            font-size:0.65rem;font-weight:700;color:var(--muted);
+            text-transform:uppercase;letter-spacing:0.12em;margin-bottom:12px;
+        }
+        .obras-grid{
+            display:grid;grid-template-columns:1fr 1fr;gap:12px;
+        }
+        @media(min-width:480px){.obras-grid{grid-template-columns:repeat(3,1fr)}}
+        .obra-card{
+            background:var(--surface);border:1px solid var(--border);
+            border-radius:16px;overflow:hidden;
+            cursor:pointer;transition:transform 0.2s,box-shadow 0.2s,border-color 0.2s;
+            position:relative;
+        }
+        .obra-card:hover,.obra-card:active{transform:scale(1.03);box-shadow:0 8px 32px rgba(0,0,0,0.4);border-color:var(--accent)}
+        .obra-card-img{
+            width:100%;aspect-ratio:4/3;object-fit:cover;
+            display:block;
+        }
+        .obra-card-img-fallback{
+            width:100%;aspect-ratio:4/3;
+            background:linear-gradient(135deg,#1e293b,#0f172a);
+            display:flex;align-items:center;justify-content:center;
+            font-size:2.5rem;
+        }
+        .obra-card-body{
+            padding:10px 12px;
+        }
+        .obra-card-name{
+            font-size:0.88rem;font-weight:800;margin-bottom:3px;
+        }
+        .obra-card-meta{
+            font-size:0.65rem;color:var(--muted);
+        }
+        .obra-card-status{
+            position:absolute;top:8px;right:8px;
+            font-size:0.58rem;font-weight:700;padding:3px 8px;
+            border-radius:20px;text-transform:uppercase;letter-spacing:0.06em;
+            backdrop-filter:blur(8px);
+        }
+        .obra-card-status.activa{background:rgba(16,185,129,0.85);color:#fff}
+        .obra-card-status.pausada{background:rgba(245,158,11,0.85);color:#fff}
+        .obra-card-status.terminada{background:rgba(100,116,139,0.85);color:#fff}
+        .selector-logout{
+            background:transparent;border:1px solid rgba(255,255,255,0.12);
+            color:var(--muted);font-size:0.7rem;padding:6px 14px;
+            border-radius:20px;cursor:pointer;font-family:Inter,sans-serif;
+        }
+        /* Cabecera de obra en app (para cliente) */
+        .obra-hero{
+            width:100%;height:140px;object-fit:cover;display:block;
+            border-bottom:1px solid var(--border);
+        }
+        .obra-hero-wrap{position:relative}
+        .obra-hero-overlay{
+            position:absolute;bottom:0;left:0;right:0;
+            background:linear-gradient(transparent,rgba(10,14,26,0.92));
+            padding:10px 16px 12px;
+        }
+        .obra-hero-title{font-size:1rem;font-weight:800;color:#fff}
+        .obra-hero-sub{font-size:0.68rem;color:rgba(255,255,255,0.6)}
     </style>
 </head>
 <body>
@@ -312,6 +413,27 @@
     </div>
 </div>
 
+<!-- ══════════════ OBRA SELECTOR ══════════════ -->
+<div id="obraSelector">
+    <div class="selector-header">
+        <div class="selector-header-left">
+            <img src="logo_syd.png" class="selector-logo-small" alt="SYD">
+            <div>
+                <div class="selector-title">SYD Constructores</div>
+                <div class="selector-subtitle">Selecciona una obra</div>
+            </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="selector-role-badge" id="selectorRoleBadge"></span>
+            <button class="selector-logout" onclick="doLogout()">Salir</button>
+        </div>
+    </div>
+    <div class="selector-body">
+        <div class="selector-section-title">Obras activas</div>
+        <div class="obras-grid" id="obrasGrid"></div>
+    </div>
+</div>
+
 <!-- ══════════════ APP SHELL ══════════════ -->
 <div id="appShell">
 
@@ -347,6 +469,14 @@
 
 <main class="main">
     <div class="view active" id="view-tareas">
+        <!-- Foto de la obra (visible para todos) -->
+        <div class="obra-hero-wrap" id="obraHeroWrap" style="display:none;margin:-14px -14px 14px -14px">
+            <img id="obraHeroImg" class="obra-hero" src="" alt="Foto de la obra">
+            <div class="obra-hero-overlay">
+                <div class="obra-hero-title" id="obraHeroTitle"></div>
+                <div class="obra-hero-sub" id="obraHeroSub"></div>
+            </div>
+        </div>
         <div class="overview-grid" id="statsGrid"></div>
         <div id="clientZoneHeader" style="display:none"></div>
         <div id="zoneCards"></div>
@@ -838,6 +968,67 @@ const AUTH = {
 };
 
 // ══════════════════════════════════════
+// CATÁLOGO DE OBRAS
+// ══════════════════════════════════════
+// Para añadir una nueva obra: duplica el objeto y cambia sus valores
+const OBRAS_CATALOG = [
+    {
+        id:       'SAUCES',
+        nombre:   'Proyecto Sauces',
+        desc:     'Ampliación residencial · 5 zonas · 32 semanas',
+        foto:     'obra_sauces.jpg',
+        emoji:    '🏠',
+        status:   'activa',    // 'activa' | 'pausada' | 'terminada'
+        clientCode: 'SAUCES'  // clave que usa el cliente para entrar
+    }
+    // Ejemplo de cómo añadir otra obra:
+    // ,{ id:'LOMAS', nombre:'Proyecto Lomas', desc:'Casa nueva · 3 zonas · 24 semanas',
+    //    foto:'obra_lomas.jpg', emoji:'🏡', status:'activa', clientCode:'LOMAS' }
+];
+
+// ══════════════════════════════════════
+// OBRA SELECTOR
+// ══════════════════════════════════════
+let currentObra = null;   // obra seleccionada actualmente
+
+function showObraSelector() {
+    document.getElementById('loginScreen').style.display    = 'none';
+    document.getElementById('obraSelector').style.display  = 'flex';
+    document.getElementById('appShell').style.display      = 'none';
+    // Role badge
+    const rb = document.getElementById('selectorRoleBadge');
+    const labels = { master:'⚡ Master', observer:'👁 Supervisor' };
+    rb.textContent = labels[session.role] || session.role;
+    rb.className = 'selector-role-badge ' + session.role;
+    // Build grid
+    buildObrasGrid();
+}
+
+function buildObrasGrid() {
+    const grid = document.getElementById('obrasGrid');
+    grid.innerHTML = OBRAS_CATALOG.map(obra => `
+        <div class="obra-card" onclick="selectObra('${obra.id}')">
+            <img class="obra-card-img" src="${obra.foto}" alt="${obra.nombre}"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="obra-card-img-fallback" style="display:none">${obra.emoji}</div>
+            <span class="obra-card-status ${obra.status}">${obra.status}</span>
+            <div class="obra-card-body">
+                <div class="obra-card-name">${obra.nombre}</div>
+                <div class="obra-card-meta">${obra.desc}</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function selectObra(obraId) {
+    currentObra = OBRAS_CATALOG.find(o => o.id === obraId);
+    if(!currentObra) return;
+    session.obra = obraId;
+    localStorage.setItem('sauces_session', JSON.stringify(session));
+    launchApp();
+}
+
+// ══════════════════════════════════════
 // STATE
 // ══════════════════════════════════════
 let session = null;   // { role, email }
@@ -888,14 +1079,23 @@ function doLogin() {
 
     localStorage.setItem('sauces_session', JSON.stringify(session));
     logAccess(email, session.role, 'login');
-    launchApp();
+    // Routing: master/observer → obra selector; client → direct to app
+    if(session.role === 'client') {
+        // Find their obra by client code
+        currentObra = OBRAS_CATALOG.find(o => o.clientCode === code.toUpperCase()) || OBRAS_CATALOG[0];
+        session.obra = currentObra.id;
+        launchApp();
+    } else {
+        showObraSelector();
+    }
 }
 
 function doLogout() {
     if(session) logAccess(session.email, session.role, 'logout');
     localStorage.removeItem('sauces_session');
-    session = null;
+    session = null; currentObra = null;
     document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('obraSelector').style.display = 'none';
     document.getElementById('appShell').style.display = 'none';
     document.getElementById('loginEmail').value = '';
     document.getElementById('loginCode').value = '';
@@ -905,26 +1105,51 @@ function doLogout() {
 // APP LAUNCH
 // ══════════════════════════════════════
 function launchApp() {
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('appShell').style.display = 'block';
+    // master/observer without currentObra → go to selector
+    if((session.role==='master' || session.role==='observer') && !currentObra) {
+        if(session.obra) {
+            currentObra = OBRAS_CATALOG.find(o => o.id===session.obra) || OBRAS_CATALOG[0];
+        } else {
+            showObraSelector(); return;
+        }
+    }
+    if(!currentObra) currentObra = OBRAS_CATALOG[0];
+
+    document.getElementById('loginScreen').style.display    = 'none';
+    document.getElementById('obraSelector').style.display  = 'none';
+    document.getElementById('appShell').style.display      = 'block';
 
     // Role badge
     const rb = document.getElementById('roleBadge');
-    const roleLabels = { master:'⚡ Master', observer:'👁 Supervisor', client:'🏠 Cliente' };
+    const roleLabels = { master:'\u26a1 Master', observer:'\ud83d\udc41 Supervisor', client:'\ud83c\udfe0 Cliente' };
     rb.textContent = roleLabels[session.role];
     rb.className = 'role-badge ' + session.role;
 
-    // Show Accesos tab only for Master
+    // Accesos tab: only Master
     const tabAcc = document.getElementById('tabAccesos');
     if(tabAcc) tabAcc.style.display = session.role==='master' ? '' : 'none';
 
-    // Subtitle
-    document.getElementById('appSubtitle').textContent = 'Proyecto SAUCES · 5 zonas · 32 semanas';
+    // Subtitle with real obra name
+    document.getElementById('appSubtitle').textContent = currentObra.nombre + ' \u00b7 5 zonas \u00b7 32 semanas';
+
+    // Hero image (foto de la obra en la cabecera del tab Tareas)
+    const heroWrap  = document.getElementById('obraHeroWrap');
+    const heroImg   = document.getElementById('obraHeroImg');
+    const heroTitle = document.getElementById('obraHeroTitle');
+    const heroSub   = document.getElementById('obraHeroSub');
+    if(currentObra.foto) {
+        heroImg.src = currentObra.foto;
+        heroImg.onerror = () => { heroWrap.style.display='none'; };
+        heroTitle.textContent = currentObra.nombre;
+        heroSub.textContent   = currentObra.desc;
+        heroWrap.style.display = '';
+    } else {
+        heroWrap.style.display = 'none';
+    }
 
     buildWeekDots();
     buildGanttTable();
     updateDashboard();
-    // First tab active
     const firstTab = document.querySelector('.tab-btn');
     if(firstTab) { firstTab.classList.add('active'); }
 }
