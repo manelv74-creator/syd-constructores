@@ -172,7 +172,7 @@
             border:1px solid var(--border);border-radius:6px;padding:2px 8px;margin-top:8px;display:inline-block;
         }
         .gantt-scroll-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border)}
-        .gantt-table{width:100%;border-collapse:collapse;min-width:800px}
+        .gantt-table{width:100%;border-collapse:collapse;min-width:1600px}
         .gantt-table th,.gantt-table td{padding:7px 5px;text-align:center;font-size:0.62rem;border:1px solid var(--border);white-space:nowrap}
         .gantt-table th{background:#0f172a;color:var(--muted);font-weight:600;text-transform:uppercase}
         .gantt-table th.active-col{background:rgba(245,158,11,0.25);color:var(--accent2)}
@@ -187,7 +187,7 @@
         .detail-card-desc{font-size:0.78rem;color:var(--soft);line-height:1.6;padding:10px 12px;background:rgba(245,158,11,0.06);border-left:3px solid var(--accent2);border-radius:0 8px 8px 0;margin-bottom:10px}
         .summary-zone{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px}
         .summary-zone-name{font-size:0.82rem;font-weight:700;margin-bottom:10px}
-        .week-progress-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:3px}
+        .week-progress-grid{display:grid;grid-template-columns:repeat(16,1fr);gap:3px}
         .week-pip{height:26px;border-radius:4px;background:var(--future);display:flex;align-items:flex-end;overflow:hidden;position:relative}
         .week-pip-fill{width:100%;border-radius:4px;transition:height 0.4s}
         .week-pip-num{position:absolute;top:2px;left:0;right:0;text-align:center;font-size:0.48rem;color:rgba(255,255,255,0.4)}
@@ -270,7 +270,7 @@
     <div class="header-row">
         <div>
             <div class="app-title">📐 Cronograma Sauces</div>
-            <div class="app-subtitle" id="appSubtitle">Ampliación · 5 zonas · 16 semanas</div>
+            <div class="app-subtitle" id="appSubtitle">Ampliación · 5 zonas · 32 semanas</div>
         </div>
         <div class="header-right">
             <span class="role-badge" id="roleBadge"></span>
@@ -281,7 +281,7 @@
     <div class="week-nav">
         <button class="week-nav-btn" onclick="changeWeek(-1)">‹</button>
         <div class="week-slider-wrap">
-            <input type="range" id="weekSlider" min="1" max="16" value="1" oninput="updateDashboard()" style="--pct:0%">
+            <input type="range" id="weekSlider" min="1" max="32" value="1" oninput="updateDashboard()" style="--pct:0%">
             <div class="week-dots" id="weekDots"></div>
         </div>
         <button class="week-nav-btn" onclick="changeWeek(1)">›</button>
@@ -330,105 +330,185 @@ const ZONE_COLORS = ['#3b82f6','#8b5cf6','#10b981','#f59e0b','#ef4444'];
 
 const projectData = [
     { zone:"Zona 1: Cochera", emoji:"🏠",
-      tasks:["Trazo/Excava","Zapata/Dado","Ancla/Placa","Columna CM","Viga V-1","Pérgola","Terracerías","Firme","Aplanados","Instalaciones","Pintura base","Piso","Herrería","Detallado","Limpieza","Entrega"],
+      tasks:["Topografía", "Excav. cepas", "Plantilla", "Acero zapatas", "Cimbra zap.", "Colado zap.", "Curado zap.", "Anclajes", "Placas base", "Izaje columnas", "Plomeo col.", "Soldadura col.", "Control cal.", "Montaje V-1", "Soldadura V-1", "Vigas V-2/V-4", "Vigas V-3", "Pérgola final", "Terracerías", "Base compact.", "Malla electros.", "Firme concreto", "Curado firme", "Ranurado", "Poliducto", "Resane", "Aplanados", "Sellador", "Anticorrosivo", "Piso acabado", "Portón herrería", "Entrega"],
       details:[
-        {title:"Trazo y excavación",desc:"Trazo topográfico y excavación manual para cepas de 1.00×1.00m según plano E-01."},
-        {title:"Zapatas",desc:"Vaciado de plantilla de concreto pobre. Armado de acero y colado de zapatas aisladas y dados D-1/D-2."},
-        {title:"Anclajes",desc:"Presentación, nivelación y fijación de anclas de 5/8\" y placas base PL-1 y PL-2."},
-        {title:"Columnas",desc:"Izaje, montaje y plomeo de columnas metálicas de tubo cuadrado (CM, 14.88 kg/m) con soldadura a penetración."},
-        {title:"Vigas principales",desc:"Montaje y soldadura de vigas principales V-1 (I Rectangular IPS 5\")."},
-        {title:"Pérgola",desc:"Colocación de vigas secundarias V-2, V-4 y estándar V-3 para el entramado del pergolado metálico."},
-        {title:"Terracerías",desc:"Excavación menor, relleno compactado con material de banco y nivelación de terreno para estacionamiento."},
-        {title:"Firme",desc:"Colocación de malla electrosoldada y vaciado de concreto para firme de 10 cm de espesor."},
-        {title:"Aplanados",desc:"Resane y aplicación de aplanados base cemento-arena a plomo y regla en muros colindantes."},
-        {title:"Instalaciones",desc:"Ranurado y tendido de poliducto para salidas eléctricas de iluminación en la cubierta de la pérgola."},
-        {title:"Pintura base",desc:"Aplicación de sellador acrílico en muros y primario anticorrosivo en toda la estructura metálica."},
-        {title:"Piso",desc:"Instalación de acabado en piso (cerámico para tráfico pesado o concreto estampado)."},
-        {title:"Herrería",desc:"Instalación de portón de herrería corredizo o abatible y detallado de fachada principal."},
-        {title:"Detallado",desc:"Aplicación de pintura final tipo esmalte en estructura metálica y pintura vinílica en muros exteriores."},
-        {title:"Limpieza",desc:"Retiro de cimbra restante, recolección de escombro y limpieza general del área de estacionamiento."},
-        {title:"Entrega",desc:"Recorrido de revisión de soldaduras, acabados, pintura e iluminación con el cliente."}
-      ], progress:Array(16).fill(0) },
+        {title:"Topografía y trazo de ejes",desc:"Levantamiento topográfico con estación total. Colocación de mojoneras y trazo de ejes X-Y según plano E-01. Verificación de alineamientos con la colindancia."},
+        {title:"Excavación manual de cepas",desc:"Excavación de 8 cepas de 1.00×1.00×1.20m de profundidad. Retiro de material con carretilla. Protección de colindancias y señalización de obra."},
+        {title:"Plantilla de concreto pobre",desc:"Vaciado de plantilla de concreto f'c=100 kg/cm² de 5 cm de espesor en cada cepa para nivelar y proteger el acero de cimentación."},
+        {title:"Habilitado de acero para zapatas",desc:"Corte y doblado de varillas #4 y #5 para malla inferior y superior de zapatas aisladas D-1 y dados D-2 según plano E-02."},
+        {title:"Cimbrado de zapatas y dados",desc:"Armado de cimbra de madera plana para contener el concreto. Verificación de verticalidad y alineación antes del colado."},
+        {title:"Colado de zapatas y dados D-1/D-2",desc:"Vaciado de concreto premezclado f'c=250 kg/cm² en zapatas y dados. Vibrado mecánico para eliminar cangrejeras. Nivelación de superficies."},
+        {title:"Curado y protección de cimentación",desc:"Curado húmedo con costales de yute durante 7 días. Desencofrado a las 48 hrs. Protección con plástico negro ante lluvia directa."},
+        {title:"Presentación y nivelación de anclajes",desc:"Colocación de anclas de varilla roscada 5/8\" en pares, embebidas en el dado. Nivelación con nivel de precisión y plomada óptica."},
+        {title:"Fijación definitiva de placas base",desc:"Presentación de placas PL-1 (30×30×1.2cm) y PL-2 (25×25×1cm), alineación y apriete de tuercas con llave de torque calibrada."},
+        {title:"Izaje y posición de columnas metálicas",desc:"Montaje de columnas de tubo cuadrado 10×10×0.6cm (CM=14.88kg/m) con apoyo de equipo telescópico. Presentación en plomada."},
+        {title:"Plomeo y alineación de columnas",desc:"Verificación de verticalidad en 2 ejes con nivel de burbuja y plomada. Apuntalamiento provisional con riostras hasta soldadura definitiva."},
+        {title:"Soldadura de columnas a placas base",desc:"Soldadura a penetración total en filete perimetral de columnas a placa base. Electrodo E-7018. Limpieza de escoria entre pasadas."},
+        {title:"Control de calidad en soldadura",desc:"Inspección visual de cordones de soldadura. Verificación de penetración, fusión lateral y perfil de cordón según AWS D1.1."},
+        {title:"Montaje de vigas principales V-1",desc:"Izaje y presentación de vigas IPS 5\" (V-1). Alineación entre ejes de columnas, verificación de nivel y aplome con gatos hidráulicos."},
+        {title:"Soldadura definitiva vigas V-1",desc:"Soldadura filete continuo 3/16\" en unión viga-columna. Aplicación en 2 pasadas. Limpieza y pintura anticorrosiva de zona soldada."},
+        {title:"Montaje vigas secundarias V-2 y V-4",desc:"Colocación de vigas tipo canal (V-2 y V-4) perpendiculares a la viga principal. Fijación con ángulos y soldadura de punto."},
+        {title:"Colocación de vigas estándar V-3",desc:"Instalación de vigas cuadradas tubo 4×4 (V-3) a cada 60cm formando el entramado del pergolado. Nivelación y soldadura final."},
+        {title:"Terminación y pintura de pérgola",desc:"Revisión de la totalidad del entramado. Soldadura de remates, tapas de tubo y aplicación de anticorrosivo gris en toda la estructura."},
+        {title:"Terracerías y nivelación de piso",desc:"Corte o relleno de terreno natural para lograr nivel de proyecto. Compactación manual con pisón en capas de 15cm. Prueba de compactación."},
+        {title:"Base de tezontle compactado",desc:"Colocación de 10cm de tezontle triturado como base granular. Compactación con vibro-apisonador hasta 95% Proctor Estándar."},
+        {title:"Habilitado de malla electrosoldada",desc:"Corte y acomodo de malla 6×6-10/10 sobre chapas de mortero (pasteles) para mantener recubrimiento de 2.5cm en toda el área de firme."},
+        {title:"Vaciado de firme de concreto 10cm",desc:"Vaciado de concreto premezclado f'c=200 kg/cm² en espesor de 10cm. Extendido con regla vibratoria y afinado tipo helicóptero."},
+        {title:"Curado y sellado de juntas de firme",desc:"Curado con membrana de curado a base de resina. Sierra de juntas de control cada 3m×3m. Sellado de juntas con polisulfuro."},
+        {title:"Ranurado para instalaciones eléctricas",desc:"Corte de ranuras con amoladora en muros colindantes para alojar poliducto corrugado 3/4\" para conductores eléctricos de iluminación."},
+        {title:"Tendido de poliducto e iluminación",desc:"Instalación de poliducto corrugado flexible en ranuras. Jaloneo de conductores calibre 12 AWG. Colocación de cajas registro galvanizadas."},
+        {title:"Resane de ranuras y resanes menores",desc:"Relleno de ranuras con mortero 1:4 (cemento:arena). Resane de golpes, grietas y rebabas en todo el perímetro de muros colindantes."},
+        {title:"Aplanados a plomo y regla",desc:"Aplicación de enjarre base cemento-arena 1:5 en 2 capas (repellado y aplanado fino). Verificación de plomo con nivel de 4m."},
+        {title:"Sellador acrílico en muros",desc:"Aplicación de sellador acrílico tipo Sello 1-2-3 o similar en muros exteriores e interiores. Preparación de superficie para pintura."},
+        {title:"Primario anticorrosivo en estructura",desc:"Aplicación de 2 manos de primario anticorrosivo rojo de minio en toda la estructura metálica. Limpieza previa con lija #80."},
+        {title:"Instalación de piso de acabado",desc:"Colocación de piso cerámico 60×60cm antiderrapante sobre cama de mortero adhesivo. Boquilleo con fragua epóxica gris plata."},
+        {title:"Instalación de portón y herrería",desc:"Montaje de portón corredizo de herrería 3\"×3\" calibre 14. Colocación de riel inferior, topes y cerradura de manivela exterior."},
+        {title:"Pintura final, limpieza y entrega",desc:"Aplicación de esmalte alcídico en 2 manos sobre estructura. Pintura vinílica en muros. Limpieza profunda y acta de entrega al cliente."}
+      ], progress:Array(32).fill(0) },
     { zone:"Zona 2: Baño Ppal", emoji:"🚿",
-      tasks:["Demolición","Muros","Castillos","Inst. Hidro","Inst. Elec","Firme","Enjarres","Yeso","Azulejo","Carpintería","Muebles","Canceles","Pintura","Limpieza","Detalles","Entrega"],
+      tasks:["Demolición cerám.", "Desmont. muebles", "Retiro escombro", "Trazo/replanteo", "Muros block 1a", "Muros block 2a", "Castillos K-1", "Castillos K-2", "Curado castillos", "Ranurado drenaje", "PVC sanitario", "CPVC hidráulico", "Prueba hidráulica", "Ductos eléctric.", "Cableado", "Firme compresión", "Impermeab.", "Pendientes/prueba", "Enjarre muros", "Repellado", "Pasta fina", "Yeso plafones", "Piso antiderrap.", "Azulejo regadera", "Azulejo lavabo", "Módulos madera", "Marcos/puertas", "Sanitarios", "Grifería/mezcl.", "Cancel/espejos", "Pintura lavable", "Silicón/entrega"],
       details:[
-        {title:"Demolición",desc:"Demolición de recubrimientos cerámicos existentes, desmantelamiento de muebles de baño y clósets viejos."},
-        {title:"Muros",desc:"Trazo y desplante de nuevos muros divisorios de block ligero asentado con mortero para nueva distribución."},
-        {title:"Castillos",desc:"Armado, cimbrado y colado de castillos de confinamiento (K-1, K-2) para asegurar los muros nuevos."},
-        {title:"Inst. Hidro",desc:"Ranurado de muros y piso para tendido de tubería de PVC sanitario y CPVC para agua fría/caliente."},
-        {title:"Inst. Elec",desc:"Canalización de ductos eléctricos para contactos de lavabo, iluminación general y extractores."},
-        {title:"Firme",desc:"Vaciado de firme de compresión y formación de charola impermeabilizada con pendiente en regadera."},
-        {title:"Enjarres",desc:"Aplicación de enjarre rústico y repellado plomeado en muros nuevos y áreas reparadas."},
-        {title:"Yeso",desc:"Aplicación de pasta fina o yeso en muros fuera de las áreas húmedas y en plafones."},
-        {title:"Azulejo",desc:"Instalación de piso cerámico antiderrapante y azulejo en muros de la zona de regadera."},
-        {title:"Carpintería",desc:"Ensamblaje e instalación de módulos de madera para el vestidor y marcos de puertas de intercomunicación."},
-        {title:"Muebles",desc:"Instalación de inodoro, lavabo sobre cubierta, mezcladoras y accesorios de grifería empotrada."},
-        {title:"Canceles",desc:"Colocación de cancel de baño de cristal templado, espejos y placas eléctricas/luminarias."},
-        {title:"Pintura",desc:"Aplicación de pintura vinílica lavable especial para zonas húmedas en vestidor y techo."},
-        {title:"Limpieza",desc:"Limpieza profunda con ácido muriático diluido para retiro de manchas de boquilla y polvo fino."},
-        {title:"Detalles",desc:"Aplicación de sellador de silicón anti-hongos en juntas y revisión de presión en instalaciones hidro."},
-        {title:"Entrega",desc:"Pruebas de funcionamiento eléctrico y de flujo de agua. Entrega de la zona habitable."}
-      ], progress:Array(16).fill(0) },
+        {title:"Demolición de recubrimientos cerámicos",desc:"Retiro con cincel y martillo de piso y azulejo existente en muros. Uso de martillo rotopercutor en áreas de mayor adherencia."},
+        {title:"Desmontaje de muebles y clósets",desc:"Desmontaje de inodoro, lavabo, regadera y muebles de baño. Corte de alimentaciones hidráulicas con tapón provisional de cobre."},
+        {title:"Retiro de escombro y limpieza inicial",desc:"Carga y retiro de todo el escombro generado en cubeta. Limpieza del área con escoba y aspirado para dejar libre el espacio."},
+        {title:"Trazo y replanteo de nueva distribución",desc:"Replanteo en piso y muros de la nueva distribución según plano AR-02. Marcado de ejes con tinta azul y cuerda de trazado."},
+        {title:"Desplante de muros block ligero 1ª hilada",desc:"Nivelación de primera hilada de block ligero 10×20×40cm sobre cama de mortero 1:3. Verificación de nivel y escuadra."},
+        {title:"Levantamiento muros block hasta altura",desc:"Continuación de muros hasta altura de proyecto (2.40m). Trabazón a la mitad entre hiladas. Junta de 1.5cm con mortero 1:4."},
+        {title:"Armado de castillos de confinamiento K-1",desc:"Habilitado de 4 varillas #3 con estribos #2 a cada 20cm. Atado con alambre recocido. Colocación en esquinas y encuentros de muro."},
+        {title:"Cimbrado y colado de castillos K-2",desc:"Cimbra con triplay de 9mm atada con alambre. Vaciado de concreto f'c=200 kg/cm² en tandas. Varillazo para compactar material."},
+        {title:"Curado de castillos y desencofrado",desc:"Curado con agua durante 5 días. Retiro de cimbra a las 36 hrs. Resane de cangrejeras con mortero expansivo sin retracción."},
+        {title:"Ranurado de piso para bajante sanitaria",desc:"Corte con amoladora de concreto en el firme existente para alojar tubería PVC sanitaria de 4\" y 2\" con caída mínima de 1%."},
+        {title:"Tendido de tubería PVC sanitaria",desc:"Instalación de ramal de 4\" para inodoro y ramales de 2\" para lavabo y regadera. Prueba de balonaje a 1.5m de presión de agua."},
+        {title:"Tendido de tubería CPVC hidráulica",desc:"Instalación de red de agua fría y caliente en CPVC 1/2\". Codos, tees y llaves de paso. Fijación cada 60cm con abrazaderas plásticas."},
+        {title:"Prueba hidráulica a presión",desc:"Prueba de presión a 10 kg/cm² durante 2 horas sin pérdida. Verificación de fugas en uniones soldadas con pasta reveladora."},
+        {title:"Canalización de ductos eléctricos",desc:"Ranurado de muros para poliducto corrugado. Cajas cuadradas registro en pasillos y cajas redondas para luminaria de plafón."},
+        {title:"Tendido de cableado eléctrico",desc:"Jaloneo de conductores THW calibre 12 AWG por poliducto. Circuito independiente para extractores. Conexiones con empalmes Conector tipo mariposa."},
+        {title:"Vaciado de firme de compresión",desc:"Relleno de zanjas de instalaciones y vaciado de firme de compresión de 5cm en zona de baño preparado para charola de regadera."},
+        {title:"Impermeabilización de charola de regadera",desc:"Aplicación de impermeabilizante cristalizante Xypex o similar en pasta en 2 capas sobre toda la charola. Curado 7 días."},
+        {title:"Formación de pendientes y prueba de agua",desc:"Aplicación de mortero para pendiente mínima de 2% hacia coladera. Tapado y prueba de encharcamiento 24 horas sin filtración."},
+        {title:"Enjarre rústico en muros nuevos",desc:"Aplicación de repellado rugoso (enjarre rústico) en muros de block para regularizar superficie previa al acabado final."},
+        {title:"Repellado a plomo en áreas reparadas",desc:"Aplicación de segunda capa de mortero 1:4 a plomo y regla en muros existentes reparados. Verificación con nivel de 2m."},
+        {title:"Pasta fina en muros de zona seca",desc:"Aplicación de pasta base vinílica o enlucido en muros y plafón de vestidor. Lijado entre manos para obtener superficie lisa."},
+        {title:"Aplicación de yeso en plafones",desc:"Aplicación de yeso blanco en 2 manos en plafón de losa. Escuadreo de ángulos con boquilla y llana metálica."},
+        {title:"Instalación de piso antiderrapante",desc:"Colocación de piso cerámico antiderrapante 30×30cm con cemento adhesivo. Boquilleo con fragua epóxica antihongos."},
+        {title:"Azulejo en muros de regadera",desc:"Colocación de azulejo 30×60cm a plomo y nivel en muros de la zona de regadera hasta 2.10m. Boquilleo con fragua impermeable."},
+        {title:"Azulejo en zona de lavabo",desc:"Colocación de azulejo de formato 20×60cm en muros del área de lavabo. Cenefa de detalle y remate en arista exterior con esquinero."},
+        {title:"Módulos de madera para vestidor",desc:"Ensamblaje e instalación de mueble de vestidor en MDF 19mm con chapilla de madera. Puertas corredizas con riel tipo Euro."},
+        {title:"Marcos y puerta de intercomunicación",desc:"Instalación de marco de acero calibre 18 y puerta de madera maciza 0.90×2.10m con chapa de seguridad tipo palanca."},
+        {title:"Instalación de sanitarios",desc:"Fijación de inodoro tipo closet con perno de anclaje. Montaje de lavabo de sobreponer y válvula de ángulo con flexible."},
+        {title:"Grifería empotrada y mezcladoras",desc:"Instalación de mezcladora empotrada para regadera marca Helvex o similar. Colocación de regadera tipo lluvia circular."},
+        {title:"Cancel de cristal templado y espejos",desc:"Instalación de cancel de baño 3/8\" templado incoloro con perfil de aluminio anodizado. Espejo de 4mm con silicón espejero."},
+        {title:"Pintura vinílica lavable zonas húmedas",desc:"Aplicación de sellador y 2 manos de pintura vinílica lavable tipo Berel Impermasell en muros de vestidor y plafón general."},
+        {title:"Silicón, revisión final y entrega",desc:"Sellado de juntas con silicón anti-hongos transparente. Prueba de presión final. Acta de entrega y lista de pendientes firmada."}
+      ], progress:Array(32).fill(0) },
     { zone:"Zona 3: Recámara 2", emoji:"🛏",
-      tasks:["Excavación","Cimentación","Muros PB","Castillos PB","Cimbra PB","Losa PB","Muros PA","Anclaje PA","Cimbra PA","Acero PA","Losa PA","Ranurados","Aplanados","Firmes","Carpintería","Entrega"],
+      tasks:["Topografía", "Excav. zanjas", "Plantilla", "Acero cim.", "Cimbra dalas", "Colado dalas", "Curado cim.", "Muros PB 1a", "Muros PB 2a", "Castillos PB", "Colado cast.PB", "Cimbra entrepiso", "Casetones PB", "Acero trabes PB", "Colado losa PB", "Curado losa PB", "Muros PA 1a", "Muros PA 2a", "Anclaje dentado", "Castillos PA", "Cimbra losa PA", "Acero trabes PA", "Nervaduras PA", "Colado losa PA", "Pretiles/pend.", "Ranurado instal.", "Instalaciones", "Enjarre int.", "Aplanado ext.", "Firmes", "Piso porcelanato", "Entrega"],
       details:[
-        {title:"Excavación",desc:"Trazo y excavación de zanjas para cimentación corrida (ZC-1) con profundidad según mecánica de suelos."},
-        {title:"Cimentación",desc:"Vaciado de plantilla, habilitado de acero, cimbrado y colado de dalas de desplante (DL-1, DL-2)."},
-        {title:"Muros PB",desc:"Desplante y levantamiento de muros de carga de block/tabique rojo recocido en PB a plomo y nivel."},
-        {title:"Castillos PB",desc:"Armado, cimbrado y colado de castillos (K-1) para confinar los muros perimetrales e interiores de PB."},
-        {title:"Cimbra PB",desc:"Apuntalamiento y cimbrado de madera alomada para recibir la losa nervada de entrepiso."},
-        {title:"Losa PB",desc:"Colocación de casetones de poliestireno, armado de trabes (T-1 a T-3) y colado de capa de compresión."},
-        {title:"Muros PA",desc:"Periodo de curado de losa y desplante de nuevos muros de mampostería en la nueva Planta Alta."},
-        {title:"Anclaje PA",desc:"Ejecución de detalle estructural de anclaje dentado para conectar castillos nuevos con la estructura existente."},
-        {title:"Cimbra PA",desc:"Apuntalamiento, nivelación y colocación de tarimas/cimbra para la losa de azotea en Planta Alta."},
-        {title:"Acero PA",desc:"Habilitado de acero para trabes perimetrales (T-6 a T-9), nervaduras (N-7 a N-11) y casetones."},
-        {title:"Losa PA",desc:"Colado de losa nervada de azotea con concreto premezclado, pretiles y pendientes pluviales."},
-        {title:"Ranurados",desc:"Ranurado de muros para bajantes pluviales, tubería sanitaria, hidráulica y ductos eléctricos en ambos niveles."},
-        {title:"Aplanados",desc:"Aplicación de enjarre a plomo y regla en muros interiores y aplanado impermeable en fachadas exteriores."},
-        {title:"Firmes",desc:"Vaciado de firmes niveladores en PB y PA. Preparación de superficie para pisos de porcelanato."},
-        {title:"Carpintería",desc:"Instalación de piso, zoclos, puertas de intercomunicación de tambor/madera y frentes de clóset."},
-        {title:"Entrega",desc:"Aplicación de pasta fina, pintura vinílica, cableado final, prueba de luminarias y limpieza de entrega."}
-      ], progress:Array(16).fill(0) },
+        {title:"Topografía y trazo de cimentación",desc:"Definición de ejes de cimentación con estación total. Trazo de zanjas con cal hidratada. Verificación de ángulos con cuerda diagonal."},
+        {title:"Excavación de zanjas para cimentación",desc:"Excavación de zanjas ZC-1 de 60cm de ancho × 120cm de profundidad. Talud de 5° en terrenos arcillosos. Entibado provisional."},
+        {title:"Plantilla y preparación de fondo",desc:"Apisonado de fondo de zanja y vaciado de 5cm de concreto pobre f'c=100 kg/cm² en todo el perímetro de cimentación corrida."},
+        {title:"Habilitado de acero para cimentación",desc:"Armado de caja de cimentación con varillas longitudinales #4 y estribos #3 a cada 20cm. Recubrimiento libre de 4cm en cada lado."},
+        {title:"Cimbrado de dalas de desplante DL-1",desc:"Cimbra lateral con triplay 16mm sujeta con cuñas de madera. Nivelación de cimbra con nivel de agua en todo el perímetro."},
+        {title:"Colado de dalas DL-2 y curado",desc:"Vaciado de concreto f'c=250 kg/cm² en dalas perimetrales. Vibrado cada 30cm. Curado con agua 7 días. Desencofrado a 48 hrs."},
+        {title:"Curado y protección de cimentación",desc:"Aplicación de membrana de curado y protección con film plástico. Inicio de muros solo después de comprobar resistencia a 7 días."},
+        {title:"Desplante de muros PB primera hilada",desc:"Nivelación de primera hilada de block o tabique rojo recocido sobre cama de mortero 1:4. Control de nivel con manguera de agua."},
+        {title:"Levantamiento de muros PB hasta losa",desc:"Continuación de muros en planta baja hasta nivel de losa de entrepiso (h=2.60m). Trabazón y juntas de 1.5cm de espesor."},
+        {title:"Habilitado de castillos K-1 planta baja",desc:"Armado de castillos con 4 varillas #3 y estribos #2 @ 20cm. Colocación en intersecciones y cada 3m máximo en muros libres."},
+        {title:"Colado de castillos PB y curado",desc:"Cimbra y vaciado de castillos con concreto f'c=200 kg/cm². Descimbrado a 24 hrs. Curado continuado 5 días con agua."},
+        {title:"Montaje de cimbra para entrepiso",desc:"Colocación de puntales metálicos @ 80cm. Largueros de madera 4\"×4\". Tablón de cimbra sobre largueros y nivelación total."},
+        {title:"Colocación de casetones de poliestireno",desc:"Distribución de casetones PS densidad 15 kg/m³ de 20×20×25cm sobre cimbra. Amarre entre sí para evitar flotación al colar."},
+        {title:"Armado de trabes T-1, T-2 y T-3",desc:"Fabricación de acero para trabes perimetrales e intermedias con varillas #5 y #4, estribos #3 @ 15cm en zona de apoyo."},
+        {title:"Colado de losa de entrepiso PB",desc:"Vaciado de concreto premezclado f'c=250 kg/cm² para losa nervada. Extendido con regla y afinado. Control de revenimiento 12±2cm."},
+        {title:"Curado de losa y desapuntalamiento",desc:"Curado húmedo durante 14 días con costales de yute mojados. Desapuntalamiento escalonado a los 21 días verificando deflexiones."},
+        {title:"Desplante de muros Planta Alta",desc:"Inicio de muros de mampostería sobre losa de entrepiso. Sellado de junta con mortero adherente para continuidad estructural."},
+        {title:"Levantamiento de muros hasta azotea PA",desc:"Continuación de muros en PA hasta nivel de losa de azotea (h=2.50m). Verificación de plomo y nivel cada 5 hiladas."},
+        {title:"Anclaje dentado con estructura existente",desc:"Perforación de muro existente con taladro percutor. Inserción de varillas #3 con epoxi estructural cada 3 hiladas verticales."},
+        {title:"Armado de castillos en Planta Alta",desc:"Castillos en intersecciones de muro con 4 varillas #3. Continuación de la varilla de anclaje con traslape mínimo de 40 diámetros."},
+        {title:"Apuntalamiento y cimbra de losa PA",desc:"Instalación de sistema de puntales metálicos y cimbra de madera para la losa de azotea. Verificación de capacidad de carga."},
+        {title:"Habilitado de acero trabes T-6 a T-9",desc:"Armado de trabes perimetrales de azotea con varillas #5 corridas y estribos #3 @ 15cm en apoyos y @ 25cm en zona media."},
+        {title:"Armado de nervaduras N-7 a N-11",desc:"Habilitado de nervaduras secundarias de la losa de azotea con varillas #4 y estribos #2 @ 20cm. Colocación y fijación en obra."},
+        {title:"Colado de losa nervada de azotea PA",desc:"Vaciado de concreto f'c=250 kg/cm² para losa de azotea. Colado en sentido de la pendiente. Vibrado y afinado de superficie."},
+        {title:"Pretiles y formación de pendientes",desc:"Construcción de pretiles perimetrales de block de 40cm. Formación de pendiente del 2% hacia bajadas con mortero de relleno."},
+        {title:"Ranurado para instalaciones generales",desc:"Corte de bajantes pluviales de 3\" en muros. Ranurado para tubería hidráulica, sanitaria y poliducto eléctrico en ambos niveles."},
+        {title:"Tendido de instalaciones hidrosanitarias",desc:"Instalación de red PVC sanitaria y CPVC hidráulica en PB y PA. Conexión a registro existente. Prueba de presión final."},
+        {title:"Enjarre y aplanado interior PB y PA",desc:"Aplicación de enjarre rugoso y aplanado fino en muros interiores. Esquinas con guardavivos de aluminio. Plomo y regla en toda la superficie."},
+        {title:"Aplanado impermeable en fachadas",desc:"Aplicación de mortero impermeabilizante en fachadas exteriores con aditivo Sika-1 o similar. Acabado rústico fino con esponja."},
+        {title:"Vaciado de firmes niveladores",desc:"Firme autonivelante de 5cm en PB y PA sobre base compactada. Verificación de nivel con regla de 3m. Tolerancia de ±3mm."},
+        {title:"Instalación de piso porcelanato",desc:"Colocación de porcelanato 60×60cm rectificado con nivelador de juntas SUMA-CLIP. Fragua epóxica de 3mm. Sellado perimetral."},
+        {title:"Carpintería, pintura y entrega",desc:"Instalación de puertas, zoclos, closets y ventanas. Pintura vinílica 2 manos. Limpieza fina y entrega con protocolo de obra."}
+      ], progress:Array(32).fill(0) },
     { zone:"Zona 4: Recámara 1", emoji:"🛏",
-      tasks:["Demolición","Muros","Castillos","Inst. Hidro","Inst. Elec","Firmes","Enjarres","Yeso","Piso","Azulejo","Carpintería","Muebles","Pintura","Cancelería","Limpieza","Entrega"],
+      tasks:["Desmont. puertas", "Demolición piso", "Demol. muros", "Retiro escombro", "Trazo muros", "Muros block", "Castillos", "Colado castillos", "Ruptura firme", "Drenaje sanitario", "Agua fría/cal.", "Prueba hidro.", "Poliducto", "Cableado", "Relleno/compact.", "Firme autonivelante", "Repellado base", "Enjarre muros", "Yeso recámara", "Yeso plafones", "Piso recámara", "Porcelanato", "Azulejo regadera", "Azulejo lavabo", "Clóset a medida", "Puerta principal", "Sanitarios", "Grifería/mezcl.", "Pintura", "Ventanas aluminio", "Cancel cristal", "Entrega"],
       details:[
-        {title:"Demolición",desc:"Desmontaje de puertas, retiro de piso cerámico antiguo y demolición parcial de muros para ampliación de vanos."},
-        {title:"Muros",desc:"Levantamiento de muros divisorios de block para integrar el baño completo a la habitación."},
-        {title:"Castillos",desc:"Armado y colado de dalas de cerramiento y castillos para refuerzo de nuevos vanos de puertas y ventanas."},
-        {title:"Inst. Hidro",desc:"Ruptura parcial de firme existente para conectar nueva red de drenaje sanitario y alimentación de agua."},
-        {title:"Inst. Elec",desc:"Tendido de poliducto flexible corrugado en muros y losa para nuevos apagadores y contactos."},
-        {title:"Firmes",desc:"Relleno de zanjas, compactación y vaciado de firme autonivelante para recibir piso nuevo."},
-        {title:"Enjarres",desc:"Aplicación de repellado base en áreas de muros intervenidos para emparejar con plomos existentes."},
-        {title:"Yeso",desc:"Aplicación de acabado de yeso en muros interiores de la recámara y plafones."},
-        {title:"Piso",desc:"Instalación de piso cerámico o formato tipo madera en recámara, respetando juntas de dilatación."},
-        {title:"Azulejo",desc:"Colocación de recubrimiento cerámico en formato grande en muros de zona de regadera y lavabo."},
-        {title:"Carpintería",desc:"Instalación de clóset a medida y montaje de puerta principal de la recámara con chambranas."},
-        {title:"Muebles",desc:"Instalación de muebles sanitarios, monomandos, regadera de teléfono y accesorios de baño."},
-        {title:"Pintura",desc:"Aplicación de sellador y dos manos de pintura vinílica acrílica en muros y plafones."},
-        {title:"Cancelería",desc:"Instalación de ventanas de aluminio con mosquiteros y cancel corredizo en cristal inastillable."},
-        {title:"Limpieza",desc:"Limpieza general de obra, retiro de plásticos protectores y cintas de enmascarar."},
-        {title:"Entrega",desc:"Verificación de acabados, revisión de caída de agua en regadera y entrega funcional."}
-      ], progress:Array(16).fill(0) },
+        {title:"Desmontaje de puertas y protecciones",desc:"Retiro de puertas, marcos, chapas y bisagras con cuidado para su posible reutilización. Colocación de plástico protector en área de trabajo."},
+        {title:"Demolición de piso cerámico existente",desc:"Retiro de piso cerámico con cortadora y cincel. Localización de tubería existente antes de demoler para evitar roturas accidentales."},
+        {title:"Demolición parcial de muros para vanos",desc:"Apertura de vanos nuevos de puertas con amoladora y martillo. Colocación de castillo de acero provisional para soporte del muro superior."},
+        {title:"Retiro de escombro y limpieza de área",desc:"Traslado de escombro en carretilla a contenedor exterior. Limpieza con barredora industrial. Verificación de que no queden materiales peligrosos."},
+        {title:"Trazo de nuevos muros divisorios",desc:"Replanteo con plomada y cuerda de la posición de los nuevos muros para integrar baño completo a la recámara principal."},
+        {title:"Levantamiento de muros de block para baño",desc:"Desplante y levantamiento de muro de block 10cm para división de baño. Altura hasta losa (2.50m). Trabas y mortero 1:4."},
+        {title:"Armado de castillos y dalas de remate",desc:"Habilitado de varillas #3 y estribos #2 @ 15cm para castillos en esquinas. Dala de remate al nivel de losa."},
+        {title:"Cimbrado y colado de castillos",desc:"Cimbrado con madera. Vaciado de concreto f'c=200 kg/cm² en castillos. Varillazo de compactación. Desencofrado a 24 horas."},
+        {title:"Ruptura de firme para instalaciones hidro",desc:"Corte con amoladora de líneas de zanja de 15cm de ancho para nuevas tuberías drenaje y agua. Profundidad mínima de 30cm."},
+        {title:"Tendido de tubería de drenaje sanitario",desc:"Instalación de nuevos bajantes PVC de 4\" para inodoro y 2\" para lavabo. Pendiente mínima de 1% hacia ramal principal de 4\"."},
+        {title:"Tendido de agua fría y caliente",desc:"Instalación de red CPVC 1/2\" para agua fría y caliente. Llave de paso por zona. Verificación de cruce sin contacto directo entre tuberías."},
+        {title:"Prueba hidráulica de instalaciones",desc:"Prueba de presión a 10 kg/cm² con bomba manual. Registro en bitácora. Retención de presión durante 2 horas sin descenso."},
+        {title:"Tendido de poliducto corrugado",desc:"Instalación de poliducto flexible 3/4\" en ranuras de muro para circuitos de apagadores de escalera y contactos de recámara."},
+        {title:"Cableado de circuitos eléctricos",desc:"Jaloneo de conductores THW #12 en poliducto ya instalado. Circuito independiente para split de A/C. Etiquetado en tablero."},
+        {title:"Relleno y compactación de zanjas",desc:"Relleno de zanjas con tepetate seleccionado en capas de 10cm. Compactación con pisón de mano. Verificación de nivel de piso."},
+        {title:"Vaciado de firme autonivelante",desc:"Aplicación de 3cm de mortero autonivelante sobre firme existente. Verificación con regla láser. Fraguado protegido 48 horas."},
+        {title:"Repellado base en muros intervenidos",desc:"Aplicación de capa base de mortero 1:5 en zonas donde se demolió o intervino el acabado existente. Emparejar con plomo general."},
+        {title:"Enjarre a plomo en muros nuevos",desc:"Aplicación de enjarre a plomo y regla en nuevos muros de block del baño. Guardavivos en aristas. Tolerancia de 3mm en 3m."},
+        {title:"Aplicación de yeso en muros de recámara",desc:"Yeso blanco blanco en 2 aplicaciones en muros interiores de recámara. Primera con llana y segunda con plana metálica."},
+        {title:"Yeso en plafón de losa de recámara",desc:"Aplicación de yeso sobre losa. Fijación de perfiles metálicos perimetrales para arista nítida. Acabado liso para pintura final."},
+        {title:"Instalación de piso en recámara",desc:"Colocación de piso cerámico 60×60cm o piso tipo madera laminada AC6. Separación de 3mm entre piezas. Rodapié de PVC a tono."},
+        {title:"Porcelanato o piso laminado formato madera",desc:"Porcelanato rectificado imitación madera 20×120cm con adhesivo flexible. Junta de dilatación perimetral de 10mm sellada con silicón."},
+        {title:"Azulejo de 60×30cm en zona de regadera",desc:"Colocación de azulejo en muros de regadera con fragua impermeable. Remate superior con perfil de aluminio tipo H finisher."},
+        {title:"Azulejo en zona de lavabo",desc:"Módulo de azulejo 30×60cm detrás de lavabo a 80cm de altura. Cenefa de listelo cerámico y remate lateral con silicón traslúcido."},
+        {title:"Instalación de clóset a medida",desc:"Montaje de módulos de clóset en melamina 18mm. Puertas corredizas con espejo y perfil aluminio. Barras colgadoras y cajones suaves."},
+        {title:"Montaje de puerta principal con chambranas",desc:"Instalación de puerta de madera sólida 0.90×2.10m con marco de perfil metálico. Chambranas MDF molduradas en ambas caras."},
+        {title:"Instalación de muebles sanitarios",desc:"Colocación de inodoro marca Helvex o similar con fluxómetro. Lavabo empotrado con tornillos ocultos y silicón perimetral."},
+        {title:"Grifería empotrada y regadera de teléfono",desc:"Mezcladora monomando empotrada con cable extensible para regadera de teléfono. Barra de deslizamiento y porta-jabón integrado."},
+        {title:"Sellador y pintura vinílica dos manos",desc:"Aplicación de sellador de base agua y dos manos de esmalte o vinílica premium. Rodillo de pelo corto. Lijado entre manos."},
+        {title:"Instalación de ventanas de aluminio",desc:"Ventanas corredera de aluminio serie 35 con vidrio claro 6mm. Mosquitero de fibra de vidrio. Limpieza de perfil y sellado."},
+        {title:"Cancel corredizo de baño en cristal templado",desc:"Cancel corredizo de cristal templado 6mm incoloro. Herrajes de acero inoxidable. Alineación y verificación de desplazamiento suave."},
+        {title:"Revisión de acabados y entrega",desc:"Verificación de caída de agua en regadera, prueba de todos los accesorios. Limpieza general. Firma de acta de entrega con cliente."}
+      ], progress:Array(32).fill(0) },
     { zone:"Zona 5: Sala TV", emoji:"📺",
-      tasks:["Excavación","Cimentación","Muros PB","Castillos PB","Cimbra PB","Losa PB","Muros PA","Anclaje PA","Cimbra PA","Acero PA","Losa PA","Ranurados","Aplanados","Firmes","Yeso","Entrega"],
+      tasks:["Topografía", "Excav. cepas", "Plantilla", "Acero cim.", "Cimbra cim.", "Colado cim.", "Curado cim.", "Muros PB 1a", "Muros PB 2a", "Castillos PB", "Colado cast. PB", "Cimbra entrepiso", "Casetones PB", "Acero trabes PB", "Colado losa PB", "Curado losa PB", "Muros PA 1a", "Muros PA 2a", "Anclaje dentado", "Castillos PA", "Cimbra azotea", "Acero T6-T9", "Nervaduras", "Colado azotea", "Pretiles/pend.", "Ranurado", "Instalaciones", "Enjarre/aplanado", "Impermeab. azotea", "Firmes", "Yeso/porcelanato", "Entrega"],
       details:[
-        {title:"Excavación",desc:"Excavación de cepas para extensión de cimentación corrida y zapatas según plano estructural E-01."},
-        {title:"Cimentación",desc:"Armado de acero estructural, cimbrado y colado de cimiento de mampostería/concreto y dalas perimetrales."},
-        {title:"Muros PB",desc:"Desplante de muros de carga de ladrillo o block pesado en el área de expansión de la Sala TV en PB."},
-        {title:"Castillos PB",desc:"Colado de castillos (K-1) para dar rigidez a la estructura nueva e integración con muros existentes."},
-        {title:"Cimbra PB",desc:"Montaje de andamios y cimbra de madera o metálica para soportar el colado de la losa de entrepiso."},
-        {title:"Losa PB",desc:"Armado de sistema de losa nervada, colocación de casetones aligerantes y vaciado de concreto premezclado."},
-        {title:"Muros PA",desc:"Desplante de muros perimetrales en Planta Alta para el área de cuarto de juegos."},
-        {title:"Anclaje PA",desc:"Ejecución técnica de anclaje dentado de mampostería para integrar muros nuevos con la casa actual."},
-        {title:"Cimbra PA",desc:"Preparación estructural de la cubierta final (azotea) mediante apuntalamiento perimetral y central."},
-        {title:"Acero PA",desc:"Armado y amarre de acero para trabes de carga principales (T-6 a T-9) y nervaduras estructurales secundarias."},
-        {title:"Losa PA",desc:"Vaciado de concreto en losa de azotea, construcción de pretiles de protección y pendientes para lluvia."},
-        {title:"Ranurados",desc:"Ranurado con esmeril para ocultar preparaciones de cableado para TV, internet, contactos y audio."},
-        {title:"Aplanados",desc:"Aplicación de mortero cemento-arena en fachadas y muros interiores para recibir acabado."},
-        {title:"Firmes",desc:"Vaciado de firmes de concreto en PB y PA. Aplicación de impermeabilizante en azotea nueva."},
-        {title:"Yeso",desc:"Aplicación de pasta fina en interiores e instalación de piso porcelánico en gran formato."},
-        {title:"Entrega",desc:"Instalación de luminarias LED, pintura vinílica, retiro de andamios exteriores y limpieza final."}
-      ], progress:Array(16).fill(0) }
+        {title:"Topografía y trazo para expansión Sala TV",desc:"Levantamiento de niveles y ejes de la ampliación de la Sala TV. Trazo de límite de construcción nueva y colindancias con referencia topográfica."},
+        {title:"Excavación de cepas y zanjas",desc:"Excavación de cepas 1.00×1.00×1.20m y zanjas para dalas de desplante. Clasificación de material seleccionado para relleno posterior."},
+        {title:"Plantilla de concreto pobre en fondo",desc:"Vaciado de plantilla de 5cm f'c=100 kg/cm² en cepas y zanjas. Nivelación con regla para uniformizar el desplante de la cimentación."},
+        {title:"Habilitado de acero para cimentación",desc:"Armado de bastidores de acero para zapatas aisladas y cimentación corrida según detalle E-02. Recubrimiento libre de 5cm en zona de contacto con suelo."},
+        {title:"Cimbrado de zapatas y dalas perimetrales",desc:"Instalación de cimbra lateral de triplay 16mm para contener el vaciado de zapatas y dalas. Verificación de alturas con nivel de agua."},
+        {title:"Colado de zapatas y dalas perimetrales",desc:"Vaciado de concreto f'c=250 kg/cm² en zapatas y dalas de desplante. Vibrado mecánico continuo. Control de revenimiento en bitácora."},
+        {title:"Curado y protección de cimentación",desc:"Curado húmedo 7 días. Aplicación de membrana impermeabilizante en caras expuestas de la cimentación para protección ante agua freática."},
+        {title:"Desplante de muros PB primera hilada",desc:"Primera hilada de block pesado o ladrillo macizo sobre dala de desplante. Control de nivel con hilo de referencia extendido entre extremos."},
+        {title:"Levantamiento de muros PB planta baja",desc:"Continuación de levantamiento de muros portal baja hasta altura de 2.60m. Verificación de plomo cada 5 hiladas con plomada."},
+        {title:"Habilitado de castillos K-1 planta baja",desc:"Preparación de acero para castillos de confinamiento. Estribos cerrados #2 @ 15cm en zona de confinamiento. Traslape con acero de cimentación."},
+        {title:"Cimbra y colado de castillos PB",desc:"Cimbra de castillos con madera de 1\" y alambre. Vaciado con concreto f'c=200 kg/cm². Vibrado suave para no mover estribos."},
+        {title:"Montaje de andamios y cimbra entrepiso",desc:"Instalación de andamios tubulares certificados y sistema de cimbra de madera para soportar losa de entrepiso de la Sala TV."},
+        {title:"Colocación de casetones aligerantes",desc:"Distribución y fijación de casetones de poliestireno expandido sobre cimbra. Separación de 10cm entre casetones para nervaduras."},
+        {title:"Habilitado de trabes intermedias PB",desc:"Armado de trabes T-1 a T-3 con varillas #5 corridas y #4 en bastago. Estribos #3 @ 10cm en apoyos y @ 20cm en tramo."},
+        {title:"Colado de losa de entrepiso Sala TV",desc:"Vaciado de concreto premezclado f'c=250 kg/cm² para losa nervada de entrepiso. Control de colado uniforme evitando segregación."},
+        {title:"Curado y desapuntalamiento de losa PB",desc:"Curado con agua y protección de la losa durante 14 días. Desapuntalamiento progresivo centrado hacia extremos a los 21 días."},
+        {title:"Desplante de muros PA cuarto de juegos",desc:"Trazo y desplante de muros perimetrales en Planta Alta para cuarto de juegos sobre losa de entrepiso recién colada."},
+        {title:"Levantamiento de muros PA hasta azotea",desc:"Continuación de muros hasta nivel de losa de azotea (h=2.50m). Trabas con losa de entrepiso mediante anclajes de varilla."},
+        {title:"Anclaje dentado con estructura existente",desc:"Corte de muros existentes con amoladora. Inserción de varillas #3 con resina epoxi certificada en perforaciones de 5/8\" de diámetro."},
+        {title:"Habilitado de castillos en Planta Alta",desc:"Extensión de acero de castillos desde PB con traslape de 50 diámetros. Estribos adicionales en zona de empalme según cálculo."},
+        {title:"Cimbra para losa de azotea PA",desc:"Instalación de puntales metálicos ajustables y viguetas de madera. Tablón de 1\" sobre viguetas. Nivelación con nivel láser rotativo."},
+        {title:"Habilitado de trabes T-6 a T-9",desc:"Armado de trabes perimetrales de azotea. Varillas principales #5 y #4, estribos #3 @ 10cm en zona de apoyos críticos."},
+        {title:"Colocación de nervaduras N-7 a N-11",desc:"Habilitado y colocación de armados de nervaduras secundarias con varillas #4. Separación de casetones a cada 25cm de nervadura."},
+        {title:"Colado de losa de azotea PA",desc:"Vaciado de concreto f'c=250 kg/cm² en losa de azotea. Pendiente de 2% integrada desde el colado. Vibrado y afine de superficie."},
+        {title:"Pretiles perimetrales y pendientes para lluvia",desc:"Construcción de pretil de block de 40cm de altura. Formación de pendiente de 2% en mortero hacia bajada pluvial de 3\"."},
+        {title:"Ranurado para instalaciones ambos niveles",desc:"Apertura de ranuras para cableado de TV, internet cat-6, audio y contactos de pared. Profundidad de 3cm con amoladora de disco."},
+        {title:"Tendido de instalaciones eléctricas e hidrosanitarias",desc:"Instalación de poliductos eléctricos, cableado, tubería hidráulica y sanitaria en PB y PA. Pruebas de cada sistema instalado."},
+        {title:"Enjarre interior y aplanado de fachadas",desc:"Aplicación de enjarre en muros interiores PB y PA. Aplanado impermeable en fachadas con aditivo Sika o equivalente certificado."},
+        {title:"Impermeabilización de azotea nueva",desc:"Aplicación de manto asfáltico elastomérico 4mm sobre azotea. Traslape de 10cm entre rollos. Prueba de impermeabilidad 72 horas."},
+        {title:"Vaciado de firmes en PB y PA",desc:"Firme de 5cm de concreto simple f'c=150 kg/cm² en PB y PA. Curado con membrana química. Corte de juntas de control cada 3m."},
+        {title:"Aplicación de yeso e instalación de porcelanato",desc:"Yeso en muros y plafones interiores. Colocación de porcelanato 60×60cm rectificado con niveladores. Fragua epóxica."},
+        {title:"Luminarias, pintura vinílica, limpieza y entrega",desc:"Instalación de luminarias LED empotradas. Pintura vinílica 2 manos. Retiro de andamios. Limpieza y entrega con lista de verificación."}
+      ], progress:Array(32).fill(0) }
 ];
 
 // ══════════════════════════════════════
@@ -516,7 +596,7 @@ function launchApp() {
     rb.className = 'role-badge ' + session.role;
 
     // Subtitle
-    document.getElementById('appSubtitle').textContent = 'Proyecto SAUCES · 5 zonas · 16 semanas';
+    document.getElementById('appSubtitle').textContent = 'Proyecto SAUCES · 5 zonas · 32 semanas';
 
     buildWeekDots();
     buildGanttTable();
@@ -532,7 +612,7 @@ function launchApp() {
 function buildWeekDots() {
     const c = document.getElementById('weekDots');
     c.innerHTML = '';
-    for(let i=1;i<=16;i++){
+    for(let i=1;i<=32;i++){
         const d=document.createElement('div');
         d.className='week-dot';d.id=`dot-${i}`;c.appendChild(d);
     }
@@ -541,7 +621,7 @@ function buildWeekDots() {
 function buildGanttTable() {
     const t = document.getElementById('ganttTable');
     let html = '<thead><tr><th style="min-width:80px;text-align:left;padding-left:8px">Zona</th>';
-    for(let i=1;i<=16;i++) html+=`<th id="gh-${i}">S${i}</th>`;
+    for(let i=1;i<=32;i++) html+=`<th id="gh-${i}">S${i}</th>`;
     html+='</tr></thead><tbody>';
     projectData.forEach((row,ri)=>{
         html+=`<tr><td class="zone-cell">${row.emoji} Z${ri+1}</td>`;
@@ -558,7 +638,7 @@ function buildGanttTable() {
 function updateDashboard() {
     const slider = document.getElementById('weekSlider');
     currentWeek = parseInt(slider.value);
-    slider.style.setProperty('--pct', ((currentWeek-1)/15*100)+'%');
+    slider.style.setProperty('--pct', ((currentWeek-1)/31*100)+'%');
     document.getElementById('weekBadge').textContent = `Sem ${currentWeek}`;
     updateWeekDots();
     updateGantt();
@@ -568,14 +648,14 @@ function updateDashboard() {
 }
 
 function updateWeekDots() {
-    for(let i=1;i<=16;i++){
+    for(let i=1;i<=32;i++){
         const d=document.getElementById(`dot-${i}`);
         if(d) d.className='week-dot'+(i===currentWeek?' active':i<currentWeek?' past':'');
     }
 }
 
 function updateGantt() {
-    for(let i=1;i<=16;i++){
+    for(let i=1;i<=32;i++){
         const th=document.getElementById(`gh-${i}`);
         if(th) th.className=i===currentWeek?'active-col':'';
     }
@@ -614,7 +694,7 @@ function renderTareas() {
         <div class="stat-card animate-in"><div class="stat-value">${currentWeek}</div><div class="stat-label">Semana</div></div>
         <div class="stat-card animate-in"><div class="stat-value" style="color:var(--accent2)">${avgP}%</div><div class="stat-label">Avance prom.</div></div>
         <div class="stat-card animate-in"><div class="stat-value" style="color:var(--accent3)">${currentWeek-1}</div><div class="stat-label">Semanas completas</div></div>
-        <div class="stat-card animate-in"><div class="stat-value" style="color:#8b5cf6">${16-currentWeek}</div><div class="stat-label">Semanas restantes</div></div>
+        <div class="stat-card animate-in"><div class="stat-value" style="color:#8b5cf6">${32-currentWeek}</div><div class="stat-label">Semanas restantes</div></div>
     `;
 
     // Readonly banner for non-master
