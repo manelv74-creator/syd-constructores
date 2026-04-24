@@ -768,9 +768,9 @@ function renderAvance() {
     let html='';
     zones.forEach(({data:row,idx},i)=>{
         const color=ZONE_COLORS[idx];
-        const overall=Math.round(row.progress.reduce((s,v)=>s+parseFloat(v),0)/16);
+        const overall=Math.round(row.progress.reduce((s,v)=>s+parseFloat(v),0)/32);
         let pips='';
-        for(let w=1;w<=16;w++){
+        for(let w=1;w<=32;w++){
             const p=row.progress[w-1];
             const h=Math.max(3,(p/100)*26);
             pips+=`<div class="week-pip ${w===currentWeek?'pip-current':''}" title="Sem ${w}: ${p}%">
@@ -808,7 +808,7 @@ function updateProgress(zIdx, val) {
 
 function changeWeek(delta) {
     const slider=document.getElementById('weekSlider');
-    slider.value=Math.min(16,Math.max(1,currentWeek+delta));
+    slider.value=Math.min(32,Math.max(1,currentWeek+delta));
     updateDashboard();
 }
 
