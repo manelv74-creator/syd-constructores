@@ -1,0 +1,29 @@
+{
+  "name": "SYD Constructores",
+  "short_name": "SYD APP",
+  "description": "Seguimiento de tu obra en tiempo real",
+  "start_url": "/syd-constructores/",
+  "scope": "/syd-constructores/",
+  "display": "standalone",
+  "background_color": "#0a0e1a",
+  "theme_color": "#0a0e1a",
+  "orientation": "portrait-primary",
+  "lang": "es",
+  "icons": [
+    {
+      "src": "logo_syd.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "obra_sauces.jpg",
+      "sizes": "800x600",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Proyecto Sauces"
+    }
+  ]
+}
