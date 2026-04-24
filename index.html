@@ -8,6 +8,7 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
     <style>
         :root {
             --bg:#0a0e1a; --surface:#111827; --border:rgba(255,255,255,0.08);
@@ -350,6 +351,52 @@
         }
         .obra-hero-title{font-size:1rem;font-weight:800;color:#fff}
         .obra-hero-sub{font-size:0.68rem;color:rgba(255,255,255,0.6)}
+
+        /* ══ FOTOS ══ */
+        .btn-upload-foto{
+            display:inline-flex;align-items:center;gap:5px;
+            background:rgba(59,130,246,0.12);border:1px dashed rgba(59,130,246,0.4);
+            color:#93c5fd;font-size:0.65rem;font-weight:700;
+            padding:5px 10px;border-radius:8px;cursor:pointer;
+            font-family:Inter,sans-serif;transition:all 0.2s;margin-top:8px;
+        }
+        .btn-upload-foto:hover{background:rgba(59,130,246,0.22);border-color:#93c5fd}
+        .foto-gallery{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+        .foto-thumb{
+            width:72px;height:72px;object-fit:cover;border-radius:8px;
+            border:1px solid var(--border);cursor:pointer;
+            transition:transform 0.15s,box-shadow 0.15s;
+        }
+        .foto-thumb:hover{transform:scale(1.08);box-shadow:0 4px 16px rgba(0,0,0,0.5)}
+        .foto-count-badge{
+            font-size:0.62rem;color:#93c5fd;margin-top:6px;
+            display:flex;align-items:center;gap:4px;
+        }
+        .upload-progress{
+            font-size:0.65rem;color:var(--accent2);margin-top:6px;display:none;
+        }
+        /* Light box */
+        #lightbox{
+            position:fixed;inset:0;z-index:9999;
+            background:rgba(0,0,0,0.92);backdrop-filter:blur(8px);
+            display:none;flex-direction:column;align-items:center;justify-content:center;
+            padding:20px;
+        }
+        #lightbox.show{display:flex}
+        #lightboxImg{
+            max-width:100%;max-height:80vh;border-radius:12px;
+            box-shadow:0 20px 60px rgba(0,0,0,0.8);
+        }
+        #lightboxClose{
+            position:absolute;top:16px;right:16px;
+            background:rgba(255,255,255,0.15);border:none;
+            color:#fff;font-size:1.4rem;width:40px;height:40px;
+            border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;
+        }
+        #lightboxCaption{
+            margin-top:12px;font-size:0.75rem;color:rgba(255,255,255,0.6);
+            text-align:center;max-width:360px;line-height:1.5;
+        }
     </style>
 </head>
 <body>
@@ -1260,11 +1307,15 @@ function renderTareas() {
     let html='';
     zones.forEach(({data:row,idx},i)=>{
         const detail = row.details[currentWeek-1];
-        const prog = row.progress[currentWeek-1];
+        const prog  = row.progress[currentWeek-1];
         const color = ZONE_COLORS[idx];
         const sliderHtml = canEdit
             ? `<div class="edit-slider-row"><label>Avance:</label><input type="range" min="0" max="100" step="5" value="${prog}" oninput="updateProgress(${idx},this.value)" style="flex:1"></div>`
             : ``;
+        const uploadHtml = canEdit
+            ? `<button class="btn-upload-foto" onclick="triggerFotoUpload(${idx})">📷 + Foto</button>
+               <div class="upload-progress" id="up-prog-${idx}"></div>`
+            : '';
         html+=`
         <div class="zone-card animate-in" style="animation-delay:${i*0.05}s">
             <div style="position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:4px 0 0 4px;background:${color}"></div>
@@ -1279,9 +1330,13 @@ function renderTareas() {
                 <div class="progress-pct" style="color:${color}">${prog}%</div>
             </div>
             ${sliderHtml}
+            ${uploadHtml}
+            <div id="gallery-${idx}"></div>
         </div>`;
     });
     document.getElementById('zoneCards').innerHTML=html;
+    // Cargar galerias de fotos async
+    getVisibleZones().forEach(({idx}) => loadFotosGallery(idx, currentWeek, 'gallery-' + idx));
 }
 
 function renderDetalle() {
@@ -1306,9 +1361,12 @@ function renderDetalle() {
                 <div class="progress-pct" style="color:${color}" id="dpv-${idx}">${prog}%</div>
             </div>
             ${sliderHtml}
+            <div id="dgallery-${idx}"></div>
         </div>`;
     });
     document.getElementById('detailCards').innerHTML=html;
+    // Cargar galerias en tab Detalle
+    getVisibleZones().forEach(({idx}) => loadFotosGallery(idx, currentWeek, 'dgallery-' + idx));
 }
 
 function renderAvance() {
@@ -1380,6 +1438,165 @@ window.onload = function() {
     }
     document.getElementById('loginScreen').style.display='flex';
 };
+</script>
+
+<!-- ══ LIGHTBOX ══ -->
+<div id="lightbox" onclick="closeLightbox()">
+    <button id="lightboxClose" onclick="closeLightbox()">×</button>
+    <img id="lightboxImg" src="" alt="">
+    <div id="lightboxCaption"></div>
+</div>
+<!-- Input oculto para subir fotos -->
+<input type="file" id="fotoInput" accept="image/*" style="display:none" onchange="handleFotoSelected(event)">
+
+<script>
+// ══════════════════════════════════════
+// FIREBASE STORAGE — FOTOS (Punto 4)
+// ══════════════════════════════════════
+let storage = null;
+try {
+    if(db) {
+        storage = firebase.storage();
+        console.log('[SYD] Storage conectado');
+    }
+} catch(e) { console.warn('[SYD] Storage no disponible:', e.message); }
+
+let _uploadContext = null; // {zIdx, semana, tarea, zona}
+
+// — Abre selector de archivo para una tarea
+function triggerFotoUpload(zIdx) {
+    if(session.role !== 'master') return;
+    const zona = projectData[zIdx];
+    _uploadContext = {
+        zIdx,
+        semana: currentWeek,
+        tarea:  zona.tasks[currentWeek-1] || 'Tarea sem ' + currentWeek,
+        zona:   zona.zone
+    };
+    document.getElementById('fotoInput').click();
+}
+
+// — Maneja el archivo seleccionado
+async function handleFotoSelected(e) {
+    const file = e.target.files[0];
+    e.target.value = '';
+    if(!file || !_uploadContext) return;
+    if(!storage) {
+        alert('Firebase Storage no está activado aún.\n\nSigue las instrucciones para activarlo en la consola de Firebase.');
+        return;
+    }
+    const ctx = _uploadContext;
+    const progEl = document.getElementById('up-prog-' + ctx.zIdx);
+    if(progEl) { progEl.style.display='block'; progEl.textContent='⏳ Subiendo...'; }
+
+    try {
+        // Compress image if too large
+        const blob = await compressImage(file, 1200, 0.82);
+        const fileName = `${Date.now()}_${file.name.replace(/[^a-z0-9.]/gi,'_')}`;
+        const path = `obras/${session.obra || 'SAUCES'}/z${ctx.zIdx}_s${ctx.semana}/${fileName}`;
+        const ref = storage.ref(path);
+
+        const task = ref.put(blob);
+        task.on('state_changed',
+            snap => {
+                const pct = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
+                if(progEl) progEl.textContent = `⏳ Subiendo ${pct}%...`;
+            },
+            err => {
+                if(progEl) { progEl.textContent='❌ Error: ' + err.message; }
+                console.error('Upload error:', err);
+            },
+            async () => {
+                const url = await task.snapshot.ref.getDownloadURL();
+                // Save reference to Firestore
+                if(db) {
+                    await db.collection('obras').doc(session.obra || 'SAUCES')
+                        .collection('fotos').add({
+                            zona:      ctx.zona,
+                            zona_idx:  ctx.zIdx,
+                            semana:    ctx.semana,
+                            tarea:     ctx.tarea,
+                            url,
+                            fileName,
+                            storagePath: path,
+                            subidoPor:  session.email,
+                            timestamp:  firebase.firestore.FieldValue.serverTimestamp(),
+                            fecha:      new Date().toLocaleDateString('es-MX'),
+                            hora:       new Date().toLocaleTimeString('es-MX')
+                        });
+                }
+                if(progEl) { progEl.textContent='✅ Foto subida'; setTimeout(()=>{ progEl.style.display='none'; },2000); }
+                // Refresh gallery
+                loadFotosGallery(ctx.zIdx, ctx.semana, 'gallery-' + ctx.zIdx);
+            }
+        );
+    } catch(err) {
+        if(progEl) progEl.textContent = '❌ Error al procesar la imagen';
+        console.error(err);
+    }
+}
+
+// — Cargar galería de fotos de una zona/semana
+async function loadFotosGallery(zIdx, semana, containerId) {
+    const el = document.getElementById(containerId);
+    if(!el) return;
+    if(!db) { el.innerHTML = ''; return; }
+    try {
+        const snap = await db.collection('obras').doc(session.obra || 'SAUCES')
+            .collection('fotos')
+            .where('zona_idx','==', zIdx)
+            .where('semana','==', semana)
+            .orderBy('timestamp','desc')
+            .limit(10).get();
+        if(snap.empty) { el.innerHTML = ''; return; }
+        const zona = projectData[zIdx];
+        const tarea = zona.tasks[semana-1] || '';
+        let html = `<div class="foto-count-badge">📷 ${snap.size} foto(s) · ${tarea}</div>
+                    <div class="foto-gallery">`;
+        snap.forEach(doc => {
+            const d = doc.data();
+            html += `<img class="foto-thumb" src="${d.url}"
+                          onclick="openLightbox('${d.url}','${d.zona} · Sem ${d.semana} · ${d.tarea || ''}')"
+                          alt="Foto de avance">`;
+        });
+        html += '</div>';
+        el.innerHTML = html;
+    } catch(e) {
+        console.warn('loadFotosGallery:', e.message);
+        el.innerHTML = '';
+    }
+}
+
+// — Lightbox
+function openLightbox(url, caption) {
+    document.getElementById('lightboxImg').src = url;
+    document.getElementById('lightboxCaption').textContent = caption;
+    document.getElementById('lightbox').classList.add('show');
+}
+function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('show');
+    document.getElementById('lightboxImg').src = '';
+}
+
+// — Comprimir imagen antes de subir
+function compressImage(file, maxWidth, quality) {
+    return new Promise(resolve => {
+        const reader = new FileReader();
+        reader.onload = ev => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                let w = img.width, h = img.height;
+                if(w > maxWidth) { h = Math.round(h * maxWidth / w); w = maxWidth; }
+                canvas.width = w; canvas.height = h;
+                canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                canvas.toBlob(blob => resolve(blob), 'image/jpeg', quality);
+            };
+            img.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+}
 </script>
 </body>
 </html>
