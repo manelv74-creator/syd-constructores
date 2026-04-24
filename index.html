@@ -476,8 +476,172 @@ async function renderAccesos() {
     }
 }
 
-// ══════════════════════════════════════
-// DATA
+// ══ Log de cambios en avance (Punto 3) ══
+let _cambioTimer = null;
+function updateProgress(zIdx, val) {
+    if(session.role!=='master') return;
+    val = parseFloat(val);
+    const valorAnterior = projectData[zIdx].progress[currentWeek-1];
+    projectData[zIdx].progress[currentWeek-1] = val;
+    // Debounce: guardar en Firebase 1.5s después de soltar el slider
+    clearTimeout(_cambioTimer);
+    _cambioTimer = setTimeout(() => {
+        logCambio(zIdx, valorAnterior, val);
+    }, 1500);
+    // Update UI
+    const cell = document.getElementById(`gc-${zIdx}-${currentWeek}`);
+    if(cell) cell.style.background = `linear-gradient(90deg,rgba(245,158,11,0.5) ${val}%,rgba(245,158,11,0.08) ${val}%)`;
+    ['pf-','dpf-'].forEach(pre => { const el=document.getElementById(pre+zIdx); if(el) el.style.width=val+'%'; });
+    ['pv-','dpv-'].forEach(pre => { const el=document.getElementById(pre+zIdx); if(el) el.textContent=val+'%'; });
+    const zones = getVisibleZones();
+    const avgP = Math.round(zones.reduce((s,z)=>s+z.data.progress[currentWeek-1],0)/zones.length);
+    const avgEl = document.querySelector('#statsGrid .stat-card:nth-child(2) .stat-value');
+    if(avgEl) avgEl.textContent = avgP+'%';
+}
+
+async function logCambio(zIdx, valorAnterior, valorNuevo) {
+    if(!db || valorAnterior === valorNuevo) return;
+    const zona = projectData[zIdx];
+    try {
+        await db.collection('obras').doc('SAUCES')
+            .collection('cambios_avance').add({
+                obra:          'SAUCES',
+                zona:          zona.zone,
+                zona_idx:      zIdx,
+                semana:        currentWeek,
+                tarea:         zona.tasks[currentWeek-1] || '',
+                valor_anterior: valorAnterior,
+                valor_nuevo:   valorNuevo,
+                usuario:       session.email,
+                timestamp:     firebase.firestore.FieldValue.serverTimestamp(),
+                fecha:         new Date().toLocaleDateString('es-MX'),
+                hora:          new Date().toLocaleTimeString('es-MX')
+            });
+        console.log('[SYD] Cambio guardado:', zona.zone, 'Sem', currentWeek, valorAnterior, '->', valorNuevo);
+    } catch(e) { console.warn('logCambio error:', e.message); }
+}
+
+// ══ Render historial de cambios ══
+async function renderHistorial(el) {
+    if(!db) { el.innerHTML = '<div style="color:var(--muted);text-align:center;padding:20px">Firebase no conectado</div>'; return; }
+    el.innerHTML = '<div style="text-align:center;padding:16px;color:var(--muted)">Cargando historial...</div>';
+    try {
+        const snap = await db.collection('obras').doc('SAUCES')
+            .collection('cambios_avance')
+            .orderBy('timestamp','desc').limit(60).get();
+        if(snap.empty) { el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted)">Sin cambios registrados aún</div>'; return; }
+        const ZONE_C = ['#3b82f6','#8b5cf6','#10b981','#f59e0b','#ef4444'];
+        let html = `<div style="font-size:0.7rem;color:var(--muted);margin-bottom:10px">${snap.size} cambio(s) · últimos 60</div>`;
+        snap.forEach(doc => {
+            const d = doc.data();
+            const zc = ZONE_C[d.zona_idx] || '#64748b';
+            const diff = d.valor_nuevo - d.valor_anterior;
+            const arrow = diff >= 0 ? '↑' : '↓';
+            const dc = diff >= 0 ? '#10b981' : '#ef4444';
+            html += `
+            <div style="background:var(--surface);border:1px solid var(--border);
+                        border-radius:12px;padding:12px 14px;margin-bottom:8px;
+                        border-left:3px solid ${zc}">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                    <span style="font-weight:700;font-size:0.8rem;color:${zc}">${d.zona||''}</span>
+                    <span style="font-size:0.75rem;font-weight:800;color:${dc}">
+                        ${arrow} ${d.valor_anterior}% → ${d.valor_nuevo}%
+                    </span>
+                </div>
+                <div style="font-size:0.72rem;color:var(--soft);margin-bottom:3px">
+                    Sem ${d.semana} · ${d.tarea||''}
+                </div>
+                <div style="font-size:0.68rem;color:var(--muted)">
+                    ${d.fecha||''} · ${d.hora||''} · ${d.usuario||''}
+                </div>
+            </div>`;
+        });
+        el.innerHTML = html;
+    } catch(e) { el.innerHTML = `<div style="color:#f87171;padding:16px">Error: ${e.message}</div>`; }
+}
+
+// ══ Panel de accesos MEJORADO (con tabs Accesos / Historial) ══
+async function renderAccesos() {
+    const container = document.getElementById('accesosContent');
+    container.innerHTML = `
+        <div style="display:flex;gap:8px;margin-bottom:14px">
+            <button onclick="showAccesosTab('log')" id="btnTabLog"
+                style="flex:1;padding:9px;border:1px solid rgba(59,130,246,0.5);
+                       border-radius:10px;background:rgba(59,130,246,0.15);
+                       color:#93c5fd;font-size:0.75rem;font-weight:700;
+                       font-family:Inter,sans-serif;cursor:pointer">
+                📲 Accesos (${db?'activo':'sin conex.'})
+            </button>
+            <button onclick="showAccesosTab('historial')" id="btnTabHistorial"
+                style="flex:1;padding:9px;border:1px solid rgba(255,255,255,0.08);
+                       border-radius:10px;background:transparent;
+                       color:var(--muted);font-size:0.75rem;font-weight:700;
+                       font-family:Inter,sans-serif;cursor:pointer">
+                📄 Historial cambios
+            </button>
+        </div>
+        <div id="accesosSubLog"></div>
+        <div id="accesosSubHistorial" style="display:none"></div>`;
+    showAccesosTab('log');
+}
+
+async function showAccesosTab(tab) {
+    const btnLog = document.getElementById('btnTabLog');
+    const btnHist = document.getElementById('btnTabHistorial');
+    const divLog = document.getElementById('accesosSubLog');
+    const divHist = document.getElementById('accesosSubHistorial');
+    if(!btnLog) return;
+    if(tab === 'log') {
+        btnLog.style.background = 'rgba(59,130,246,0.15)'; btnLog.style.color='#93c5fd'; btnLog.style.borderColor='rgba(59,130,246,0.5)';
+        btnHist.style.background = 'transparent'; btnHist.style.color='var(--muted)'; btnHist.style.borderColor='rgba(255,255,255,0.08)';
+        divLog.style.display=''; divHist.style.display='none';
+        await loadAccesosLog(divLog);
+    } else {
+        btnHist.style.background = 'rgba(245,158,11,0.15)'; btnHist.style.color='#fbbf24'; btnHist.style.borderColor='rgba(245,158,11,0.5)';
+        btnLog.style.background = 'transparent'; btnLog.style.color='var(--muted)'; btnLog.style.borderColor='rgba(255,255,255,0.08)';
+        divHist.style.display=''; divLog.style.display='none';
+        await renderHistorial(divHist);
+    }
+}
+
+async function loadAccesosLog(el) {
+    if (!db) {
+        el.innerHTML = `
+            <div style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);
+                        border-radius:12px;padding:20px;margin:16px 0;text-align:center">
+                <div style="font-size:1.5rem;margin-bottom:8px">⚡</div>
+                <div style="font-weight:700;color:#fbbf24;margin-bottom:6px">Firebase no configurado</div>
+            </div>`;
+        return;
+    }
+    el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted)">Cargando...</div>';
+    try {
+        const snap = await db.collection('access_logs').orderBy('timestamp','desc').limit(50).get();
+        if (snap.empty) { el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted)">Sin registros aún</div>'; return; }
+        const roleIcon = {master:'⚡',observer:'👁',client:'🏠'};
+        const actionColor = {login:'#10b981',logout:'#64748b'};
+        let html = `<div style="font-size:0.7rem;color:var(--muted);margin-bottom:10px">${snap.size} registro(s) · últimos 50</div>`;
+        snap.forEach(doc => {
+            const d = doc.data();
+            html += `
+            <div style="background:var(--surface);border:1px solid var(--border);
+                        border-radius:12px;padding:12px 14px;margin-bottom:8px;
+                        border-left:3px solid ${actionColor[d.action]||'#64748b'}">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                    <span style="font-weight:700;font-size:0.82rem">${roleIcon[d.role]||'👤'} ${d.email||'—'}</span>
+                    <span style="font-size:0.65rem;background:${actionColor[d.action]||'#64748b'}22;
+                                color:${actionColor[d.action]||'#94a3b8'};padding:2px 8px;border-radius:20px">
+                        ${d.action==='login'?'Entró':'Salió'}
+                    </span>
+                </div>
+                <div style="font-size:0.7rem;color:var(--muted)">${d.fecha||''} · ${d.hora||''} · ${d.role||''}</div>
+            </div>`;
+        });
+        el.innerHTML = html;
+    } catch(e) { el.innerHTML = `<div style="color:#f87171;padding:16px">Error: ${e.message}</div>`; }
+}
+
+
 // ══════════════════════════════════════
 const ZONE_COLORS = ['#3b82f6','#8b5cf6','#10b981','#f59e0b','#ef4444'];
 
@@ -948,22 +1112,8 @@ function renderAvance() {
 // ══════════════════════════════════════
 // ACTIONS
 // ══════════════════════════════════════
-function updateProgress(zIdx, val) {
-    if(session.role!=='master') return;
-    val=parseFloat(val);
-    projectData[zIdx].progress[currentWeek-1]=val;
-    // Update Gantt cell
-    const cell=document.getElementById(`gc-${zIdx}-${currentWeek}`);
-    if(cell) cell.style.background=`linear-gradient(90deg,rgba(245,158,11,0.5) ${val}%,rgba(245,158,11,0.08) ${val}%)`;
-    // Update badges and bars
-    ['pf-','dpf-'].forEach(pre=>{ const el=document.getElementById(pre+zIdx); if(el) el.style.width=val+'%'; });
-    ['pv-','dpv-'].forEach(pre=>{ const el=document.getElementById(pre+zIdx); if(el) el.textContent=val+'%'; });
-    // Update avg stat
-    const zones = getVisibleZones();
-    const avgP = Math.round(zones.reduce((s,z)=>s+z.data.progress[currentWeek-1],0)/zones.length);
-    const avgEl = document.querySelector('#statsGrid .stat-card:nth-child(2) .stat-value');
-    if(avgEl) avgEl.textContent=avgP+'%';
-}
+// (updateProgress moved above with logCambio)
+
 
 function changeWeek(delta) {
     const slider=document.getElementById('weekSlider');
