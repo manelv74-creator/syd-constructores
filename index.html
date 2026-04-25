@@ -1441,7 +1441,6 @@ async function loadFotosGallery(zIdx, semana, containerId) {
         const snap = await db.collection('obras').doc(session.obra || 'SAUCES')
             .collection('fotos')
             .where('zona_idx','==', zIdx)
-            .where('semana','==', semana)
             .orderBy('timestamp','desc')
             .limit(10).get();
         if(snap.empty) { el.innerHTML = ''; return; }
