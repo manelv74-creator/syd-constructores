@@ -952,6 +952,8 @@ let currentWeek = 1;
 let currentTab = 'tareas';
 let selectedRole = 'client';
 
+const ZONE_COLORS = ['#3b82f6','#f59e0b','#10b981','#8b5cf6','#ef4444','#ec4899','#06b6d4','#84cc16'];
+
 const AUTH = {
     master:   { code: 'MASTER2025' },
     observer: { code: 'SAUCES2025' },
@@ -1291,6 +1293,7 @@ function switchTab(tabId, btn) {
     btn.classList.add('active');
     currentTab=tabId;
     if(tabId==='tareas') renderTareas();
+    else if(tabId==='gantt') updateGantt();
     else if(tabId==='detalle') renderDetalle();
     else if(tabId==='avance') renderAvance();
     else if(tabId==='accesos') renderAccesos();
