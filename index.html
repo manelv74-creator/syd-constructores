@@ -1196,7 +1196,7 @@ function renderTareas() {
 
     let html='';
     zones.forEach(({data:row,idx},i)=>{
-        const detail = row.details[currentWeek-1];
+        const taskName = row.tasks[currentWeek-1] || 'S/A';
         const prog  = row.progress[currentWeek-1];
         const color = ZONE_COLORS[idx];
         const sliderHtml = canEdit
@@ -1213,8 +1213,7 @@ function renderTareas() {
                 <div class="zone-name-text">${row.emoji} ${row.zone}</div>
                 <div class="zone-pct-badge" style="color:${color};background:${color}22" id="pv-${idx}">${prog}%</div>
             </div>
-            <span class="task-chip">${detail.title}</span>
-            <div class="task-desc-mini">${detail.desc}</div>
+            <span class="task-chip">${taskName}</span>
             <div class="progress-bar-wrap">
                 <div class="progress-track"><div class="progress-fill" id="pf-${idx}" style="width:${prog}%;background:linear-gradient(90deg,${color},${color}88)"></div></div>
                 <div class="progress-pct" style="color:${color}">${prog}%</div>
@@ -1235,7 +1234,7 @@ function renderDetalle() {
     const canEdit = session.role==='master';
     let html='';
     zones.forEach(({data:row,idx},i)=>{
-        const detail=row.details[currentWeek-1];
+        const taskName = row.tasks[currentWeek-1] || 'S/A';
         const prog=row.progress[currentWeek-1];
         const color=ZONE_COLORS[idx];
         const sliderHtml = canEdit
@@ -1244,8 +1243,7 @@ function renderDetalle() {
         html+=`
         <div class="detail-card animate-in" style="animation-delay:${i*0.05}s;border-left:4px solid ${color}">
             <div class="detail-card-zone">${row.zone}</div>
-            <div class="detail-card-title">📌 ${detail.title}</div>
-            <div class="detail-card-desc">${detail.desc}</div>
+            <div class="detail-card-title">📌 ${taskName}</div>
             <div class="progress-bar-wrap">
                 <div class="progress-track"><div class="progress-fill" id="dpf-${idx}" style="width:${prog}%;background:linear-gradient(90deg,${color},${color}88)"></div></div>
                 <div class="progress-pct" style="color:${color}" id="dpv-${idx}">${prog}%</div>
