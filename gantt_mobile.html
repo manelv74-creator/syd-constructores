@@ -459,7 +459,7 @@
             <div id="dynamicField">
                 <div class="field-label" id="dynLabel">Nombre de tu obra</div>
                 <div class="field-wrap">
-                    <input type="text" id="loginCode" placeholder="Ej: Cochera" id="loginCode">
+                    <input type="text" id="loginCode" placeholder="Ej: Cochera">
                 </div>
             </div>
 
@@ -888,13 +888,13 @@ function buildObrasGrid() {
     const grid = document.getElementById('obrasGrid');
     grid.innerHTML = OBRAS_CATALOG.map(obra => `
         <div class="obra-card" onclick="selectObra('${obra.id}')">
-            <img class="obra-card-img" src="${obra.foto}" alt="${obra.nombre}"
+            <img class="obra-card-img" src="${obra.img || ''}" alt="${obra.name}"
                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-            <div class="obra-card-img-fallback" style="display:none">${obra.emoji}</div>
+            <div class="obra-card-img-fallback" style="display:none">${obra.emoji || '🏗️'}</div>
             <span class="obra-card-status ${obra.status}">${obra.status}</span>
             <div class="obra-card-body">
-                <div class="obra-card-name">${obra.nombre}</div>
-                <div class="obra-card-meta">${obra.desc}</div>
+                <div class="obra-card-name">${obra.name}</div>
+                <div class="obra-card-meta">${obra.location || ''}</div>
             </div>
         </div>
     `).join('');
@@ -1023,18 +1023,18 @@ function launchApp() {
     if(tabAcc) tabAcc.style.display = session.role==='master' ? '' : 'none';
 
     // Subtitle with real obra name
-    document.getElementById('appSubtitle').textContent = currentObra.nombre + ' \u00b7 5 zonas \u00b7 32 semanas';
+    document.getElementById('appSubtitle').textContent = (currentObra.name || 'Proyecto') + ' \u00b7 5 zonas \u00b7 32 semanas';
 
     // Hero image (foto de la obra en la cabecera del tab Tareas)
     const heroWrap  = document.getElementById('obraHeroWrap');
     const heroImg   = document.getElementById('obraHeroImg');
     const heroTitle = document.getElementById('obraHeroTitle');
     const heroSub   = document.getElementById('obraHeroSub');
-    if(currentObra.foto) {
-        heroImg.src = currentObra.foto;
+    if(currentObra.img) {
+        heroImg.src = currentObra.img;
         heroImg.onerror = () => { heroWrap.style.display='none'; };
-        heroTitle.textContent = currentObra.nombre;
-        heroSub.textContent   = currentObra.desc;
+        heroTitle.textContent = currentObra.name || '';
+        heroSub.textContent   = currentObra.location || '';
         heroWrap.style.display = '';
     } else {
         heroWrap.style.display = 'none';
