@@ -27,11 +27,19 @@
 
     <style>
         :root {
-            --bg:#1a1d2e; --surface:#252a3d; --border:rgba(255,255,255,0.15);
-            --accent:#3b82f6; --accent2:#f59e0b; --accent3:#10b981;
-            --text:#ffffff; --muted:#94a3b8; --soft:#cbd5e1;
-            --done:#1e3a2f; --done-text:#4ade80; --future:#32394e;
-            --radius:16px;
+            --bg: #111827; /* Deep Navy/Charcoal */
+            --surface: #1f2937; /* Lighter Grey-Blue */
+            --border: rgba(255,255,255,0.1);
+            --accent: #3b82f6; 
+            --accent2: #f59e0b; 
+            --accent3: #10b981;
+            --text: #f9fafb; 
+            --muted: #9ca3af; 
+            --soft: #d1d5db;
+            --done: #064e3b; 
+            --done-text: #6ee7b7; 
+            --future: #374151;
+            --radius: 16px;
         }
         *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
         body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
@@ -1059,7 +1067,7 @@ function launchApp() {
     if(tabAcc) tabAcc.style.display = session.role==='master' ? '' : 'none';
 
     // Subtitle with real obra name
-    document.getElementById('appSubtitle').textContent = (currentObra.name || 'Proyecto') + ' \u00b7 5 zonas \u00b7 32 semanas';
+    document.getElementById('appSubtitle').textContent = (currentObra.name || 'Proyecto') + (currentObra.location ? ' \u00b7 ' + currentObra.location : '');
 
     // Hero image (foto de la obra en la cabecera del tab Tareas)
     const heroWrap  = document.getElementById('obraHeroWrap');
@@ -1514,7 +1522,7 @@ function imageToBase64(file, maxWidth, quality) {
             font-family:Inter,sans-serif;font-size:0.85rem;border:1px solid rgba(255,255,255,0.1);border-radius:12px;cursor:pointer}
     </style>
     <div class="install-row">
-        <img src="logo_syd.png" class="install-icon" alt="SYD">
+        <img src="assets/logo_syd.png" class="install-icon" alt="SYD">
         <div>
             <div class="install-title">SYD APP</div>
             <div class="install-sub">Instalar en tu pantalla de inicio</div>
