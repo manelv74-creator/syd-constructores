@@ -1,0 +1,10 @@
+[
+  {
+    "id": "sauces",
+    "name": "Residencial Los Sauces",
+    "location": "Zapopan, Jalisco",
+    "img": "assets/obra_sauces.jpg",
+    "status": "activa",
+    "dataFile": "database/sauces.json"
+  }
+]

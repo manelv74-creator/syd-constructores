@@ -3,8 +3,10 @@ const CACHE_NAME = 'syd-app-v1';
 const ASSETS = [
     '/syd-constructores/',
     '/syd-constructores/index.html',
-    '/syd-constructores/logo_syd.png',
-    '/syd-constructores/obra_sauces.jpg',
+    '/syd-constructores/assets/logo_syd.png',
+    '/syd-constructores/assets/obra_sauces.jpg',
+    '/syd-constructores/database/projects.json',
+    '/syd-constructores/database/sauces.json',
     '/syd-constructores/manifest.json'
 ];
 

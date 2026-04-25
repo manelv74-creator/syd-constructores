@@ -1,8 +1,14 @@
 import os
+import json
 
-import re, json
+# ── Configuración de Rutas ──────────────────────────────────────────────────
+# La App Central está en la carpeta actual (no migrada)
+APP_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_FILE = os.path.join(APP_DIR, "database", "sauces.json")
 
-# ── 32-week data for all 5 zones ─────────────────────────────────────────
+# ── Datos de la Obra Sauces ─────────────────────────────────────────────────
+# (Estos datos son los que se sincronizaron previamente con el PDF)
+
 ZONES = [
   {
     "zone": "Zona 1: Cochera", "emoji": "🏠",
@@ -39,7 +45,7 @@ ZONES = [
       ["S/A", "Sin actividad programada para esta semana."],
       ["S/A", "Sin actividad programada para esta semana."],
       ["S/A", "Sin actividad programada para esta semana."],
-      ["S/A", "Sin actividad programada para esta semana."],
+      ["S/A", "Sin actividad programada para esta semana."]
     ]
   },
   {
@@ -62,7 +68,7 @@ ZONES = [
       ["F05 Albañilerías", "Levantamiento de muros y adecuación de espacios para vestidor y baño principal."],
       ["F06 Losa aligerada, Desmontaje", "Colado de losa de entrepiso y ajustes por demolición de elementos previos."],
       ["H02 Estructura Acero", "Estructura de soporte para pérgola metálica en zona de baño/terraza."],
-      ["H03 Durock Cubierta", "Ejecución de trabajos correspondientes a H03 Durock Cubierta según especificaciones de proyecto."],
+      ["H03 Durock Cubierta", "Instalación de sistema de techumbre con paneles de cemento Durock y sellado."],
       ["F07 Inst. Eléctricas, Tablero", "Instalación de puntos de luz, contactos y tablero de control eléctrico."],
       ["F08 Inst. Hidráulicas, Sanitarias, Pluviales", "Suministro e instalación de tuberías para agua, drenaje y pluviales; colocación de accesorios."],
       ["F08 Accesorios Sanit.", "Suministro e instalación de tuberías para agua, drenaje y pluviales; colocación de accesorios."],
@@ -77,7 +83,7 @@ ZONES = [
       ["S/A", "Sin actividad programada para esta semana."],
       ["S/A", "Sin actividad programada para esta semana."],
       ["S/A", "Sin actividad programada para esta semana."],
-      ["S/A", "Sin actividad programada para esta semana."],
+      ["S/A", "Sin actividad programada para esta semana."]
     ]
   },
   {
@@ -115,7 +121,7 @@ ZONES = [
       ["C07 Recubrim./Pintura", "Aplanados y pintura en estudio I."],
       ["B09 Cancelería", "Ventanas y puertas de aluminio en zona de escaleras."],
       ["B09 Cancelería", "Ventanas y puertas de aluminio en zona de escaleras."],
-      ["B10 Lambrín WPC / C09 Limpieza", "Detalles decorativos con Lambrín WPC en muros de escalera."],
+      ["B10 Lambrín WPC / C09 Limpieza", "Detalles decorativos con Lambrín WPC en muros de escalera."]
     ]
   },
   {
@@ -144,7 +150,7 @@ ZONES = [
       ["G05 Albañilerías", "Levantamiento de muros y albañilería en recámara y baño."],
       ["G06 Losa aligerada", "Losa estructural aligerada para cubierta de recámara."],
       ["H01 Desmontaje, Estructura Acero", "Desmontaje de estructuras existentes para integración de pérgolas."],
-      ["H03 Durock Cubierta", "Ejecución de trabajos correspondientes a H03 Durock Cubierta según especificaciones de proyecto."],
+      ["H03 Durock Cubierta", "Instalación de sistema de techumbre con paneles de cemento Durock y sellado."],
       ["G07 Inst. Eléctricas", "Instalación eléctrica general en recámara y baño asociado."],
       ["G08 Inst. Hidráulicas/Sanitarias/Pluviales", "Red de agua fría/caliente, drenaje y bajadas pluviales en zona G."],
       ["G08 Inst. Hidráulicas/Sanitarias/Pluviales", "Red de agua fría/caliente, drenaje y bajadas pluviales en zona G."],
@@ -153,7 +159,7 @@ ZONES = [
       ["G09 Recubrim./Pint.", "Acabados cerámicos en baño y pintura en recámara."],
       ["G10 Cancelería", "Cancelería de aluminio y cristal en recámara 1."],
       ["G11 Carpintería Adecuaciones", "Muebles de carpintería (closets) y adecuaciones de madera."],
-      ["G12 Limpieza", "Limpieza fina de obra, retiro de excedentes y entrega de áreas listas para uso."],
+      ["G12 Limpieza", "Limpieza fina de obra, retiro de excedentes y entrega de áreas listas para uso."]
     ]
   },
   {
@@ -191,61 +197,47 @@ ZONES = [
       ["S/A", "Sin actividad programada para esta semana."],
       ["S/A", "Sin actividad programada para esta semana."],
       ["S/A", "Sin actividad programada para esta semana."],
-      ["S/A", "Sin actividad programada para esta semana."],
+      ["S/A", "Sin actividad programada para esta semana."]
     ]
-  },
+  }
 ]
 
 if __name__ == "__main__":
-    # ── Update BOTH files ───────────────────────────────────────────────────
-    import os, json, re
-    for target in ['index.html', 'gantt_mobile.html']:
-        src = os.path.join(os.path.dirname(os.path.abspath(__file__)), target)
-        if not os.path.exists(src): continue
+    # ── Cargar progreso actual si existe el archivo ──────────────────────────
+    current_progress = [[0]*32 for _ in range(len(ZONES))]
+    if os.path.exists(DB_FILE):
+        with open(DB_FILE, "r", encoding="utf-8") as f:
+            old_data = json.load(f)
+            for i, zone in enumerate(old_data.get("zones", [])):
+                if i < len(current_progress):
+                    current_progress[i] = zone.get("progress", [0]*32)
+
+    # ── Preparar estructura JSON final ───────────────────────────────────────
+    final_zones = []
+    for i, z in enumerate(ZONES):
+        # Convertir details de lista a objetos
+        details_obj = []
+        for t, d in z["details"]:
+            details_obj.append({"title": t, "desc": d})
         
-        with open(src, "r", encoding="utf-8") as f:
-            html = f.read()
+        final_zones.append({
+            "zone": z["zone"],
+            "emoji": z["emoji"],
+            "tasks": z["tasks"],
+            "details": details_obj,
+            "progress": current_progress[i]
+        })
 
-        # ── Build new projectData JS ───────────────────────────────────────────────
-        def js_zone(z):
-            tasks_js = json.dumps(z["tasks"], ensure_ascii=False)
-            details_js = ",\n        ".join(
-                f'{{title:{json.dumps(t, ensure_ascii=False)},desc:{json.dumps(d, ensure_ascii=False)}}}'
-                for t,d in z["details"]
-            )
-            return (
-                f'{{ zone:{json.dumps(z["zone"], ensure_ascii=False)}, emoji:{json.dumps(z["emoji"], ensure_ascii=False)},\n'
-                f'      tasks:{tasks_js},\n'
-                f'      details:[\n        {details_js}\n      ], progress:Array(32).fill(0) }}'
-            )
+    full_data = {
+        "obra_id": "sauces",
+        "obra_name": "Residencial Los Sauces",
+        "obra_sub": "Remodelación Casa Sauces",
+        "hero_img": "assets/obra_sauces.jpg",
+        "zones": final_zones
+    }
 
-        new_pd = "const projectData = [\n    " + ",\n    ".join(js_zone(z) for z in ZONES) + "\n];"
+    # ── Escribir a la base de datos de la App ────────────────────────────────
+    with open(DB_FILE, "w", encoding="utf-8") as f:
+        json.dump(full_data, f, ensure_ascii=False, indent=2)
 
-        # Replace projectData block
-        html = re.sub(r'const projectData = \[[\s\S]*?\];', new_pd, html)
-
-        # ── Structural adjustments (16 to 32) ──────────────────────────────────────
-        html = html.replace('max="16" value="1"', 'max="32" value="1"')
-        html = html.replace('for(let i=1;i<=16;i++)', 'for(let i=1;i<=32;i++)')
-        html = html.replace('for(let i=1; i <= 16; i++)', 'for(let i=1; i <= 32; i++)')
-        html = html.replace('/15*100', '/31*100')
-        html = html.replace('16-currentWeek', '32-currentWeek')
-        html = html.replace('currentWeek-1}/15', 'currentWeek-1}/31')
-        html = html.replace('5 zonas · 16 semanas', '5 zonas · 32 semanas')
-        html = html.replace('Ampliación · 5 zonas · 16 semanas', 'Proyecto SAUCES · 5 zonas · 32 semanas')
-        html = html.replace('Proyecto SAUCES · 5 zonas · 16 semanas', 'Proyecto SAUCES · 5 zonas · 32 semanas')
-        html = html.replace('min-width:800px', 'min-width:1600px')
-        html = html.replace('min-width:900px', 'min-width:1600px')
-        html = html.replace('repeat(8, 1fr)', 'repeat(16, 1fr)')
-        html = html.replace('repeat(8,1fr)', 'repeat(16,1fr)')
-
-        with open(src, "w", encoding="utf-8") as f:
-            f.write(html)
-
-    print("✅ Dashboard (index y mobile) actualizado a 32 semanas.")
-
-
-    print(f"   Zonas: {len(ZONES)}")
-    print(f"   Tareas por zona: 32")
-    print(f"   Descripciones totales: {sum(len(z['details']) for z in ZONES)}")
-
+    print(f"DONE: Datos de obra 'Sauces' exportados a: {DB_FILE}")

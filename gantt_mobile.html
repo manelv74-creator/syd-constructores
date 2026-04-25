@@ -12,11 +12,11 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="SYD APP">
-    <link rel="apple-touch-icon" href="logo_syd.png">
+    <link rel="apple-touch-icon" href="assets/logo_syd.png">
     <!-- OpenGraph -->
     <meta property="og:title" content="SYD Constructores — Tu obra en tiempo real">
     <meta property="og:description" content="Seguimiento de tu proyecto de construcción en tiempo real.">
-    <meta property="og:image" content="https://manelv74-creator.github.io/syd-constructores/obra_sauces.jpg">
+    <meta property="og:image" content="assets/logo_syd.png">
     <meta property="og:url" content="https://manelv74-creator.github.io/syd-constructores/">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -24,6 +24,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+
     <style>
         :root {
             --bg:#0a0e1a; --surface:#111827; --border:rgba(255,255,255,0.08);
@@ -421,7 +422,7 @@
     <div class="login-card">
         <!-- SYD Constructores branding -->
         <div class="syd-logo-wrap">
-            <img src="logo_syd.png" alt="SYD Constructores" class="syd-logo-img"
+            <img src="assets/logo_syd.png" alt="SYD Constructores" class="syd-logo-img"
                  onerror="this.style.display='none';document.getElementById('sydLogoFallback').style.display='flex'">
             <div class="syd-logo-placeholder" id="sydLogoFallback" style="display:none">SYD</div>
             <div class="syd-company-name">SYD Constructores</div>
@@ -479,7 +480,7 @@
 <div id="obraSelector">
     <div class="selector-header">
         <div class="selector-header-left">
-            <img src="logo_syd.png" class="selector-logo-small" alt="SYD">
+            <img src="assets/logo_syd.png" class="selector-logo-small" alt="SYD">
             <div>
                 <div class="selector-title">SYD Constructores</div>
                 <div class="selector-subtitle">Selecciona una obra</div>
@@ -835,218 +836,36 @@ async function loadAccesosLog(el) {
 
 
 // ══════════════════════════════════════
-const ZONE_COLORS = ['#3b82f6','#8b5cf6','#10b981','#f59e0b','#ef4444'];
+let projectData = [];
+let OBRAS_CATALOG = [];
+let currentObra = null;
 
-const projectData = [
-    { zone:"Zona 1: Cochera", emoji:"🏠",
-      tasks:["", "A01 Preliminares, Demoliciones", "A01 Preliminares, Demoliciones", "A03 Zapatas aisladas, Zapatas corridas", "A05 Albañilerías", "A05 Albañilerías", "A06 Estructura de Acero", "A06 Estructura de Acero", "A07 Losa aligerada", "A07 Losa aligerada", "A08 Durock en cubierta", "A09 Instalación Eléctrica", "A09 Tableros/Interrupt.", "A10 Inst. Pluviales", "A11 Recubrimi./Pintura", "A12 Herrería", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
-      details:[
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"A01 Preliminares, Demoliciones",desc:"Trazo, nivelación y limpieza de área; demolición de elementos existentes según proyecto."},
-        {title:"A01 Preliminares, Demoliciones",desc:"Trazo, nivelación y limpieza de área; demolición de elementos existentes según proyecto."},
-        {title:"A03 Zapatas aisladas, Zapatas corridas",desc:"Excavación y habilitado de acero para zapatas aisladas y corridas en zona de garage."},
-        {title:"A05 Albañilerías",desc:"Desplante de muros de block con castillos de refuerzo y cerramientos estructurales."},
-        {title:"A05 Albañilerías",desc:"Desplante de muros de block con castillos de refuerzo y cerramientos estructurales."},
-        {title:"A06 Estructura de Acero",desc:"Suministro y montaje de estructura metálica de soporte para cubierta de cochera."},
-        {title:"A06 Estructura de Acero",desc:"Suministro y montaje de estructura metálica de soporte para cubierta de cochera."},
-        {title:"A07 Losa aligerada",desc:"Cimbrado y colado de losa aligerada con casetón de poliestireno y malla electrosoldada."},
-        {title:"A07 Losa aligerada",desc:"Cimbrado y colado de losa aligerada con casetón de poliestireno y malla electrosoldada."},
-        {title:"A08 Durock en cubierta",desc:"Instalación de sistema de techumbre con paneles de cemento Durock y sellado."},
-        {title:"A09 Instalación Eléctrica",desc:"Canalización de tubería conduit, cableado y colocación de accesorios y tableros."},
-        {title:"A09 Tableros/Interrupt.",desc:"Canalización de tubería conduit, cableado y colocación de accesorios y tableros."},
-        {title:"A10 Inst. Pluviales",desc:"Instalación de bajadas pluviales y conexión a red de drenaje existente."},
-        {title:"A11 Recubrimi./Pintura",desc:"Aplicación de recubrimientos, aplanados y pintura vinílica en muros y plafones."},
-        {title:"A12 Herrería",desc:"Suministro e instalación de portón y elementos de herrería ornamental."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."}
-      ], progress:Array(32).fill(0) },
-    { zone:"Zona 2: Baño Ppal", emoji:"🚿",
-      tasks:["", "", "", "", "", "", "", "", "", "", "F01 Preliminares, Desmontajes", "F01 Preliminares, Desmontajes", "F04 Zapata corrida", "F05 Albañilerías", "F06 Losa aligerada, Desmontaje", "H02 Estructura Acero", "H03 Durock Cubierta", "F07 Inst. Eléctricas, Tablero", "F08 Inst. Hidráulicas, Sanitarias, Pluviales", "F08 Accesorios Sanit.", "F09 Recubrim./Pintura", "F10 Cancelería", "F12 Lambrín WPC", "", "", "", "", "", "", "", "", ""],
-      details:[
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"F01 Preliminares, Desmontajes",desc:"Protección de áreas existentes y desmontaje de muebles y accesorios de baño."},
-        {title:"F01 Preliminares, Desmontajes",desc:"Protección de áreas existentes y desmontaje de muebles y accesorios de baño."},
-        {title:"F04 Zapata corrida",desc:"Refuerzo estructural mediante zapatas corridas para ampliación de vestidor."},
-        {title:"F05 Albañilerías",desc:"Levantamiento de muros y adecuación de espacios para vestidor y baño principal."},
-        {title:"F06 Losa aligerada, Desmontaje",desc:"Colado de losa de entrepiso y ajustes por demolición de elementos previos."},
-        {title:"H02 Estructura Acero",desc:"Estructura de soporte para pérgola metálica en zona de baño/terraza."},
-        {title:"H03 Durock Cubierta",desc:"Ejecución de trabajos correspondientes a H03 Durock Cubierta según especificaciones de proyecto."},
-        {title:"F07 Inst. Eléctricas, Tablero",desc:"Instalación de puntos de luz, contactos y tablero de control eléctrico."},
-        {title:"F08 Inst. Hidráulicas, Sanitarias, Pluviales",desc:"Suministro e instalación de tuberías para agua, drenaje y pluviales; colocación de accesorios."},
-        {title:"F08 Accesorios Sanit.",desc:"Suministro e instalación de tuberías para agua, drenaje y pluviales; colocación de accesorios."},
-        {title:"F09 Recubrim./Pintura",desc:"Colocación de azulejos, pisos cerámicos y acabados finales en pintura."},
-        {title:"F10 Cancelería",desc:"Instalación de canceles de baño en cristal templado y marcos de aluminio."},
-        {title:"F12 Lambrín WPC",desc:"Instalación de revestimiento decorativo tipo Lambrín WPC en muros de acento."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."}
-      ], progress:Array(32).fill(0) },
-    { zone:"Zona 3: Recámara 2", emoji:"🛏",
-      tasks:["", "", "", "", "", "", "", "", "B01/C01 Preliminar. B02, B03", "B01/C01 Preliminar. B02, B03", "B01/C01 Preliminar. B02, B03", "B04 Zapata Corrida, B05", "B06 Albañilerías", "C02 Albañilerías", "C02 Albañilerías", "C03 Losa Aligerada", "C03 Losa Aligerada", "C04 Inst. Eléctricas", "B07 Inst. Eléctricas", "C04 Inst. Eléctricas", "C04 Accesorios Eléct.", "B07 Accesorios Eléct.", "C04 Tablero", "C05 Inst. Pluviales", "C05 Inst. Pluviales", "C06 Voz y Datos", "B08 Recubrim./Pint.", "C07 Recubrim./Pintura", "C07 Recubrim./Pintura", "B09 Cancelería", "B09 Cancelería", "B10 Lambrín WPC / C09 Limpieza"],
-      details:[
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"B01/C01 Preliminar. B02, B03",desc:"Trabajos preliminares y desmontaje de elementos en escaleras y estudio."},
-        {title:"B01/C01 Preliminar. B02, B03",desc:"Trabajos preliminares y desmontaje de elementos en escaleras y estudio."},
-        {title:"B01/C01 Preliminar. B02, B03",desc:"Trabajos preliminares y desmontaje de elementos en escaleras y estudio."},
-        {title:"B04 Zapata Corrida, B05",desc:"Cimentación de escalera mediante zapata corrida y preparación de rampa."},
-        {title:"B06 Albañilerías",desc:"Construcción de muros y preparación de superficies en zona de escaleras."},
-        {title:"C02 Albañilerías",desc:"Albañilerías generales y adecuación de vanos en área de estudio."},
-        {title:"C02 Albañilerías",desc:"Albañilerías generales y adecuación de vanos en área de estudio."},
-        {title:"C03 Losa Aligerada",desc:"Losa aligerada en estudio I para cierre de niveles superiores."},
-        {title:"C03 Losa Aligerada",desc:"Losa aligerada en estudio I para cierre de niveles superiores."},
-        {title:"C04 Inst. Eléctricas",desc:"Instalación eléctrica completa, incluyendo accesorios y tablero de distribución."},
-        {title:"B07 Inst. Eléctricas",desc:"Puntos eléctricos específicos para iluminación de escalera y estudio."},
-        {title:"C04 Inst. Eléctricas",desc:"Instalación eléctrica completa, incluyendo accesorios y tablero de distribución."},
-        {title:"C04 Accesorios Eléct.",desc:"Instalación eléctrica completa, incluyendo accesorios y tablero de distribución."},
-        {title:"B07 Accesorios Eléct.",desc:"Puntos eléctricos específicos para iluminación de escalera y estudio."},
-        {title:"C04 Tablero",desc:"Instalación eléctrica completa, incluyendo accesorios y tablero de distribución."},
-        {title:"C05 Inst. Pluviales",desc:"Sistema de captación pluvial en azotea de estudio."},
-        {title:"C05 Inst. Pluviales",desc:"Sistema de captación pluvial en azotea de estudio."},
-        {title:"C06 Voz y Datos",desc:"Canalización y cableado para red de voz y datos (internet/telefonía)."},
-        {title:"B08 Recubrim./Pint.",desc:"Acabados en muros de escalera y pintura general."},
-        {title:"C07 Recubrim./Pintura",desc:"Aplanados y pintura en estudio I."},
-        {title:"C07 Recubrim./Pintura",desc:"Aplanados y pintura en estudio I."},
-        {title:"B09 Cancelería",desc:"Ventanas y puertas de aluminio en zona de escaleras."},
-        {title:"B09 Cancelería",desc:"Ventanas y puertas de aluminio en zona de escaleras."},
-        {title:"B10 Lambrín WPC / C09 Limpieza",desc:"Detalles decorativos con Lambrín WPC en muros de escalera."}
-      ], progress:Array(32).fill(0) },
-    { zone:"Zona 4: Recámara 1", emoji:"🛏",
-      tasks:["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "G01 Preliminares, Desmontajes", "G03 Demoliciones", "G04 Zapata corrida", "G05 Albañilerías", "G06 Losa aligerada", "H01 Desmontaje, Estructura Acero", "H03 Durock Cubierta", "G07 Inst. Eléctricas", "G08 Inst. Hidráulicas/Sanitarias/Pluviales", "G08 Inst. Hidráulicas/Sanitarias/Pluviales", "G08 Inst. Hidráulicas/Sanitarias/Pluviales", "G08 Inst. Hidráulicas/Sanitarias/Pluviales", "G09 Recubrim./Pint.", "G10 Cancelería", "G11 Carpintería Adecuaciones", "G12 Limpieza"],
-      details:[
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"G01 Preliminares, Desmontajes",desc:"Desmontaje de áreas en recámara 1 y preparativos para remodelación."},
-        {title:"G03 Demoliciones",desc:"Ejecución de trabajos correspondientes a G03 Demoliciones según especificaciones de proyecto."},
-        {title:"G04 Zapata corrida",desc:"Cimentación para ampliación de recámara mediante zapatas corridas."},
-        {title:"G05 Albañilerías",desc:"Levantamiento de muros y albañilería en recámara y baño."},
-        {title:"G06 Losa aligerada",desc:"Losa estructural aligerada para cubierta de recámara."},
-        {title:"H01 Desmontaje, Estructura Acero",desc:"Desmontaje de estructuras existentes para integración de pérgolas."},
-        {title:"H03 Durock Cubierta",desc:"Ejecución de trabajos correspondientes a H03 Durock Cubierta según especificaciones de proyecto."},
-        {title:"G07 Inst. Eléctricas",desc:"Instalación eléctrica general en recámara y baño asociado."},
-        {title:"G08 Inst. Hidráulicas/Sanitarias/Pluviales",desc:"Red de agua fría/caliente, drenaje y bajadas pluviales en zona G."},
-        {title:"G08 Inst. Hidráulicas/Sanitarias/Pluviales",desc:"Red de agua fría/caliente, drenaje y bajadas pluviales en zona G."},
-        {title:"G08 Inst. Hidráulicas/Sanitarias/Pluviales",desc:"Red de agua fría/caliente, drenaje y bajadas pluviales en zona G."},
-        {title:"G08 Inst. Hidráulicas/Sanitarias/Pluviales",desc:"Red de agua fría/caliente, drenaje y bajadas pluviales en zona G."},
-        {title:"G09 Recubrim./Pint.",desc:"Acabados cerámicos en baño y pintura en recámara."},
-        {title:"G10 Cancelería",desc:"Cancelería de aluminio y cristal en recámara 1."},
-        {title:"G11 Carpintería Adecuaciones",desc:"Muebles de carpintería (closets) y adecuaciones de madera."},
-        {title:"G12 Limpieza",desc:"Limpieza fina de obra, retiro de excedentes y entrega de áreas listas para uso."}
-      ], progress:Array(32).fill(0) },
-    { zone:"Zona 5: Sala TV", emoji:"📺",
-      tasks:["", "", "", "", "", "", "", "", "", "", "", "D01/E01 Prelimina. Desmontajes. Demoliciones", "D01/E01 Prelimina. Desmontajes. Demoliciones", "D04 Zapatas Aisladas, Corridas", "D06 Albañilerías", "E02 Albañilerías", "D07 Losa Aligerada", "D07 Losa Aligerada", "D08 Inst. Eléctricas, Acce./Tablero", "E05 Inst. Pluviales", "E06 Voz y Datos", "D09 Recubrim./Pint.", "E08 Cancelería", "D11 Lambrín WPC", "D12 Herrería", "E10 Limpieza", "", "", "", "", "", ""],
-      details:[
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"D01/E01 Prelimina. Desmontajes. Demoliciones",desc:"Preliminares y demoliciones en área de sala de TV y estudio II."},
-        {title:"D01/E01 Prelimina. Desmontajes. Demoliciones",desc:"Preliminares y demoliciones en área de sala de TV y estudio II."},
-        {title:"D04 Zapatas Aisladas, Corridas",desc:"Cimentación mixta (aisladas/corridas) para soporte de nueva estructura."},
-        {title:"D06 Albañilerías",desc:"Muros de block y cerramientos en sala de TV."},
-        {title:"E02 Albañilerías",desc:"Albañilerías específicas para estudio II en nivel superior."},
-        {title:"D07 Losa Aligerada",desc:"Losa de cubierta para sala de TV."},
-        {title:"D07 Losa Aligerada",desc:"Losa de cubierta para sala de TV."},
-        {title:"D08 Inst. Eléctricas, Acce./Tablero",desc:"Instalaciones eléctricas y accesorios en zona de entretenimiento."},
-        {title:"E05 Inst. Pluviales",desc:"Canalización pluvial en estudio II."},
-        {title:"E06 Voz y Datos",desc:"Instalación de red de voz y datos para oficina/estudio."},
-        {title:"D09 Recubrim./Pint.",desc:"Pintura y acabados decorativos en sala de TV."},
-        {title:"E08 Cancelería",desc:"Ventanas de gran formato en estudio II."},
-        {title:"D11 Lambrín WPC",desc:"Revestimiento de muros con paneles WPC."},
-        {title:"D12 Herrería",desc:"Trabajos de herrería fina y barandales."},
-        {title:"E10 Limpieza",desc:"Limpieza fina de obra, retiro de excedentes y entrega de áreas listas para uso."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."},
-        {title:"S/A",desc:"Sin actividad programada para esta semana."}
-      ], progress:Array(32).fill(0) }
-];
-
-// ══════════════════════════════════════
-// AUTH CONFIG  — cambia estos valores
-// ══════════════════════════════════════
-const AUTH = {
-    master:   { code: 'MASTER2025' },
-    observer: { code: 'SAUCES2025' },
-    client:   { code: 'SAUCES' }    // clave del proyecto para clientes
-};
-
-// ══════════════════════════════════════
-// CATÁLOGO DE OBRAS
-// ══════════════════════════════════════
-// Para añadir una nueva obra: duplica el objeto y cambia sus valores
-const OBRAS_CATALOG = [
-    {
-        id:       'SAUCES',
-        nombre:   'Proyecto Sauces',
-        desc:     'Ampliación residencial · 5 zonas · 32 semanas',
-        foto:     'obra_sauces.jpg',
-        emoji:    '🏠',
-        status:   'activa',    // 'activa' | 'pausada' | 'terminada'
-        clientCode: 'SAUCES'  // clave que usa el cliente para entrar
+async function loadGlobalData() {
+    try {
+        const resp = await fetch('database/projects.json');
+        OBRAS_CATALOG = await resp.json();
+        console.log('[SYD] Proyectos cargados:', OBRAS_CATALOG.length);
+    } catch(e) {
+        console.error('[SYD] Error cargando proyectos:', e);
+        // Fallback minimo
+        OBRAS_CATALOG = [{id:'sauces', nombre:'Sauces', status:'activa'}];
     }
-    // Ejemplo de cómo añadir otra obra:
-    // ,{ id:'LOMAS', nombre:'Proyecto Lomas', desc:'Casa nueva · 3 zonas · 24 semanas',
-    //    foto:'obra_lomas.jpg', emoji:'🏡', status:'activa', clientCode:'LOMAS' }
-];
+}
+
+async function loadProjectData(obraId) {
+    const obra = OBRAS_CATALOG.find(o => o.id.toLowerCase() === obraId.toLowerCase());
+    if(!obra) return false;
+    try {
+        const resp = await fetch(obra.dataFile || `database/${obraId.toLowerCase()}.json`);
+        const data = await resp.json();
+        projectData = data.zones;
+        currentObra = obra;
+        return true;
+    } catch(e) {
+        console.error('[SYD] Error cargando datos de obra:', e);
+        return false;
+    }
+}
 
 // ══════════════════════════════════════
 // OBRA SELECTOR
@@ -1082,12 +901,14 @@ function buildObrasGrid() {
     `).join('');
 }
 
-function selectObra(obraId) {
-    currentObra = OBRAS_CATALOG.find(o => o.id === obraId);
-    if(!currentObra) return;
-    session.obra = obraId;
-    localStorage.setItem('sauces_session', JSON.stringify(session));
-    launchApp();
+async function selectObra(obraId) {
+    if(await loadProjectData(obraId)) {
+        session.obra = obraId;
+        localStorage.setItem('sauces_session', JSON.stringify(session));
+        launchApp();
+    } else {
+        alert('No se pudieron cargar los datos de esta obra.');
+    }
 }
 
 // ══════════════════════════════════════
@@ -1119,7 +940,7 @@ function selectRole(role, btn) {
     document.getElementById('loginError').classList.remove('show');
 }
 
-function doLogin() {
+async function doLogin() {
     const email = document.getElementById('loginEmail').value.trim();
     const code  = document.getElementById('loginCode').value.trim();
     const err   = document.getElementById('loginError');
@@ -1141,12 +962,17 @@ function doLogin() {
 
     localStorage.setItem('sauces_session', JSON.stringify(session));
     logAccess(email, session.role, 'login');
+    
     // Routing: master/observer → obra selector; client → direct to app
     if(session.role === 'client') {
-        // Find their obra by client code
-        currentObra = OBRAS_CATALOG.find(o => o.clientCode === code.toUpperCase()) || OBRAS_CATALOG[0];
-        session.obra = currentObra.id;
-        launchApp();
+        const found = OBRAS_CATALOG.find(o => o.clientCode === code.toUpperCase()) || OBRAS_CATALOG[0];
+        if(await loadProjectData(found.id)) {
+            session.obra = found.id;
+            localStorage.setItem('sauces_session', JSON.stringify(session));
+            launchApp();
+        } else {
+            err.textContent='Error cargando datos de la obra.'; err.classList.add('show');
+        }
     } else {
         showObraSelector();
     }
@@ -1442,13 +1268,22 @@ document.addEventListener('touchend',e=>{
 // ══════════════════════════════════════
 // BOOT
 // ══════════════════════════════════════
-window.onload = function() {
+window.onload = async function() {
+    await loadGlobalData(); // Cargar catálogo de obras
+
     const saved = localStorage.getItem('sauces_session');
     if(saved) {
         try {
             session = JSON.parse(saved);
-            launchApp();
-            return;
+            if(session.obra) {
+                if(await loadProjectData(session.obra)) {
+                    launchApp();
+                    return;
+                }
+            } else if(session.role === 'master' || session.role === 'observer') {
+                showObraSelector();
+                return;
+            }
         } catch(e) { localStorage.removeItem('sauces_session'); }
     }
     document.getElementById('loginScreen').style.display='flex';
