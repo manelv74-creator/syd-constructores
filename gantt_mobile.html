@@ -1093,7 +1093,7 @@ async function doRegister() {
         // Automatically log in
         session = { role: 'client', email: email.toLowerCase(), nombre: name, obra: foundObra.id };
         localStorage.setItem('sauces_session', JSON.stringify(session));
-        logAccess(email, 'client', 'registro_y_login');
+        logAccess(email.toLowerCase(), 'client', 'registro');
         
         btn.textContent = oldText;
         btn.disabled = false;
