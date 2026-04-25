@@ -109,6 +109,9 @@
             border-radius:10px;padding:10px;display:none;
         }
         .login-error.show{display:block}
+        .auth-toggle-wrap { display:flex; background:rgba(0,0,0,0.2); border-radius:10px; padding:4px; margin-bottom:16px; border:1px solid rgba(255,255,255,0.05); }
+        .auth-toggle-btn { flex:1; padding:8px; border:none; background:transparent; color:var(--muted); font-size:0.8rem; font-weight:600; font-family:'Inter',sans-serif; cursor:pointer; border-radius:8px; transition:all 0.2s; }
+        .auth-toggle-btn.active { background:rgba(59,130,246,0.2); color:#93c5fd; }
 
         /* ══ SYD LOGO AREA ══ */
         .syd-logo-wrap{
@@ -489,6 +492,20 @@
                 </div>
             </div>
 
+            <!-- Auth Toggle (Client Only) -->
+            <div class="auth-toggle-wrap" id="clientAuthToggle">
+                <button class="auth-toggle-btn active" onclick="setAuthMode('login',this)">Iniciar Sesión</button>
+                <button class="auth-toggle-btn" onclick="setAuthMode('register',this)">Crear Cuenta</button>
+            </div>
+
+            <!-- Name (Only Register) -->
+            <div id="fieldNombre" style="display:none">
+                <div class="field-label">Nombre completo</div>
+                <div class="field-wrap">
+                    <input type="text" id="loginName" placeholder="Tu nombre">
+                </div>
+            </div>
+
             <!-- Email -->
             <div>
                 <div class="field-label">Correo electrónico</div>
@@ -497,22 +514,29 @@
                 </div>
             </div>
 
-            <!-- Dynamic field -->
-            <div id="dynamicField">
-                <div class="field-label" id="dynLabel">Nombre de tu obra</div>
+            <!-- Password (Client Only) -->
+            <div id="fieldPassword">
+                <div class="field-label">Contraseña</div>
                 <div class="field-wrap">
-                    <input type="text" id="loginCode" placeholder="Ej: Cochera">
+                    <input type="password" id="loginPassword" placeholder="••••••••">
                 </div>
             </div>
 
-            <!-- Hint -->
+            <!-- Dynamic field -->
+            <div id="dynamicField" style="display:none">
+                <div class="field-label" id="dynLabel">Código de Proyecto</div>
+                <div class="field-wrap">
+                    <input type="text" id="loginCode" placeholder="Ej: SAUCES">
+                </div>
+            </div>
+
             <div class="login-hint" id="loginHint">
-                <strong>Cliente:</strong> Ingresa el nombre de tu obra tal como te lo indicaron (Cochera, Baño Ppal, Recámara 2, Recámara 1 o Sala TV).
+                <strong>Cliente:</strong> Ingresa tu email y contraseña. Si no tienes cuenta, selecciona "Crear Cuenta".
             </div>
 
             <div class="login-error" id="loginError">Datos incorrectos. Verifica tu correo y código.</div>
 
-            <button class="btn-login" onclick="doLogin()">Acceder al sistema →</button>
+            <button class="btn-login" id="btnLoginAction" onclick="doAuthAction()">Acceder al sistema →</button>
         </div>
         <div class="login-footer">© 2025 SYD Constructores · Todos los derechos reservados</div>
     </div>
@@ -977,7 +1001,19 @@ const HINTS = {
     master:   '<strong>Master:</strong> Acceso total con código de administrador. Puedes actualizar el avance de todas las zonas.'
 };
 const DYN_LABEL = {client:'Clave de acceso', observer:'Código de acceso', master:'Código maestro'};
-const DYN_PLACEHOLDER = {client:'Tu clave de acceso', observer:'Código supervisor', master:'Código master'};
+const DYN_PLACEHOLDER = {client:'Clave de tu obra', observer:'Código supervisor', master:'Código master'};
+let authMode = 'login'; // 'login' | 'register'
+
+function setAuthMode(mode, btn) {
+    authMode = mode;
+    document.querySelectorAll('.auth-toggle-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    document.getElementById('fieldNombre').style.display = mode === 'register' ? 'block' : 'none';
+    document.getElementById('dynamicField').style.display = mode === 'register' ? 'block' : 'none'; // Only ask project code on register for client
+    document.getElementById('btnLoginAction').textContent = mode === 'register' ? 'Crear mi cuenta →' : 'Acceder al sistema →';
+    document.getElementById('loginError').classList.remove('show');
+}
 
 function selectRole(role, btn) {
     selectedRole = role;
@@ -987,26 +1023,143 @@ function selectRole(role, btn) {
     document.getElementById('loginCode').placeholder = DYN_PLACEHOLDER[role];
     document.getElementById('loginHint').innerHTML = HINTS[role];
     document.getElementById('loginError').classList.remove('show');
+    
+    if(role === 'client') {
+        document.getElementById('clientAuthToggle').style.display = 'flex';
+        document.getElementById('fieldPassword').style.display = 'block';
+        // Apply current authMode visibility rules
+        document.getElementById('fieldNombre').style.display = authMode === 'register' ? 'block' : 'none';
+        document.getElementById('dynamicField').style.display = authMode === 'register' ? 'block' : 'none';
+    } else {
+        document.getElementById('clientAuthToggle').style.display = 'none';
+        document.getElementById('fieldPassword').style.display = 'none';
+        document.getElementById('fieldNombre').style.display = 'none';
+        document.getElementById('dynamicField').style.display = 'block';
+    }
+}
+
+async function doAuthAction() {
+    if(selectedRole === 'client' && authMode === 'register') {
+        await doRegister();
+    } else {
+        await doLogin();
+    }
+}
+
+async function doRegister() {
+    const name  = document.getElementById('loginName').value.trim();
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass  = document.getElementById('loginPassword').value;
+    const code  = document.getElementById('loginCode').value.trim();
+    const err   = document.getElementById('loginError');
+    err.classList.remove('show');
+
+    if(!name) { err.textContent='Ingresa tu nombre completo.'; err.classList.add('show'); return; }
+    if(!email || !email.includes('@')) { err.textContent='Ingresa un correo válido.'; err.classList.add('show'); return; }
+    if(pass.length < 5) { err.textContent='La contraseña debe tener al menos 5 caracteres.'; err.classList.add('show'); return; }
+    if(!code) { err.textContent='Ingresa la clave de proyecto que te proporcionaron.'; err.classList.add('show'); return; }
+
+    // Validate project code exists
+    const foundObra = OBRAS_CATALOG.find(o => o.clientCode === code.toUpperCase()) || OBRAS_CATALOG[0];
+    if(code.toUpperCase() !== AUTH.client.code && code.toUpperCase() !== foundObra.clientCode) {
+        err.textContent='Clave de proyecto no válida.'; err.classList.add('show'); return;
+    }
+
+    try {
+        const btn = document.getElementById('btnLoginAction');
+        const oldText = btn.textContent;
+        btn.textContent = 'Registrando...';
+        btn.disabled = true;
+
+        // Check if email already exists
+        const snap = await db.collection('clientes').where('email', '==', email.toLowerCase()).get();
+        if(!snap.empty) {
+            err.textContent = 'Este correo ya está registrado. Inicia sesión.';
+            err.classList.add('show');
+            btn.textContent = oldText;
+            btn.disabled = false;
+            return;
+        }
+
+        // Create user in Firestore
+        await db.collection('clientes').add({
+            nombre: name,
+            email: email.toLowerCase(),
+            password: pass, // In a production app, use Firebase Auth. For this MVP, storing plain.
+            obra: foundObra.id,
+            creado_en: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        // Automatically log in
+        session = { role: 'client', email: email.toLowerCase(), nombre: name, obra: foundObra.id };
+        localStorage.setItem('sauces_session', JSON.stringify(session));
+        logAccess(email, 'client', 'registro_y_login');
+        
+        btn.textContent = oldText;
+        btn.disabled = false;
+        
+        if(await loadProjectData(foundObra.id)) {
+            launchApp();
+        } else {
+            err.textContent='Error cargando datos de la obra.'; err.classList.add('show');
+        }
+    } catch(e) {
+        console.error("Error registering:", e);
+        err.textContent = 'Error al conectar con la base de datos.';
+        err.classList.add('show');
+        document.getElementById('btnLoginAction').disabled = false;
+        document.getElementById('btnLoginAction').textContent = 'Crear mi cuenta →';
+    }
 }
 
 async function doLogin() {
     const email = document.getElementById('loginEmail').value.trim();
+    const pass  = document.getElementById('loginPassword').value;
     const code  = document.getElementById('loginCode').value.trim();
     const err   = document.getElementById('loginError');
     err.classList.remove('show');
 
     if(!email || !email.includes('@')) { err.textContent='Ingresa un correo válido.'; err.classList.add('show'); return; }
-    if(!code) { err.textContent='Ingresa el código o nombre de obra.'; err.classList.add('show'); return; }
 
     if(selectedRole === 'master') {
+        if(!code) { err.textContent='Ingresa el código master.'; err.classList.add('show'); return; }
         if(code !== AUTH.master.code) { err.textContent='Código master incorrecto.'; err.classList.add('show'); return; }
         session = { role:'master', email };
     } else if(selectedRole === 'observer') {
+        if(!code) { err.textContent='Ingresa el código supervisor.'; err.classList.add('show'); return; }
         if(code !== AUTH.observer.code) { err.textContent='Código de supervisor incorrecto.'; err.classList.add('show'); return; }
         session = { role:'observer', email };
     } else {
-        if(code.toUpperCase() !== AUTH.client.code) { err.textContent='Clave de proyecto incorrecta. Usa: SAUCES'; err.classList.add('show'); return; }
-        session = { role:'client', email };
+        if(!pass) { err.textContent='Ingresa tu contraseña.'; err.classList.add('show'); return; }
+        
+        try {
+            const btn = document.getElementById('btnLoginAction');
+            const oldText = btn.textContent;
+            btn.textContent = 'Verificando...';
+            btn.disabled = true;
+
+            const snap = await db.collection('clientes')
+                                .where('email', '==', email.toLowerCase())
+                                .where('password', '==', pass)
+                                .get();
+            
+            btn.textContent = oldText;
+            btn.disabled = false;
+
+            if(snap.empty) {
+                err.textContent = 'Correo o contraseña incorrectos.';
+                err.classList.add('show');
+                return;
+            }
+
+            const clientData = snap.docs[0].data();
+            session = { role: 'client', email: clientData.email, nombre: clientData.nombre, obra: clientData.obra };
+        } catch(e) {
+            console.error("Login error:", e);
+            err.textContent = 'Error conectando con la base de datos.';
+            err.classList.add('show');
+            return;
+        }
     }
 
     localStorage.setItem('sauces_session', JSON.stringify(session));
@@ -1014,10 +1167,7 @@ async function doLogin() {
     
     // Routing: master/observer → obra selector; client → direct to app
     if(session.role === 'client') {
-        const found = OBRAS_CATALOG.find(o => o.clientCode === code.toUpperCase()) || OBRAS_CATALOG[0];
-        if(await loadProjectData(found.id)) {
-            session.obra = found.id;
-            localStorage.setItem('sauces_session', JSON.stringify(session));
+        if(await loadProjectData(session.obra)) {
             launchApp();
         } else {
             err.textContent='Error cargando datos de la obra.'; err.classList.add('show');
