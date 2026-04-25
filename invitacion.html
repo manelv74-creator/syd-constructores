@@ -137,6 +137,21 @@
             margin-top:20px;font-size:0.62rem;color:#334155;
             letter-spacing:0.04em;animation:cardIn 0.7s 0.4s both;
         }
+
+        /* Install Modal (iOS Help) */
+        .modal-overlay{
+            position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);
+            display:none;align-items:center;justify-content:center;z-index:100;padding:20px;
+        }
+        .modal-card{
+            background:#111827;border:1px solid rgba(255,255,255,0.1);
+            border-radius:24px;padding:32px;max-width:340px;text-align:center;
+        }
+        .modal-title{font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:16px}
+        .modal-step{display:flex;align-items:center;gap:12px;text-align:left;margin-bottom:16px;background:rgba(255,255,255,0.03);padding:12px;border-radius:12px}
+        .step-num{width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0}
+        .step-text{font-size:0.82rem;color:#94a3b8}
+        .btn-close-modal{padding:12px 24px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:12px;font-weight:700;cursor:pointer;margin-top:10px}
     </style>
 </head>
 <body>
@@ -168,6 +183,10 @@
         Acceder a mi obra →
     </a>
 
+    <button id="btnInstall" class="btn-whatsapp" style="display:none; background:rgba(59,130,246,0.15); border-color:rgba(59,130,246,0.4); color:#93c5fd; margin-top:10px;">
+        📲 Instalar App en mi móvil
+    </button>
+
     <a class="btn-whatsapp" href="https://wa.me/523332503313?text=Hola%2C%20me%20gustar%C3%ADa%20obtener%20m%C3%A1s%20informaci%C3%B3n%20sobre%20SYD%20Constructores" target="_blank">
         💬 Contactar a SYD Constructores
     </a>
@@ -177,7 +196,63 @@
     </div>
 </div>
 
+<!-- Modal de ayuda para iOS -->
+<div class="modal-overlay" id="iosModal">
+    <div class="modal-card">
+        <div class="modal-title">Instalar App en iPhone</div>
+        <div class="modal-step">
+            <div class="step-num">1</div>
+            <div class="step-text">Toca el botón <b>Compartir</b> (cuadrado con flecha arriba) en la barra inferior de Safari.</div>
+        </div>
+        <div class="modal-step">
+            <div class="step-num">2</div>
+            <div class="step-text">Busca y toca la opción <b>"Añadir a pantalla de inicio"</b>.</div>
+        </div>
+        <div class="modal-step">
+            <div class="step-num">3</div>
+            <div class="step-text">Toca <b>"Añadir"</b> arriba a la derecha. ¡Listo!</div>
+        </div>
+        <button class="btn-close-modal" onclick="document.getElementById('iosModal').style.display='none'">Entendido</button>
+    </div>
+</div>
+
 <script>
+// PWA Installation Logic
+let deferredPrompt = null;
+const btnInstall = document.getElementById('btnInstall');
+
+// Detectar si es iOS
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    btnInstall.style.display = 'block';
+});
+
+btnInstall.addEventListener('click', async () => {
+    if (isIOS) {
+        document.getElementById('iosModal').style.display = 'flex';
+        return;
+    }
+    if (!deferredPrompt) {
+        // Fallback: mostrar ayuda general si no hay prompt y no es iOS
+        alert('Para instalar:\n1. Toca los tres puntos (⋮) arriba a la derecha.\n2. Toca "Instalar aplicación".');
+        return;
+    }
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+        btnInstall.style.display = 'none';
+    }
+    deferredPrompt = null;
+});
+
+// Mostrar botón en iOS siempre (ya que el prompt nativo no existe)
+if (isIOS && !window.navigator.standalone) {
+    btnInstall.style.display = 'block';
+}
+
 // Generar partículas flotantes
 const pc = document.getElementById('particles');
 for(let i=0;i<25;i++){

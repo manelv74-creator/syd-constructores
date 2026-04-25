@@ -1484,6 +1484,22 @@ function imageToBase64(file, maxWidth, quality) {
     </div>
 </div>
 
+<!-- Modal de ayuda para iOS -->
+<div id="iosModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(10px); z-index:10000; align-items:center; justify-content:center; padding:20px;">
+    <div style="background:#111827; border:1px solid rgba(255,255,255,0.1); border-radius:24px; padding:32px; max-width:340px; text-align:center;">
+        <div style="font-size:1.1rem; font-weight:800; color:#fff; margin-bottom:16px;">Instalar App en iPhone</div>
+        <div style="display:flex; align-items:center; gap:12px; text-align:left; margin-bottom:16px; background:rgba(255,255,255,0.03); padding:12px; border-radius:12px;">
+            <div style="width:28px; height:28px; border-radius:50%; background:#3b82f6; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; flex-shrink:0;">1</div>
+            <div style="font-size:0.82rem; color:#94a3b8;">Toca el botón <b>Compartir</b> (cuadrado con flecha arriba) en Safari.</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px; text-align:left; margin-bottom:16px; background:rgba(255,255,255,0.03); padding:12px; border-radius:12px;">
+            <div style="width:28px; height:28px; border-radius:50%; background:#3b82f6; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; flex-shrink:0;">2</div>
+            <div style="font-size:0.82rem; color:#94a3b8;">Toca <b>"Añadir a pantalla de inicio"</b>.</div>
+        </div>
+        <button onclick="document.getElementById('iosModal').style.display='none'" style="padding:12px 24px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.1); color:#fff; border-radius:12px; font-weight:700; cursor:pointer; margin-top:10px;">Entendido</button>
+    </div>
+</div>
+
 <script>
 // ══════════════════════════════════════
 // PWA — Service Worker + Install Banner
@@ -1510,6 +1526,10 @@ window.addEventListener('beforeinstallprompt', e => {
 });
 
 document.getElementById('btnInstall').addEventListener('click', async () => {
+    if(/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
+        document.getElementById('iosModal').style.display = 'flex';
+        return;
+    }
     if(!deferredPrompt) return;
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
@@ -1519,6 +1539,15 @@ document.getElementById('btnInstall').addEventListener('click', async () => {
     }
     deferredPrompt = null;
 });
+
+// Detectar iOS para mostrar el banner
+if(/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream && !window.navigator.standalone) {
+    setTimeout(() => {
+        if(!localStorage.getItem('syd_installed')) {
+            document.getElementById('installBanner').style.display = 'block';
+        }
+    }, 3000);
+}
 
 window.addEventListener('appinstalled', () => {
     localStorage.setItem('syd_installed','1');
