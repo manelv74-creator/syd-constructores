@@ -706,8 +706,8 @@ async function renderAccesos() {
             return;
         }
         const roleIcon = {master:'⚡',observer:'👁',client:'🏠'};
-        const actionColor = {login:'#10b981', logout:'#64748b', registro:'#8b5cf6'};
-        const actionLabel = {login:'Entró', logout:'Salió', registro:'Nuevo Registro'};
+        const actionColor = {login:'#10b981', logout:'#64748b', registro:'#8b5cf6', registro_y_login:'#8b5cf6'};
+        const actionLabel = {login:'Entró', logout:'Salió', registro:'Nuevo Registro', registro_y_login:'Nuevo Registro'};
         let html = `
             <div style="font-size:0.7rem;color:var(--muted);margin-bottom:10px;padding:0 2px">
                 ${snap.size} registro(s) · últimos 50
