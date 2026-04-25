@@ -1254,7 +1254,7 @@ function renderDetalle() {
     });
     document.getElementById('detailCards').innerHTML=html;
     // Cargar galerias en tab Detalle
-    getVisibleZones().forEach(({idx}) => loadFotosGallery(idx, currentWeek, 'dgallery-' + idx));
+    getVisibleZones().forEach(({idx}) => loadFotosGallery(idx, currentWeek, 'dgallery-' + idx, true));
 }
 
 function renderAvance() {
@@ -1435,7 +1435,7 @@ async function handleFotoSelected(e) {
 let _fotoListeners = {};
 
 // — Cargar galería de fotos de una zona/semana (Tiempo Real)
-function loadFotosGallery(zIdx, semana, containerId) {
+function loadFotosGallery(zIdx, semana, containerId, filterByWeek = false) {
     const el = document.getElementById(containerId);
     if(!el) return;
     if(!db) { el.innerHTML = ''; return; }
@@ -1451,7 +1451,14 @@ function loadFotosGallery(zIdx, semana, containerId) {
                 if(snap.empty) { el.innerHTML = ''; return; }
                 
                 let docs = [];
-                snap.forEach(doc => docs.push(doc.data()));
+                snap.forEach(doc => {
+                    const d = doc.data();
+                    if(!filterByWeek || parseInt(d.semana) === parseInt(semana)) {
+                        docs.push(d);
+                    }
+                });
+                
+                if(docs.length === 0) { el.innerHTML = ''; return; }
                 
                 docs.sort((a,b) => {
                     const tA = a.timestamp && typeof a.timestamp.toMillis === 'function' ? a.timestamp.toMillis() : 0;
