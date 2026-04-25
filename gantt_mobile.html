@@ -1441,14 +1441,24 @@ async function loadFotosGallery(zIdx, semana, containerId) {
         const snap = await db.collection('obras').doc(session.obra || 'SAUCES')
             .collection('fotos')
             .where('zona_idx','==', zIdx)
-            .orderBy('timestamp','desc')
-            .limit(10).get();
+            .get();
+            
         if(snap.empty) { el.innerHTML = ''; return; }
-        const tarea = projectData[zIdx].tasks[semana-1] || '';
-        let html = `<div class="foto-count-badge">📷 ${snap.size} foto(s) · ${tarea}</div>
+        
+        let docs = [];
+        snap.forEach(doc => docs.push(doc.data()));
+        
+        docs.sort((a,b) => {
+            const tA = a.timestamp && typeof a.timestamp.toMillis === 'function' ? a.timestamp.toMillis() : 0;
+            const tB = b.timestamp && typeof b.timestamp.toMillis === 'function' ? b.timestamp.toMillis() : 0;
+            return tB - tA;
+        });
+        
+        docs = docs.slice(0, 10);
+        
+        let html = `<div class="foto-count-badge">📷 ${docs.length} foto(s) recientes de la zona</div>
                     <div class="foto-gallery">`;
-        snap.forEach(doc => {
-            const d = doc.data();
+        docs.forEach(d => {
             const thumbSrc = d.thumb || d.url;
             const caption = `${d.zona} · Sem ${d.semana} · ${d.tarea||''}`;
             html += `<img class="foto-thumb" src="${thumbSrc}"
