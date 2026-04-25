@@ -1432,43 +1432,52 @@ async function handleFotoSelected(e) {
     }
 }
 
-// — Cargar galería de fotos de una zona/semana
-async function loadFotosGallery(zIdx, semana, containerId) {
+let _fotoListeners = {};
+
+// — Cargar galería de fotos de una zona/semana (Tiempo Real)
+function loadFotosGallery(zIdx, semana, containerId) {
     const el = document.getElementById(containerId);
     if(!el) return;
     if(!db) { el.innerHTML = ''; return; }
     try {
-        const snap = await db.collection('obras').doc(session.obra || 'SAUCES')
+        if(_fotoListeners[containerId]) {
+            _fotoListeners[containerId](); // Cancelar escucha previa
+        }
+
+        _fotoListeners[containerId] = db.collection('obras').doc(session.obra || 'SAUCES')
             .collection('fotos')
             .where('zona_idx','==', zIdx)
-            .get();
-            
-        if(snap.empty) { el.innerHTML = ''; return; }
-        
-        let docs = [];
-        snap.forEach(doc => docs.push(doc.data()));
-        
-        docs.sort((a,b) => {
-            const tA = a.timestamp && typeof a.timestamp.toMillis === 'function' ? a.timestamp.toMillis() : 0;
-            const tB = b.timestamp && typeof b.timestamp.toMillis === 'function' ? b.timestamp.toMillis() : 0;
-            return tB - tA;
-        });
-        
-        docs = docs.slice(0, 10);
-        
-        let html = `<div class="foto-count-badge">📷 ${docs.length} foto(s) recientes de la zona</div>
-                    <div class="foto-gallery">`;
-        docs.forEach(d => {
-            const thumbSrc = d.thumb || d.url;
-            const caption = `${d.zona} · Sem ${d.semana} · ${d.tarea||''}`;
-            html += `<img class="foto-thumb" src="${thumbSrc}"
-                          onclick="openLightbox('${d.url}','${caption}')"
-                          alt="Foto de avance">`;
-        });
-        html += '</div>';
-        el.innerHTML = html;
+            .onSnapshot((snap) => {
+                if(snap.empty) { el.innerHTML = ''; return; }
+                
+                let docs = [];
+                snap.forEach(doc => docs.push(doc.data()));
+                
+                docs.sort((a,b) => {
+                    const tA = a.timestamp && typeof a.timestamp.toMillis === 'function' ? a.timestamp.toMillis() : 0;
+                    const tB = b.timestamp && typeof b.timestamp.toMillis === 'function' ? b.timestamp.toMillis() : 0;
+                    return tB - tA;
+                });
+                
+                docs = docs.slice(0, 10);
+                
+                let html = `<div class="foto-count-badge">📷 ${docs.length} foto(s) recientes de la zona</div>
+                            <div class="foto-gallery">`;
+                docs.forEach(d => {
+                    const thumbSrc = d.thumb || d.url;
+                    const caption = `${d.zona} · Sem ${d.semana} · ${d.tarea||''}`;
+                    html += `<img class="foto-thumb" src="${thumbSrc}"
+                                  onclick="openLightbox('${d.url}','${caption}')"
+                                  alt="Foto de avance">`;
+                });
+                html += '</div>';
+                el.innerHTML = html;
+            }, (error) => {
+                console.warn('loadFotosGallery onSnapshot:', error.message);
+                el.innerHTML = '';
+            });
     } catch(e) {
-        console.warn('loadFotosGallery:', e.message);
+        console.warn('loadFotosGallery init:', e.message);
         el.innerHTML = '';
     }
 }
