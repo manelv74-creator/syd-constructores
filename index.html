@@ -27,10 +27,10 @@
 
     <style>
         :root {
-            --bg:#0a0e1a; --surface:#111827; --border:rgba(255,255,255,0.08);
+            --bg:#1a1d2e; --surface:#252a3d; --border:rgba(255,255,255,0.15);
             --accent:#3b82f6; --accent2:#f59e0b; --accent3:#10b981;
-            --text:#f1f5f9; --muted:#64748b; --soft:#94a3b8;
-            --done:#1e3a2f; --done-text:#4ade80; --future:#1e2433;
+            --text:#ffffff; --muted:#94a3b8; --soft:#cbd5e1;
+            --done:#1e3a2f; --done-text:#4ade80; --future:#32394e;
             --radius:16px;
         }
         *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -146,9 +146,10 @@
         /* ══ APP SHELL ══ */
         #appShell{display:none}
         .top-header{
-            background:linear-gradient(135deg,#0f172a,#1e3a5f);
+            background:linear-gradient(135deg,#1e293b,#2e4a7a);
             padding:14px 16px 10px;position:sticky;top:0;z-index:100;
             border-bottom:1px solid var(--border);
+            box-shadow:0 4px 20px rgba(0,0,0,0.3);
         }
         .header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
         .app-title{font-size:0.95rem;font-weight:700;letter-spacing:-0.02em}
@@ -235,11 +236,11 @@
         .gantt-scroll-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border)}
         .gantt-table{width:100%;border-collapse:collapse;min-width:1600px}
         .gantt-table th,.gantt-table td{padding:7px 5px;text-align:center;font-size:0.62rem;border:1px solid var(--border);white-space:nowrap}
-        .gantt-table th{background:#0f172a;color:var(--muted);font-weight:600;text-transform:uppercase}
-        .gantt-table th.active-col{background:rgba(245,158,11,0.25);color:var(--accent2)}
-        .gantt-table td.zone-cell{text-align:left;font-weight:600;font-size:0.65rem;color:var(--soft);background:#0f172a;position:sticky;left:0;min-width:80px;max-width:80px;z-index:2;white-space:normal;line-height:1.3}
-        .gantt-table td.cell-done{background:var(--done);color:var(--done-text)}
-        .gantt-table td.cell-future{background:var(--future);color:var(--muted)}
+        .gantt-table th{background:#2d3748;color:#a0aec0;font-weight:700;text-transform:uppercase;letter-spacing:0.02em}
+        .gantt-table th.active-col{background:rgba(245,158,11,0.35);color:#fff}
+        .gantt-table td.zone-cell{text-align:left;font-weight:700;font-size:0.68rem;color:#cbd5e1;background:#2d3748;position:sticky;left:0;min-width:80px;max-width:80px;z-index:2;white-space:normal;line-height:1.3}
+        .gantt-table td.cell-done{background:var(--done);color:var(--done-text);border-color:rgba(16,185,129,0.2)}
+        .gantt-table td.cell-future{background:var(--future);color:var(--soft)}
         .gantt-table td.cell-active{font-weight:700;color:#fff}
         .detail-section-title{font-size:0.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px}
         .detail-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px}
