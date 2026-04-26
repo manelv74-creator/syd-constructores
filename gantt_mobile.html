@@ -781,7 +781,17 @@ async function loadWeeklyNotes() {
             .orderBy('timestamp', 'asc').get();
         
         weeklyNotes = [];
-        snap.forEach(doc => weeklyNotes.push(doc.data().texto));
+        let html = "";
+        snap.forEach(doc => {
+            const data = doc.data();
+            weeklyNotes.push(data.texto);
+            html += `
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:8px; padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.05);">
+                    <div style="flex:1;">• ${data.texto}</div>
+                    <button onclick="deleteSingleNote('${doc.id}')" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:0.9rem; padding:0 4px;">✕</button>
+                </div>
+            `;
+        });
         
         const counter = document.getElementById('noteCounter');
         const preview = document.getElementById('notesPreview');
@@ -791,7 +801,7 @@ async function loadWeeklyNotes() {
         counter.textContent = `${weeklyNotes.length} nota(s)`;
         if (weeklyNotes.length > 0) {
             preview.style.display = 'block';
-            preview.innerHTML = weeklyNotes.map(n => `• ${n}`).join('<br>');
+            preview.innerHTML = html;
             btnRep.style.opacity = '1';
             if(clearBtn) clearBtn.style.display = 'block';
         } else {
@@ -800,6 +810,15 @@ async function loadWeeklyNotes() {
             if(clearBtn) clearBtn.style.display = 'none';
         }
     } catch(e) { console.error('Error loading notes:', e); }
+}
+
+async function deleteSingleNote(docId) {
+    if(!confirm('¿Borrar esta nota?')) return;
+    try {
+        await db.collection('obras').doc(session.obra)
+            .collection('report_notes').doc(docId).delete();
+        loadWeeklyNotes();
+    } catch(e) { console.error('Error deleting note:', e); }
 }
 
 async function clearWeeklyNotes() {
