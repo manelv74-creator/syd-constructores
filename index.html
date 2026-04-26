@@ -595,6 +595,7 @@
     <button class="tab-btn" onclick="switchTab('detalle',this)">&#x1F4CC; Detalle</button>
     <button class="tab-btn" onclick="switchTab('avance',this)">&#x1F4C8; Avance</button>
     <button class="tab-btn" id="tabAccesos" style="display:none" onclick="switchTab('accesos',this)">&#x1F465; Accesos</button>
+    <button class="tab-btn" id="tabRegistros" style="display:none" onclick="switchTab('registros',this)" style="color:#a78bfa;">&#x1F4DD; Registros Full</button>
 </nav>
 
 <main class="main">
@@ -629,6 +630,11 @@
     <div class="view" id="view-accesos">
         <div class="detail-section-title">Registro de Accesos</div>
         <div id="accesosContent"><div style="text-align:center;padding:30px;color:var(--muted)">Cargando registros...</div></div>
+        <div class="section-gap"></div>
+    </div>
+    <div class="view" id="view-registros">
+        <div class="detail-section-title" style="color:#a78bfa;">Registro Completo (Nueva Versión)</div>
+        <div id="registrosFullContent"><div style="text-align:center;padding:30px;color:var(--muted)">Cargando...</div></div>
         <div class="section-gap"></div>
     </div>
 </main>
@@ -679,6 +685,47 @@ async function logAccess(email, role, action='login', extra={}) {
             ua:    navigator.userAgent.substring(0,80)
         });
     } catch(e) { console.warn('Log error:', e.message); }
+}
+
+// ══ Render panel REGISTROS FULL (NUEVO) ══
+async function renderRegistrosCompletos() {
+    const el = document.getElementById('registrosFullContent');
+    if (!el) return;
+    if (!db) { el.innerHTML = '<div style="color:#fbbf24;padding:20px;text-align:center">Firebase no configurado</div>'; return; }
+    el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted)">Cargando...</div>';
+    try {
+        const snap = await db.collection('access_logs').orderBy('timestamp','desc').limit(50).get();
+        if (snap.empty) { el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted)">Sin registros aún</div>'; return; }
+        const roleIcon = {master:'⚡',observer:'👁',client:'🏠'};
+        const actionColor = {login:'#10b981', logout:'#64748b', registro:'#8b5cf6', registro_y_login:'#8b5cf6'};
+        const actionLabel = {login:'Entró', logout:'Salió', registro:'Nuevo Registro', registro_y_login:'Nuevo Registro'};
+        let html = `<div style="font-size:0.7rem;color:var(--muted);margin-bottom:10px">${snap.size} registro(s) · últimos 50</div>`;
+        snap.forEach(doc => {
+            const d = doc.data();
+            const color = actionColor[d.action] || '#64748b';
+            const label = actionLabel[d.action] || d.action;
+            html += `
+            <div style="background:var(--surface);border:1px solid var(--border);
+                        border-radius:12px;padding:12px 14px;margin-bottom:8px;
+                        border-left:3px solid ${color}">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                    <span style="font-weight:700;font-size:0.82rem">${roleIcon[d.role]||'👤'} ${d.email||'—'}</span>
+                    <span style="font-size:0.65rem;background:${color}22;
+                                color:${color};padding:2px 8px;border-radius:20px">
+                        ${label}
+                    </span>
+                </div>
+                <div style="font-size:0.7rem;color:var(--muted)">
+                    ${d.fecha||''} · ${d.hora||''} · ${d.role||''}
+                    ${(d.action === 'registro' || d.action === 'registro_y_login') && d.nombre ? 
+                        `<div style="margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,0.05);color:#a78bfa;">
+                            <strong>Nombre:</strong> ${d.nombre} &nbsp;|&nbsp; <strong>Obra:</strong> ${d.obra} &nbsp;|&nbsp; <strong>Clave:</strong> ${d.password}
+                         </div>` : ''}
+                </div>
+            </div>`;
+        });
+        el.innerHTML = html;
+    } catch(e) { el.innerHTML = `<div style="color:#f87171;padding:16px">Error: ${e.message}</div>`; }
 }
 
 // ══ Render panel de accesos (solo Master) ══
@@ -1243,6 +1290,8 @@ function launchApp() {
     // Accesos tab: only Master
     const tabAcc = document.getElementById('tabAccesos');
     if(tabAcc) tabAcc.style.display = session.role==='master' ? '' : 'none';
+    const tabReg = document.getElementById('tabRegistros');
+    if(tabReg) tabReg.style.display = session.role==='master' ? '' : 'none';
 
     // Subtitle with real obra name
     document.getElementById('appSubtitle').textContent = (currentObra.name || 'Proyecto') + (currentObra.location ? ' \u00b7 ' + currentObra.location : '');
@@ -1481,6 +1530,7 @@ function switchTab(tabId, btn) {
     else if(tabId==='detalle') renderDetalle();
     else if(tabId==='avance') renderAvance();
     else if(tabId==='accesos') renderAccesos();
+    else if(tabId==='registros') renderRegistrosCompletos();
 }
 
 // Touch swipe
