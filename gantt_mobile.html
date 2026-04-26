@@ -617,6 +617,37 @@
         </div>
         <div class="overview-grid" id="statsGrid"></div>
         <div id="clientZoneHeader" style="display:none"></div>
+        
+        <!-- Report Generator Card (Master Only) -->
+        <div id="reportGeneratorCard" style="display:none; background:linear-gradient(135deg, #1e3a8a 0%, #1e1b4b 100%); border-radius:24px; padding:24px; margin-bottom:24px; border:1px solid rgba(255,255,255,0.1); box-shadow:0 15px 35px rgba(0,0,0,0.4);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <div>
+                    <div style="font-size:1.1rem; font-weight:800; color:#fff; display:flex; align-items:center; gap:8px;">
+                        <span>📋</span> Generador de Reporte
+                    </div>
+                    <div style="font-size:0.7rem; color:rgba(255,255,255,0.6); margin-top:4px;">Acumula notas para el informe semanal</div>
+                </div>
+                <div id="noteCounter" style="background:rgba(255,255,255,0.1); padding:4px 12px; border-radius:20px; font-size:0.7rem; font-weight:700;">0 notas</div>
+            </div>
+            
+            <div id="notesPreview" style="max-height:150px; overflow-y:auto; background:rgba(0,0,0,0.2); border-radius:12px; padding:12px; margin-bottom:16px; font-size:0.8rem; color:#cbd5e1; line-height:1.5; display:none;">
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <button onclick="startDictation()" id="btnDictar" style="background:#3b82f6; color:#fff; border:none; padding:15px; border-radius:14px; font-weight:700; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;">
+                    <span id="dictarIcon">🎙️</span> <span id="dictarText">Dictar</span>
+                </button>
+                <button onclick="generateReport()" id="btnReporte" style="background:#10b981; color:#fff; border:none; padding:15px; border-radius:14px; font-weight:700; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; opacity:0.5;">
+                    🚀 Informe
+                </button>
+            </div>
+            <div id="dictationStatus" style="font-size:0.65rem; color:#93c5fd; margin-top:10px; text-align:center; display:none;">Escuchando... Di algo sobre la obra</div>
+            
+            <div id="clearNotesBtn" style="display:none; text-align:center; margin-top:12px;">
+                <button onclick="clearWeeklyNotes()" style="background:none; border:none; color:rgba(255,255,255,0.3); font-size:0.65rem; text-decoration:underline; cursor:pointer;">Limpiar notas de la semana</button>
+            </div>
+        </div>
+
         <div id="zoneCards"></div>
         <div class="section-gap"></div>
     </div>
@@ -673,6 +704,149 @@ try {
         console.log('[SYD] Firebase no configurado — modo local');
     }
 } catch(e) { console.warn('[SYD] Firebase error:', e.message); }
+
+// ══════════════════════════════════════
+// GENERADOR DE REPORTES (Voz a Texto + IA)
+// ══════════════════════════════════════
+let recognition = null;
+let weeklyNotes = [];
+
+function initSpeech() {
+    const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!Speech) {
+        console.warn('Speech Recognition not supported');
+        return;
+    }
+    recognition = new Speech();
+    recognition.lang = 'es-MX';
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    recognition.onstart = () => {
+        document.getElementById('dictarIcon').textContent = '🛑';
+        document.getElementById('dictarText').textContent = 'Grabando...';
+        document.getElementById('btnDictar').style.background = '#ef4444';
+        document.getElementById('dictationStatus').style.display = 'block';
+    };
+
+    recognition.onresult = (event) => {
+        const text = event.results[0][0].transcript;
+        saveWeeklyNote(text);
+    };
+
+    recognition.onend = () => {
+        document.getElementById('dictarIcon').textContent = '🎙️';
+        document.getElementById('dictarText').textContent = 'Dictar';
+        document.getElementById('btnDictar').style.background = '#3b82f6';
+        document.getElementById('dictationStatus').style.display = 'none';
+    };
+
+    recognition.onerror = (e) => {
+        console.error('Speech error:', e.error);
+        alert('Error de dictado: ' + e.error);
+    };
+}
+
+function startDictation() {
+    if (!recognition) initSpeech();
+    if (!recognition) {
+        alert('Tu navegador no soporta dictado por voz. Por favor usa Chrome o Safari.');
+        return;
+    }
+    try {
+        recognition.start();
+    } catch(e) { recognition.stop(); }
+}
+
+async function saveWeeklyNote(text) {
+    if (!db || !session.obra) return;
+    try {
+        await db.collection('obras').doc(session.obra)
+            .collection('report_notes').add({
+                semana: currentWeek,
+                texto: text,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                usuario: session.email
+            });
+        loadWeeklyNotes();
+    } catch(e) { console.error('Error saving note:', e); }
+}
+
+async function loadWeeklyNotes() {
+    if (!db || !session.obra) return;
+    try {
+        const snap = await db.collection('obras').doc(session.obra)
+            .collection('report_notes')
+            .where('semana', '==', currentWeek)
+            .orderBy('timestamp', 'asc').get();
+        
+        weeklyNotes = [];
+        snap.forEach(doc => weeklyNotes.push(doc.data().texto));
+        
+        const counter = document.getElementById('noteCounter');
+        const preview = document.getElementById('notesPreview');
+        const btnRep = document.getElementById('btnReporte');
+        const clearBtn = document.getElementById('clearNotesBtn');
+
+        counter.textContent = `${weeklyNotes.length} nota(s)`;
+        if (weeklyNotes.length > 0) {
+            preview.style.display = 'block';
+            preview.innerHTML = weeklyNotes.map(n => `• ${n}`).join('<br>');
+            btnRep.style.opacity = '1';
+            if(clearBtn) clearBtn.style.display = 'block';
+        } else {
+            preview.style.display = 'none';
+            btnRep.style.opacity = '0.5';
+            if(clearBtn) clearBtn.style.display = 'none';
+        }
+    } catch(e) { console.error('Error loading notes:', e); }
+}
+
+async function clearWeeklyNotes() {
+    if(!confirm('¿Seguro que deseas borrar todas las notas de esta semana?')) return;
+    try {
+        const snap = await db.collection('obras').doc(session.obra)
+            .collection('report_notes')
+            .where('semana', '==', currentWeek).get();
+        const batch = db.batch();
+        snap.forEach(doc => batch.delete(doc.ref));
+        await batch.commit();
+        loadWeeklyNotes();
+    } catch(e) { console.error('Error clearing notes:', e); }
+}
+
+async function generateReport() {
+    if (weeklyNotes.length === 0) return;
+    
+    const btn = document.getElementById('btnReporte');
+    const oldText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '⏳ IA...';
+
+    try {
+        const fotosSnap = await db.collection('obras').doc(session.obra)
+            .collection('fotos').where('semana', '==', currentWeek).get();
+        let fotosUrls = [];
+        fotosSnap.forEach(doc => fotosUrls.push(doc.data().url));
+
+        let tareasTxt = "";
+        projectData.forEach(z => {
+            const t = z.tasks[currentWeek-1];
+            if(t) tareasTxt += `- ${z.zone}: ${t}\n`;
+        });
+
+        const reporteIA = `🏗️ *REPORTE SEMANAL - SEMANA ${currentWeek}* 🏗️\n\nHola, te comparto el avance de tu obra:\n\n✅ *Avances logrados:* \n${weeklyNotes.map(n => "- " + n).join('\n')}\n\n👷‍♂️ *Próximos pasos:* \nContinuaremos con las tareas programadas según el calendario.\n\n📸 *Fotos:* Puedes ver las fotos de esta semana en la aplicación.\n\n🔗 *App SYD:* https://manelv74-creator.github.io/syd-constructores/\n\n_Generado automáticamente por SYD IA_`;
+
+        const waUrl = `https://wa.me/?text=${encodeURIComponent(reporteIA)}`;
+        window.open(waUrl, '_blank');
+
+    } catch(e) {
+        alert('Error: ' + e.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = oldText;
+    }
+}
 
 // ══ Log de acceso a Firestore ══
 async function logAccess(email, role, action='login', extra={}) {
@@ -1067,7 +1241,12 @@ function setAuthMode(mode, btn) {
     authMode = mode;
     document.querySelectorAll('.auth-toggle-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    
+    // Mostrar generador de reportes solo a Master (si ya hay sesión)
+    const repCard = document.getElementById('reportGeneratorCard');
+    if (repCard) {
+        repCard.style.display = (session && session.role === 'master') ? 'block' : 'none';
+        if (session && session.role === 'master') loadWeeklyNotes();
+    }
     document.getElementById('fieldNombre').style.display = mode === 'register' ? 'block' : 'none';
     document.getElementById('fieldTelefono').style.display = mode === 'register' ? 'block' : 'none';
     document.getElementById('dynamicField').style.display = mode === 'register' ? 'block' : 'none'; // Only ask project code on register for client
