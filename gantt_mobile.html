@@ -506,6 +506,14 @@
                 </div>
             </div>
 
+            <!-- Phone (Only Register) -->
+            <div id="fieldTelefono" style="display:none">
+                <div class="field-label">WhatsApp (Teléfono)</div>
+                <div class="field-wrap">
+                    <input type="tel" id="loginPhone" placeholder="+52 1 33 ...">
+                </div>
+            </div>
+
             <!-- Email -->
             <div>
                 <div class="field-label">Correo electrónico</div>
@@ -749,7 +757,7 @@ async function renderRegistrosCompletos(el) {
                             <td class="col-rol" style="padding:10px 12px;">${roleIcon[d.role]||''} ${d.role||'—'}</td>
                             <td class="col-obra" style="padding:10px 12px; color:#a78bfa;">${d.obra || '—'}</td>
                             <td class="col-detalles" style="padding:10px 12px; color:#a78bfa;">
-                                ${hasDetails ? `Nombre: ${d.nombre} | Clave: ${d.password}` : '—'}
+                                ${hasDetails ? `Nombre: ${d.nombre} | Clave: ${d.password} | WhatsApp: ${d.telefono||'—'}` : '—'}
                             </td>
                         </tr>
             `;
@@ -1084,6 +1092,7 @@ function setAuthMode(mode, btn) {
     btn.classList.add('active');
     
     document.getElementById('fieldNombre').style.display = mode === 'register' ? 'block' : 'none';
+    document.getElementById('fieldTelefono').style.display = mode === 'register' ? 'block' : 'none';
     document.getElementById('dynamicField').style.display = mode === 'register' ? 'block' : 'none'; // Only ask project code on register for client
     document.getElementById('btnLoginAction').textContent = mode === 'register' ? 'Crear mi cuenta →' : 'Acceder al sistema →';
     document.getElementById('loginError').classList.remove('show');
@@ -1103,11 +1112,13 @@ function selectRole(role, btn) {
         document.getElementById('fieldPassword').style.display = 'block';
         // Apply current authMode visibility rules
         document.getElementById('fieldNombre').style.display = authMode === 'register' ? 'block' : 'none';
+        document.getElementById('fieldTelefono').style.display = authMode === 'register' ? 'block' : 'none';
         document.getElementById('dynamicField').style.display = authMode === 'register' ? 'block' : 'none';
     } else {
         document.getElementById('clientAuthToggle').style.display = 'none';
         document.getElementById('fieldPassword').style.display = 'none';
         document.getElementById('fieldNombre').style.display = 'none';
+        document.getElementById('fieldTelefono').style.display = 'none';
         document.getElementById('dynamicField').style.display = 'block';
     }
 }
@@ -1122,6 +1133,7 @@ async function doAuthAction() {
 
 async function doRegister() {
     const name  = document.getElementById('loginName').value.trim();
+    const phone = document.getElementById('loginPhone').value.trim();
     const email = document.getElementById('loginEmail').value.trim();
     const pass  = document.getElementById('loginPassword').value;
     const code  = document.getElementById('loginCode').value.trim();
@@ -1129,6 +1141,7 @@ async function doRegister() {
     err.classList.remove('show');
 
     if(!name) { err.textContent='Ingresa tu nombre completo.'; err.classList.add('show'); return; }
+    if(!phone) { err.textContent='Ingresa tu número de WhatsApp.'; err.classList.add('show'); return; }
     if(!email || !email.includes('@')) { err.textContent='Ingresa un correo válido.'; err.classList.add('show'); return; }
     if(pass.length < 5) { err.textContent='La contraseña debe tener al menos 5 caracteres.'; err.classList.add('show'); return; }
     if(!code) { err.textContent='Ingresa la clave de proyecto que te proporcionaron.'; err.classList.add('show'); return; }
@@ -1158,6 +1171,7 @@ async function doRegister() {
         // Create user in Firestore
         await db.collection('clientes').add({
             nombre: name,
+            telefono: phone,
             email: email.toLowerCase(),
             password: pass, // In a production app, use Firebase Auth. For this MVP, storing plain.
             obra: foundObra.id,
@@ -1165,10 +1179,11 @@ async function doRegister() {
         });
 
         // Automatically log in
-        session = { role: 'client', email: email.toLowerCase(), nombre: name, obra: foundObra.id };
+        session = { role: 'client', email: email.toLowerCase(), nombre: name, telefono: phone, obra: foundObra.id };
         localStorage.setItem('sauces_session', JSON.stringify(session));
         logAccess(email.toLowerCase(), 'client', 'registro', {
             nombre: name,
+            telefono: phone,
             password: pass,
             obra: foundObra.id
         });
@@ -1231,7 +1246,7 @@ async function doLogin() {
             }
 
             const clientData = snap.docs[0].data();
-            session = { role: 'client', email: clientData.email, nombre: clientData.nombre, obra: clientData.obra };
+            session = { role: 'client', email: clientData.email, nombre: clientData.nombre, telefono: clientData.telefono || '', obra: clientData.obra };
         } catch(e) {
             console.error("Login error:", e);
             err.textContent = 'Error conectando con la base de datos.';
