@@ -664,11 +664,13 @@ const FIREBASE_CONFIG = {
 
 // ══ Firebase init (graceful — la app funciona sin Firebase) ══
 let db = null;
+let storage = null;
 try {
     if (!FIREBASE_CONFIG.apiKey.includes('PEGA_AQUI')) {
         firebase.initializeApp(FIREBASE_CONFIG);
         db = firebase.firestore();
-        console.log('[SYD] Firebase conectado');
+        storage = firebase.storage();
+        console.log('[SYD] Firebase & Storage conectados');
     } else {
         console.log('[SYD] Firebase no configurado — modo local');
     }
@@ -1571,20 +1573,15 @@ window.onload = async function() {
     <img id="lightboxImg" src="" alt="">
     <div id="lightboxCaption"></div>
 </div>
-<!-- Input oculto para subir fotos -->
-<input type="file" id="fotoInput" accept="image/*" capture="environment" style="display:none" onchange="handleFotoSelected(event)">
+<!-- Input oculto para subir fotos/videos -->
+<input type="file" id="fotoInput" accept="image/*,video/*" capture="environment" style="display:none" onchange="handleMediaSelected(event)">
 
 <script>
 // ══════════════════════════════════════
-// IMGBB — FOTOS (Punto 4, sin tarjeta)
+// FIREBASE STORAGE — FOTOS Y VIDEOS (Nuevo)
 // ══════════════════════════════════════
-// Obtén tu clave GRATIS en: https://api.imgbb.com/
-// Crea cuenta → My Account → API → copia la clave
-const IMGBB_API_KEY = 'ef497f7df24480c5df8656ba07fea071';
-
 let _uploadContext = null;
 
-// — Abre selector de archivo para una tarea
 function triggerFotoUpload(zIdx) {
     if(session.role !== 'master') return;
     const zona = projectData[zIdx];
@@ -1597,42 +1594,38 @@ function triggerFotoUpload(zIdx) {
     document.getElementById('fotoInput').click();
 }
 
-// — Maneja el archivo seleccionado
-async function handleFotoSelected(e) {
+async function handleMediaSelected(e) {
     const file = e.target.files[0];
     e.target.value = '';
-    if(!file || !_uploadContext) return;
-
-    if(IMGBB_API_KEY === 'PEGA_AQUI_TU_CLAVE_IMGBB') {
-        alert('⚠️ Configura tu clave de ImgBB.\n\n1. Ve a https://api.imgbb.com/\n2. Crea cuenta gratis\n3. Copia tu API key\n4. Pégala en IMGBB_API_KEY del código');
-        return;
-    }
+    if(!file || !_uploadContext || !storage) return;
 
     const ctx = _uploadContext;
     const progEl = document.getElementById('up-prog-' + ctx.zIdx);
-    if(progEl) { progEl.style.display='block'; progEl.textContent='⏳ Procesando imagen...'; }
+    const isVideo = file.type.startsWith('video/');
+    const typeLabel = isVideo ? 'Video' : 'Foto';
+    
+    if(progEl) { progEl.style.display='block'; progEl.textContent=`⏳ Preparando ${typeLabel}...`; }
 
     try {
-        // Comprimir y convertir a base64
-        const base64 = await imageToBase64(file, 1200, 0.82);
-        if(progEl) progEl.textContent = '⏳ Subiendo a ImgBB...';
+        let blob = file;
+        let fileName = `SYD_${Date.now()}_${file.name}`;
+        
+        if (!isVideo) {
+            const base64 = await imageToBase64(file, 1200, 0.82);
+            const byteString = atob(base64);
+            const ab = new ArrayBuffer(byteString.length);
+            const ia = new Uint8Array(ab);
+            for (let i = 0; i < byteString.length; i++) ia[i] = byteString.charCodeAt(i);
+            blob = new Blob([ab], {type: 'image/jpeg'});
+            fileName = `SYD_${Date.now()}.jpg`;
+        }
 
-        const formData = new FormData();
-        formData.append('key', IMGBB_API_KEY);
-        formData.append('image', base64);
-        formData.append('name', `SYD_z${ctx.zIdx}_s${ctx.semana}_${Date.now()}`);
+        if(progEl) progEl.textContent = `⏳ Subiendo ${typeLabel} a Firebase...`;
 
-        const resp = await fetch('https://api.imgbb.com/1/upload', {
-            method: 'POST', body: formData
-        });
-        const result = await resp.json();
+        const storageRef = storage.ref().child(`obras/${session.obra || 'SAUCES'}/${fileName}`);
+        const snapshot = await storageRef.put(blob);
+        const url = await snapshot.ref.getDownloadURL();
 
-        if(!result.success) throw new Error(result.error?.message || 'Error ImgBB');
-
-        const url = result.data.display_url;
-        const thumb = result.data.thumb?.url || url;
-
-        // Guardar referencia en Firestore
         if(db) {
             await db.collection('obras').doc(session.obra || 'SAUCES')
                 .collection('fotos').add({
@@ -1641,21 +1634,22 @@ async function handleFotoSelected(e) {
                     semana:    ctx.semana,
                     tarea:     ctx.tarea,
                     url,
-                    thumb,
+                    thumb:     url,
+                    type:      isVideo ? 'video' : 'image',
                     subidoPor: session.email,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                     fecha:     new Date().toLocaleDateString('es-MX'),
                     hora:      new Date().toLocaleTimeString('es-MX')
                 });
         }
-        if(progEl) { progEl.textContent='✅ Foto subida'; setTimeout(()=>{ progEl.style.display='none'; },2500); }
-        // Refrescar galería
+        
+        if(progEl) { progEl.textContent=`✅ ${typeLabel} subid${isVideo?'o':'a'}`; setTimeout(()=>{ progEl.style.display='none'; },2500); }
         loadFotosGallery(ctx.zIdx, ctx.semana, 'gallery-' + ctx.zIdx);
         loadFotosGallery(ctx.zIdx, ctx.semana, 'dgallery-' + ctx.zIdx);
 
     } catch(err) {
         if(progEl) { progEl.textContent='❌ Error: ' + err.message; }
-        console.error('ImgBB upload error:', err);
+        console.error('Upload error:', err);
     }
 }
 
@@ -1741,13 +1735,39 @@ async function deleteFoto(docId, event) {
 }
 
 // — Lightbox
-function openLightbox(url, caption) {
-    document.getElementById('lightboxImg').src = url;
-    document.getElementById('lightboxCaption').textContent = caption;
-    document.getElementById('lightbox').classList.add('show');
+function openLightbox(url, caption, isVideo = false) {
+    const img = document.getElementById('lightboxImg');
+    const cap = document.getElementById('lightboxCaption');
+    const lb = document.getElementById('lightbox');
+    
+    // Limpiar contenido previo
+    lb.querySelectorAll('video').forEach(v => v.remove());
+    img.style.display = 'block';
+
+    if (isVideo) {
+        img.style.display = 'none';
+        const video = document.createElement('video');
+        video.src = url;
+        video.controls = true;
+        video.autoplay = true;
+        video.style.maxWidth = '90vw';
+        video.style.maxHeight = '70vh';
+        video.style.borderRadius = '12px';
+        lb.insertBefore(video, cap);
+    } else {
+        img.src = url;
+    }
+    
+    cap.textContent = caption;
+    lb.classList.add('show');
 }
 function closeLightbox() {
-    document.getElementById('lightbox').classList.remove('show');
+    const lb = document.getElementById('lightbox');
+    lb.querySelectorAll('video').forEach(v => {
+        v.pause();
+        v.remove();
+    });
+    lb.classList.remove('show');
     document.getElementById('lightboxImg').src = '';
 }
 
