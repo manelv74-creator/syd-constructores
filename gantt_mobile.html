@@ -769,17 +769,26 @@ function addManualNote(msg = 'Escribe tu nota sobre el avance:') {
 }
 
 async function saveWeeklyNote(text) {
-    if (!db || !session.obra) return;
+    if (!db) { alert('Error: Base de datos no conectada'); return; }
+    if (!session || !session.obra) { alert('Error: No hay una obra seleccionada en la sesión'); return; }
+    
     try {
+        console.log('[SYD] Guardando nota en:', session.obra, 'Semana:', currentWeek);
         await db.collection('obras').doc(session.obra)
             .collection('report_notes').add({
                 semana: currentWeek,
                 texto: text,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                usuario: session.email
+                usuario: session.email || 'anonimo'
             });
+        
+        console.log('[SYD] Nota guardada con éxito');
+        alert('✅ Nota guardada correctamente');
         loadWeeklyNotes();
-    } catch(e) { console.error('Error saving note:', e); }
+    } catch(e) { 
+        console.error('Error saving note:', e); 
+        alert('❌ Error al guardar nota: ' + e.message);
+    }
 }
 
 async function loadWeeklyNotes() {
