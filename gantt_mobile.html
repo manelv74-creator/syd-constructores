@@ -703,7 +703,7 @@ async function renderRegistrosCompletos() {
         let html = `
             <div style="margin-bottom:12px; display:flex; flex-wrap:wrap; gap:10px; justify-content:space-between; align-items:center;">
                 <div style="font-size:0.7rem;color:var(--muted);">${snap.size} registro(s) · últimos 50</div>
-                <input type="text" id="filterRegistros" placeholder="Filtrar por obra, email, nombre..." 
+                <input type="text" id="filterRegistros" placeholder="Búsqueda global..." 
                        style="padding:6px 12px; border-radius:6px; border:1px solid var(--border); background:rgba(0,0,0,0.2); color:#fff; width: 220px; font-size:0.8rem; font-family:Inter,sans-serif;" 
                        onkeyup="filterRegistrosTable()">
             </div>
@@ -711,12 +711,31 @@ async function renderRegistrosCompletos() {
                 <table id="registrosTable" style="width:100%; border-collapse:collapse; text-align:left; font-size:0.75rem; white-space:nowrap;">
                     <thead style="background:rgba(255,255,255,0.03); border-bottom:1px solid var(--border);">
                         <tr>
-                            <th style="padding:10px 12px; color:var(--muted); font-weight:600;">Fecha</th>
-                            <th style="padding:10px 12px; color:var(--muted); font-weight:600;">Acción</th>
-                            <th style="padding:10px 12px; color:var(--muted); font-weight:600;">Usuario</th>
-                            <th style="padding:10px 12px; color:var(--muted); font-weight:600;">Rol</th>
-                            <th style="padding:10px 12px; color:var(--muted); font-weight:600;">Obra</th>
-                            <th style="padding:10px 12px; color:var(--muted); font-weight:600;">Detalles</th>
+                            <th style="padding:10px 12px; color:var(--muted); font-weight:600; vertical-align:top;">Fecha</th>
+                            <th style="padding:10px 12px; color:var(--muted); font-weight:600; vertical-align:top;">
+                                Acción<br>
+                                <select id="filterAccion" onchange="filterRegistrosTable()" style="background:var(--surface); color:#cbd5e1; border:1px solid var(--border); border-radius:4px; font-size:0.65rem; margin-top:6px; padding:3px; outline:none;">
+                                    <option value="">Todas</option>
+                                    <option value="entró">Entró</option>
+                                    <option value="salió">Salió</option>
+                                    <option value="nuevo registro">Nuevo Registro</option>
+                                </select>
+                            </th>
+                            <th style="padding:10px 12px; color:var(--muted); font-weight:600; vertical-align:top;">Usuario</th>
+                            <th style="padding:10px 12px; color:var(--muted); font-weight:600; vertical-align:top;">
+                                Rol<br>
+                                <select id="filterRol" onchange="filterRegistrosTable()" style="background:var(--surface); color:#cbd5e1; border:1px solid var(--border); border-radius:4px; font-size:0.65rem; margin-top:6px; padding:3px; outline:none;">
+                                    <option value="">Todos</option>
+                                    <option value="master">Master</option>
+                                    <option value="supervisor">Supervisor</option>
+                                    <option value="client">Cliente</option>
+                                </select>
+                            </th>
+                            <th style="padding:10px 12px; color:var(--muted); font-weight:600; vertical-align:top;">
+                                Obra<br>
+                                <input type="text" id="filterObra" onkeyup="filterRegistrosTable()" placeholder="Buscar obra..." style="width:70px; background:var(--surface); color:#cbd5e1; border:1px solid var(--border); border-radius:4px; font-size:0.65rem; margin-top:6px; padding:3px; outline:none;">
+                            </th>
+                            <th style="padding:10px 12px; color:var(--muted); font-weight:600; vertical-align:top;">Detalles</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -728,14 +747,14 @@ async function renderRegistrosCompletos() {
             const hasDetails = (d.action === 'registro' || d.action === 'registro_y_login') && d.nombre;
             html += `
                         <tr class="registro-row" style="border-bottom:1px solid rgba(255,255,255,0.05);">
-                            <td style="padding:10px 12px;">${d.fecha||''} ${d.hora||''}</td>
-                            <td style="padding:10px 12px;">
+                            <td class="col-fecha" style="padding:10px 12px;">${d.fecha||''} ${d.hora||''}</td>
+                            <td class="col-accion" style="padding:10px 12px;">
                                 <span style="font-size:0.65rem;background:${color}22;color:${color};padding:2px 8px;border-radius:20px">${label}</span>
                             </td>
-                            <td style="padding:10px 12px; font-weight:600;">${d.email||'—'}</td>
-                            <td style="padding:10px 12px;">${roleIcon[d.role]||''} ${d.role||'—'}</td>
-                            <td style="padding:10px 12px; color:#a78bfa;">${d.obra || '—'}</td>
-                            <td style="padding:10px 12px; color:#a78bfa;">
+                            <td class="col-usuario" style="padding:10px 12px; font-weight:600;">${d.email||'—'}</td>
+                            <td class="col-rol" style="padding:10px 12px;">${roleIcon[d.role]||''} ${d.role||'—'}</td>
+                            <td class="col-obra" style="padding:10px 12px; color:#a78bfa;">${d.obra || '—'}</td>
+                            <td class="col-detalles" style="padding:10px 12px; color:#a78bfa;">
                                 ${hasDetails ? `Nombre: ${d.nombre} | Clave: ${d.password}` : '—'}
                             </td>
                         </tr>
@@ -747,13 +766,27 @@ async function renderRegistrosCompletos() {
 }
 
 function filterRegistrosTable() {
-    const input = document.getElementById('filterRegistros');
-    if (!input) return;
-    const filter = input.value.toLowerCase();
+    const globalInput = document.getElementById('filterRegistros');
+    const globalFilter = globalInput ? globalInput.value.toLowerCase() : '';
+    
+    const accionFilter = document.getElementById('filterAccion').value.toLowerCase();
+    const rolFilter = document.getElementById('filterRol').value.toLowerCase();
+    const obraFilter = document.getElementById('filterObra').value.toLowerCase();
+
     const rows = document.querySelectorAll('.registro-row');
     rows.forEach(row => {
         const text = row.textContent.toLowerCase();
-        row.style.display = text.includes(filter) ? '' : 'none';
+        const colAccion = row.querySelector('.col-accion').textContent.toLowerCase();
+        const colRol = row.querySelector('.col-rol').textContent.toLowerCase();
+        const colObra = row.querySelector('.col-obra').textContent.toLowerCase();
+
+        let show = true;
+        if (globalFilter && !text.includes(globalFilter)) show = false;
+        if (accionFilter && !colAccion.includes(accionFilter)) show = false;
+        if (rolFilter && !colRol.includes(rolFilter)) show = false;
+        if (obraFilter && !colObra.includes(obraFilter)) show = false;
+
+        row.style.display = show ? '' : 'none';
     });
 }
 
