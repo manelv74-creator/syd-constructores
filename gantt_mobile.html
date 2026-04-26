@@ -637,10 +637,13 @@
                 <button onclick="startDictation()" id="btnDictar" style="background:#3b82f6; color:#fff; border:none; padding:15px; border-radius:14px; font-weight:700; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;">
                     <span id="dictarIcon">🎙️</span> <span id="dictarText">Dictar</span>
                 </button>
-                <button onclick="generateReport()" id="btnReporte" style="background:#10b981; color:#fff; border:none; padding:15px; border-radius:14px; font-weight:700; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; opacity:0.5;">
-                    🚀 Informe
+                <button onclick="addManualNote()" style="background:rgba(255,255,255,0.05); color:#fff; border:1px solid rgba(255,255,255,0.1); padding:15px; border-radius:14px; font-weight:700; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
+                    ⌨️ Escribir
                 </button>
             </div>
+            <button onclick="generateReport()" id="btnReporte" style="background:#10b981; color:#fff; border:none; padding:15px; border-radius:14px; font-weight:700; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; width:100%; margin-top:12px; opacity:0.5;">
+                🚀 Generar Informe
+            </button>
             <div id="dictationStatus" style="font-size:0.65rem; color:#93c5fd; margin-top:10px; text-align:center; display:none;">Escuchando... Di algo sobre la obra</div>
             
             <div id="clearNotesBtn" style="display:none; text-align:center; margin-top:12px;">
@@ -750,12 +753,19 @@ function initSpeech() {
 function startDictation() {
     if (!recognition) initSpeech();
     if (!recognition) {
-        alert('Tu navegador no soporta dictado por voz. Por favor usa Chrome o Safari.');
+        addManualNote('Tu navegador no soporta dictado. Escribe tu nota aquí:');
         return;
     }
     try {
         recognition.start();
     } catch(e) { recognition.stop(); }
+}
+
+function addManualNote(msg = 'Escribe tu nota sobre el avance:') {
+    const text = prompt(msg);
+    if (text && text.trim().length > 0) {
+        saveWeeklyNote(text.trim());
+    }
 }
 
 async function saveWeeklyNote(text) {
