@@ -886,22 +886,31 @@ async function loadAccesosLog(el) {
         const snap = await db.collection('access_logs').orderBy('timestamp','desc').limit(50).get();
         if (snap.empty) { el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted)">Sin registros aún</div>'; return; }
         const roleIcon = {master:'⚡',observer:'👁',client:'🏠'};
-        const actionColor = {login:'#10b981',logout:'#64748b'};
+        const actionColor = {login:'#10b981', logout:'#64748b', registro:'#8b5cf6', registro_y_login:'#8b5cf6'};
+        const actionLabel = {login:'Entró', logout:'Salió', registro:'Nuevo Registro', registro_y_login:'Nuevo Registro'};
         let html = `<div style="font-size:0.7rem;color:var(--muted);margin-bottom:10px">${snap.size} registro(s) · últimos 50</div>`;
         snap.forEach(doc => {
             const d = doc.data();
+            const color = actionColor[d.action] || '#64748b';
+            const label = actionLabel[d.action] || d.action;
             html += `
             <div style="background:var(--surface);border:1px solid var(--border);
                         border-radius:12px;padding:12px 14px;margin-bottom:8px;
-                        border-left:3px solid ${actionColor[d.action]||'#64748b'}">
+                        border-left:3px solid ${color}">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
                     <span style="font-weight:700;font-size:0.82rem">${roleIcon[d.role]||'👤'} ${d.email||'—'}</span>
-                    <span style="font-size:0.65rem;background:${actionColor[d.action]||'#64748b'}22;
-                                color:${actionColor[d.action]||'#94a3b8'};padding:2px 8px;border-radius:20px">
-                        ${d.action==='login'?'Entró':'Salió'}
+                    <span style="font-size:0.65rem;background:${color}22;
+                                color:${color};padding:2px 8px;border-radius:20px">
+                        ${label}
                     </span>
                 </div>
-                <div style="font-size:0.7rem;color:var(--muted)">${d.fecha||''} · ${d.hora||''} · ${d.role||''}</div>
+                <div style="font-size:0.7rem;color:var(--muted)">
+                    ${d.fecha||''} · ${d.hora||''} · ${d.role||''}
+                    ${(d.action === 'registro' || d.action === 'registro_y_login') && d.nombre ? 
+                        `<div style="margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,0.05);color:#a78bfa;">
+                            <strong>Nombre:</strong> ${d.nombre} &nbsp;|&nbsp; <strong>Obra:</strong> ${d.obra} &nbsp;|&nbsp; <strong>Clave:</strong> ${d.password}
+                         </div>` : ''}
+                </div>
             </div>`;
         });
         el.innerHTML = html;
