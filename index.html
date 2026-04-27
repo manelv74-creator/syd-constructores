@@ -672,6 +672,13 @@
             <div id="clearNotesBtn" style="display:none; text-align:center; margin-top:12px;">
                 <button onclick="clearWeeklyNotes()" style="background:none; border:none; color:rgba(255,255,255,0.3); font-size:0.65rem; text-decoration:underline; cursor:pointer;">Limpiar notas de la semana</button>
             </div>
+
+            <!-- Botón WhatsApp (aparece después de generar el informe) -->
+            <div id="whatsappSendBtn" style="display:none; margin-top:12px;">
+                <button onclick="sendReportWhatsApp()" style="width:100%; background:linear-gradient(135deg,#25d366,#128c7e); color:#fff; border:none; padding:13px; border-radius:14px; font-weight:700; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
+                    📱 Enviar por WhatsApp a Clientes
+                </button>
+            </div>
         </div>
 
         <div id="zoneCards"></div>
@@ -1940,12 +1947,111 @@ Devuelve EXCLUSIVAMENTE este JSON válido (sin markdown, sin texto adicional ant
         setTimeout(() => win.print(), 1500);
 
         alert(`✅ Informe listo en nueva ventana.\n📷 Fotos incluidas: ${Math.min(fotoUrls.length, 4)} de ${fotoUrls.length}\n\nUsa el botón "Imprimir / Guardar PDF" o Ctrl+P en esa ventana.`);
+
+        // Mostrar botón de WhatsApp y guardar nombre del informe
+        document.getElementById('whatsappSendBtn').style.display = 'block';
+        window._lastReportName = fileName;
+        window._lastReportWeek = currentWeek;
     } catch (e) {
         console.error('[SYD] Error generateReport:', e);
         alert('Error al generar reporte: ' + e.message);
     } finally {
         btn.disabled = false;
         btn.innerHTML = oldText;
+    }
+}
+
+// ══ Envio de Informe por WhatsApp ══
+async function sendReportWhatsApp() {
+    if (!db) { alert('Firebase no está conectado.'); return; }
+    const obraId = session.obra;
+    if (!obraId) { alert('No hay obra seleccionada.'); return; }
+
+    try {
+        // Buscar clientes registrados en esta obra en access_logs
+        const snap = await db.collection('access_logs')
+            .where('obra', '==', obraId)
+            .where('role', '==', 'client')
+            .where('action', 'in', ['registro', 'registro_y_login'])
+            .get();
+
+        // Deduplicar por teléfono
+        const clientMap = {};
+        snap.forEach(doc => {
+            const d = doc.data();
+            if (d.telefono && d.nombre) {
+                const phone = d.telefono.replace(/[^\d+]/g, '');
+                if (phone) clientMap[phone] = d.nombre;
+            }
+        });
+
+        const clients = Object.entries(clientMap); // [[phone, name], ...]
+
+        if (clients.length === 0) {
+            alert('⚠️ No se encontraron clientes con teléfono registrado en esta obra.\n\nAsegúrate de que los clientes se hayan registrado con su número de WhatsApp.');
+            return;
+        }
+
+        // Determinar saludo según la hora
+        const hour = new Date().getHours();
+        const saludo = hour < 12 ? 'Buenos días' : 'Buenas tardes';
+
+        const obraName = currentObra?.name || obraId;
+        const semana = window._lastReportWeek || currentWeek;
+        const fecha = new Date().toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' });
+
+        // Confirmar con el usuario antes de enviar
+        const confirm = window.confirm(
+            `Se enviará el informe por WhatsApp a ${clients.length} cliente(s):\n\n` +
+            clients.map(([p, n]) => `• ${n} (${p})`).join('\n') +
+            `\n\n¿Continuar?`
+        );
+        if (!confirm) return;
+
+        // Abrir una ventana de WhatsApp por cada cliente
+        let sent = 0;
+        for (const [phone, nombre] of clients) {
+            const firstName = nombre.split(' ')[0].toUpperCase();
+
+            const mensaje =
+`${saludo}, ${firstName}.
+
+Le enviamos el informe semanal correspondiente a los trabajos realizados en su obra *${obraName}*.
+
+📅 Semana ${semana} — ${fecha}
+
+Cualquier duda o comentario estamos a sus órdenes.
+
+_SYD Constructores_
+📧 info@sydconstructores.com.mx
+📞 (33) XXXX-XXXX`;
+
+            // Formatear teléfono: asegurar que empiece con código de país
+            let tel = phone.replace(/[^\d]/g, '');
+            if (tel.startsWith('1') && tel.length === 11) {
+                // Formato +1 XXXXXXXX (EUA)
+            } else if (tel.length === 10) {
+                // México: agregar 52
+                tel = '52' + tel;
+            } else if (tel.startsWith('52') && tel.length === 12) {
+                // Ya tiene código MX sin +
+            } else if (tel.startsWith('521') && tel.length === 13) {
+                // Ya tiene código MX con 1
+            }
+
+            const url = `https://wa.me/${tel}?text=${encodeURIComponent(mensaje)}`;
+            window.open(url, '_blank');
+            sent++;
+
+            // Pequeña pausa entre ventanas para no saturar el navegador
+            await new Promise(r => setTimeout(r, 800));
+        }
+
+        alert(`✅ Se abrieron ${sent} conversación(es) de WhatsApp.\n\nRevisa cada pestaña y pulsa Enviar en WhatsApp Web.`);
+
+    } catch (e) {
+        console.error('[SYD] Error WhatsApp:', e);
+        alert('Error al buscar clientes: ' + e.message);
     }
 }
 

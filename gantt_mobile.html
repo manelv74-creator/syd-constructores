@@ -668,6 +668,12 @@
             <div id="clearNotesBtn" style="display:none; text-align:center; margin-top:12px;">
                 <button onclick="clearWeeklyNotes()" style="background:none; border:none; color:rgba(255,255,255,0.3); font-size:0.65rem; text-decoration:underline; cursor:pointer;">Limpiar notas de la semana</button>
             </div>
+
+            <div id="whatsappSendBtn" style="display:none; margin-top:12px;">
+                <button onclick="sendReportWhatsApp()" style="width:100%; background:linear-gradient(135deg,#25d366,#128c7e); color:#fff; border:none; padding:13px; border-radius:14px; font-weight:700; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
+                    📱 Enviar por WhatsApp a Clientes
+                </button>
+            </div>
         </div>
 
         <div id="zoneCards"></div>
@@ -1062,12 +1068,89 @@ Devuelve EXCLUSIVAMENTE este JSON válido (sin markdown, sin texto adicional):
         setTimeout(() => win.print(), 1500);
 
         alert(`✅ Informe listo.\n📷 Fotos: ${Math.min(fotoUrls.length, 4)} de ${fotoUrls.length}\nUsa 🖨️ Imprimir / Guardar PDF en la nueva ventana.`);
+
+        // Mostrar botón de WhatsApp
+        document.getElementById('whatsappSendBtn').style.display = 'block';
+        window._lastReportName = fileName;
+        window._lastReportWeek = currentWeek;
     } catch(e) {
         console.error('[SYD] Error generateReport:', e);
         alert('Error al generar reporte: ' + e.message);
     } finally {
         btn.disabled = false;
         btn.innerHTML = oldText;
+    }
+}
+
+// ══ Envio de Informe por WhatsApp ══
+async function sendReportWhatsApp() {
+    if (!db) { alert('Firebase no está conectado.'); return; }
+    const obraId = session.obra;
+    if (!obraId) { alert('No hay obra seleccionada.'); return; }
+
+    try {
+        const snap = await db.collection('access_logs')
+            .where('obra', '==', obraId)
+            .where('role', '==', 'client')
+            .where('action', 'in', ['registro', 'registro_y_login'])
+            .get();
+
+        const clientMap = {};
+        snap.forEach(doc => {
+            const d = doc.data();
+            if (d.telefono && d.nombre) {
+                const phone = d.telefono.replace(/[^\d+]/g, '');
+                if (phone) clientMap[phone] = d.nombre;
+            }
+        });
+
+        const clients = Object.entries(clientMap);
+
+        if (clients.length === 0) {
+            alert('⚠️ No se encontraron clientes con teléfono registrado en esta obra.');
+            return;
+        }
+
+        const hour = new Date().getHours();
+        const saludo = hour < 12 ? 'Buenos días' : 'Buenas tardes';
+        const obraName = currentObra?.name || obraId;
+        const semana = window._lastReportWeek || currentWeek;
+        const fecha = new Date().toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' });
+
+        const ok = window.confirm(
+            `Enviar a ${clients.length} cliente(s):\n` +
+            clients.map(([p, n]) => `• ${n} (${p})`).join('\n') +
+            `\n\n¿Continuar?`
+        );
+        if (!ok) return;
+
+        let sent = 0;
+        for (const [phone, nombre] of clients) {
+            const firstName = nombre.split(' ')[0].toUpperCase();
+            const mensaje =
+`${saludo}, ${firstName}.
+
+Le enviamos el informe semanal correspondiente a los trabajos realizados en su obra *${obraName}*.
+
+📅 Semana ${semana} — ${fecha}
+
+Cualquier duda estamos a sus órdenes.
+
+_SYD Constructores_`;
+
+            let tel = phone.replace(/[^\d]/g, '');
+            if (tel.length === 10) tel = '52' + tel;
+
+            window.open(`https://wa.me/${tel}?text=${encodeURIComponent(mensaje)}`, '_blank');
+            sent++;
+            await new Promise(r => setTimeout(r, 800));
+        }
+
+        alert(`✅ ${sent} conversación(es) de WhatsApp abiertas. Pulsa Enviar en cada una.`);
+
+    } catch (e) {
+        console.error('[SYD] Error WhatsApp:', e);
+        alert('Error: ' + e.message);
     }
 }
 
