@@ -1005,12 +1005,13 @@ async function generateReport() {
             }
         }
 
-        // Guardar y Descargar (Método compatible con móviles)
+        // Guardar y Descargar (Método compatible con móviles con nombre único)
+        const timeStr = new Date().toLocaleTimeString('es-MX', { hour12: false, hour: '2-digit', minute: '2-digit' }).replace(':', '-');
         const pdfBlob = doc.output('blob');
         const url = URL.createObjectURL(pdfBlob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = `Reporte_Móvil_S${currentWeek}.pdf`;
+        link.download = `Reporte_SYD_S${currentWeek}_${timeStr}_M.pdf`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
