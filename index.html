@@ -19,6 +19,10 @@
     <meta property="og:image" content="assets/logo_syd.png">
     <meta property="og:url" content="https://manelv74-creator.github.io/syd-constructores/">
 
+    <!-- Librerías para PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -641,9 +645,15 @@
                     ⌨️ Escribir
                 </button>
             </div>
-            <button onclick="generateReport()" id="btnReporte" style="background:#10b981; color:#fff; border:none; padding:14px; border-radius:14px; font-weight:700; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; width:100%; margin-top:12px; opacity:0.5;">
-                🚀 Generar Reporte Semanal
-            </button>
+            
+            <div style="display:grid; grid-template-columns:1fr 40px; gap:8px; margin-top:12px;">
+                <button onclick="generateReport()" id="btnReporte" style="background:#10b981; color:#fff; border:none; padding:14px; border-radius:14px; font-weight:700; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; opacity:0.5;">
+                    🚀 Generar Reporte PDF
+                </button>
+                <button onclick="setGeminiKey()" title="Configurar IA" style="background:rgba(255,255,255,0.1); color:#fff; border:none; border-radius:14px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1rem;">
+                    ⚙️
+                </button>
+            </div>
             <div id="dictationStatus" style="font-size:0.65rem; color:#93c5fd; margin-top:10px; text-align:center; display:none;">Escuchando... Di algo sobre la obra</div>
             
             <div id="clearNotesBtn" style="display:none; text-align:center; margin-top:12px;">
@@ -1625,10 +1635,20 @@ window.onload = async function() {
 
 <script>
 // ══════════════════════════════════════
-// GENERADOR DE REPORTES (Voz a Texto + IA)
+// GENERADOR DE REPORTES (Voz a Texto + PDF + IA)
 // ══════════════════════════════════════
 let recognition = null;
 let weeklyNotes = [];
+let GEMINI_API_KEY = localStorage.getItem('syd_gemini_key') || '';
+
+function setGeminiKey() {
+    const key = prompt('Pega aquí tu Gemini API Key:', GEMINI_API_KEY);
+    if (key !== null) {
+        GEMINI_API_KEY = key.trim();
+        localStorage.setItem('syd_gemini_key', GEMINI_API_KEY);
+        alert('Configuración guardada. Ya puedes generar reportes inteligentes.');
+    }
+}
 
 function initSpeech() {
     const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -1788,64 +1808,150 @@ async function clearWeeklyNotes() {
 }
 
 async function generateReport() {
-    if (weeklyNotes.length === 0) return;
+    if (weeklyNotes.length === 0) {
+        alert('Agrega al menos una nota para generar el reporte.');
+        return;
+    }
     
     const btn = document.getElementById('btnReporte');
     const oldText = btn.innerHTML;
     btn.disabled = true;
-    btn.innerHTML = '⏳ Generando con IA...';
+    btn.innerHTML = '⏳ Preparando Informe...';
 
     try {
-        // 1. Obtener fotos de la semana
         const fotosSnap = await db.collection('obras').doc(session.obra)
             .collection('fotos').where('semana', '==', currentWeek).get();
-        let fotosUrls = [];
-        fotosSnap.forEach(doc => fotosUrls.push(doc.data().url));
+        
+        let reportText = "";
+        
+        // --- LLAMADA A GEMINI IA ---
+        if (GEMINI_API_KEY) {
+            btn.innerHTML = '🧠 IA Analizando Obra...';
+            try {
+                // Preparar fotos para la IA (Base64)
+                let aiParts = [
+                    { text: `Actúa como un supervisor de obra senior para SYD Constructores. 
+                             Genera un resumen ejecutivo profesional basado en estas notas de voz y fotos de la semana ${currentWeek}.
+                             Relaciona lo que se ve en las fotos con lo que dicen las notas.
+                             NOTAS DEL MASTER: ${weeklyNotes.join(' | ')}` }
+                ];
 
-        // 2. Obtener resumen de tareas (Gantt)
-        let tareasTxt = "";
-        projectData.forEach(z => {
-            const t = z.tasks[currentWeek-1];
-            if(t) tareasTxt += `- ${z.zone}: ${t}\n`;
-        });
+                // Añadir hasta 8 fotos para no saturar la API
+                let count = 0;
+                for (const fdoc of fotosSnap.docs) {
+                    if (count >= 8) break;
+                    const f = fdoc.data();
+                    const b64 = await getBase64Image(f.url);
+                    aiParts.push({
+                        inlineData: {
+                            mimeType: "image/jpeg",
+                            data: b64.split(',')[1]
+                        }
+                    });
+                    count++;
+                }
 
-        // 3. Prompt para la IA
-        const prompt = `
-            Eres un supervisor de obra profesional de SYD Constructores.
-            Genera un reporte de avance para el CLIENTE basado en:
-            SEMANA: ${currentWeek}
-            OBRA: ${session.obra}
-            
-            TASKS PLANIFICADAS:
-            ${tareasTxt}
-            
-            NOTAS DE VOZ DEL SUPERVISOR (MASTER):
-            ${weeklyNotes.join('\n')}
-            
-            FOTOS SUBIDAS: ${fotosUrls.length} fotos.
-            
-            INSTRUCCIONES:
-            - Sé profesional pero amable.
-            - Usa emojis.
-            - Menciona los avances logrados.
-            - Menciona los próximos pasos.
-            - Incluye este link al final: https://manelv74-creator.github.io/syd-constructores/
-            - Devuelve SOLO el texto para WhatsApp.
-        `;
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: aiParts }] })
+                });
 
-        // LLAMADA A IA (Aquí usaremos un template por ahora, pero listo para API)
-        const reporteIA = `🏗️ *REPORTE SEMANAL - SEMANA ${currentWeek}* 🏗️\n\nHola, te comparto el avance de tu obra:\n\n✅ *Avances logrados:* \n${weeklyNotes.map(n => "- " + n).join('\n')}\n\n👷‍♂️ *Próximos pasos:* \nContinuaremos con las tareas programadas según el calendario.\n\n📸 *Fotos:* Puedes ver las fotos de esta semana en la aplicación.\n\n🔗 *App SYD:* https://manelv74-creator.github.io/syd-constructores/\n\n_Generado automáticamente por SYD IA_`;
+                const data = await response.json();
+                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                    reportText = data.candidates[0].content.parts[0].text;
+                } else {
+                    throw new Error('Respuesta de IA no válida');
+                }
+            } catch(e) {
+                console.error('Gemini Error:', e);
+                reportText = "Nota: No se pudo conectar con la IA. Mostrando notas directamente:\n\n" + weeklyNotes.map(n => `• ${n}`).join('\n');
+            }
+        } else {
+            reportText = "Resumen de actividades semanales:\n\n" + weeklyNotes.map(n => `• ${n}`).join('\n');
+        }
 
-        // Abrir WhatsApp
-        const waUrl = `https://wa.me/?text=${encodeURIComponent(reporteIA)}`;
-        window.open(waUrl, '_blank');
+        // --- GENERACIÓN DE PDF ---
+        btn.innerHTML = '📄 Generando PDF...';
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const primaryColor = [30, 58, 138];
+
+        // Cabecera
+        doc.setFillColor(...primaryColor); doc.rect(0, 0, 210, 40, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(22); doc.setFont("helvetica", "bold");
+        doc.text("SYD CONSTRUCTORES", 20, 20);
+        doc.setFontSize(10); doc.setFont("helvetica", "normal");
+        doc.text("Reporte de Avance Semanal con IA", 20, 28);
+        doc.setFontSize(12);
+        doc.text(`SEMANA ${currentWeek}`, 170, 25, { align: 'right' });
+        doc.text(new Date().toLocaleDateString(), 170, 32, { align: 'right' });
+
+        // Proyecto
+        doc.setTextColor(60, 60, 60);
+        doc.setFontSize(14); doc.text("PROYECTO:", 20, 55);
+        doc.setFont("helvetica", "bold");
+        doc.text(currentObra ? currentObra.name.toUpperCase() : "PROYECTO SAUCES", 60, 55);
+        doc.setDrawColor(200, 200, 200); doc.line(20, 60, 190, 60);
+
+        // Resumen Ejecutivo (IA)
+        doc.setFont("helvetica", "bold"); doc.text("RESUMEN EJECUTIVO:", 20, 75);
+        doc.setFont("helvetica", "normal"); doc.setFontSize(10);
+        const splitText = doc.splitTextToSize(reportText, 170);
+        doc.text(splitText, 20, 85);
+
+        // Fotos
+        if (!fotosSnap.empty) {
+            doc.addPage();
+            doc.setFillColor(...primaryColor); doc.rect(0, 0, 210, 15, 'F');
+            doc.setTextColor(255, 255, 255); doc.setFontSize(12);
+            doc.text("EVIDENCIA FOTOGRÁFICA", 20, 10);
+            
+            let fy = 30; let fx = 20;
+            let fcount = 0;
+            for (const fdoc of fotosSnap.docs) {
+                const f = fdoc.data();
+                try {
+                    const imgData = await getBase64Image(f.url);
+                    doc.addImage(imgData, 'JPEG', fx, fy, 80, 60);
+                    doc.setFontSize(7); doc.setTextColor(100, 100, 100);
+                    doc.text(`${f.zona}: ${f.tarea || ''}`, fx, fy + 65);
+                    fcount++;
+                    if (fcount % 2 === 0) { fx = 20; fy += 80; } else { fx = 110; }
+                    if (fy > 230) { doc.addPage(); fy = 30; fx = 20; fcount = 0; }
+                } catch(e) {}
+            }
+        }
+
+        doc.save(`Reporte_IA_Semana_${currentWeek}.pdf`);
+        alert('✅ Reporte generado con éxito.');
 
     } catch(e) {
-        alert('Error al generar reporte: ' + e.message);
+        console.error('Error:', e);
+        alert('Error: ' + e.message);
     } finally {
         btn.disabled = false;
         btn.innerHTML = oldText;
     }
+}
+
+// Helper para cargar imágenes externas en el PDF
+function getBase64Image(url) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.setAttribute('crossOrigin', 'anonymous');
+        img.onload = () => {
+            const canvas = document.createElement("canvas");
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0);
+            resolve(canvas.toDataURL("image/jpeg"));
+        };
+        img.onerror = reject;
+        img.src = url;
+    });
 }
 // IMGBB — FOTOS (Punto 4, sin tarjeta)
 // ══════════════════════════════════════
@@ -1875,7 +1981,8 @@ async function handleFotoSelected(e) {
     if(progEl) { progEl.style.display='block'; progEl.textContent='⏳ Procesando imagen...'; }
 
     try {
-        const base64 = await imageToBase64(file, 1200, 0.82);
+        // Compresión optimizada para PDF (800px, 0.6 quality)
+        const base64 = await imageToBase64(file, 800, 0.6);
         if(progEl) progEl.textContent = '⏳ Subiendo a ImgBB...';
 
         const formData = new FormData();
