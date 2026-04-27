@@ -646,13 +646,23 @@
             </div>
             
             <div style="display:grid; grid-template-columns:1fr 50px; gap:8px; margin-top:12px;">
-                <button onclick="generateReport()" id="btnReporte" style="background:#10b981; color:#fff; border:none; padding:15px; border-radius:14px; font-weight:700; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; opacity:0.5;">
+                <button onclick="generateReport()" id="btnReporte" style="background:#10b981; color:#fff; border:none; padding:15px; border-radius:14px; font-weight:700; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;">
                     🚀 Generar PDF
                 </button>
-                <button onclick="setGeminiKey()" title="Configurar IA" style="background:rgba(255,255,255,0.1); color:#fff; border:none; border-radius:14px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1.2rem;">
+                <button onclick="toggleGeminiConfig()" title="Configurar IA" style="background:rgba(255,255,255,0.1); color:#fff; border:none; border-radius:14px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1.2rem; width:50px;">
                     ⚙️
                 </button>
             </div>
+
+            <div id="geminiConfigArea" style="display:none; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:12px; margin-top:12px;">
+                <div style="font-size:0.75rem; color:#fff; margin-bottom:8px; font-weight:700;">Configuración de IA (Gemini)</div>
+                <input type="password" id="geminiKeyInput" placeholder="Pega tu API Key aquí..." 
+                    style="width:100%; padding:10px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:10px; color:#fff; font-size:0.85rem; outline:none; margin-bottom:10px;">
+                <button onclick="saveGeminiKeyInline()" style="width:100%; background:#3b82f6; color:#fff; border:none; padding:10px; border-radius:10px; font-weight:700; font-size:0.8rem; cursor:pointer;">
+                    Guardar Configuración
+                </button>
+            </div>
+
             <div id="dictationStatus" style="font-size:0.65rem; color:#93c5fd; margin-top:10px; text-align:center; display:none;">Escuchando... Di algo sobre la obra</div>
             
             <div id="clearNotesBtn" style="display:none; text-align:center; margin-top:12px;">
@@ -724,13 +734,24 @@ let recognition = null;
 let weeklyNotes = [];
 let GEMINI_API_KEY = localStorage.getItem('syd_gemini_key') || '';
 
-function setGeminiKey() {
-    const key = prompt('Pega aquí tu Gemini API Key:', GEMINI_API_KEY);
-    if (key !== null) {
-        GEMINI_API_KEY = key.trim();
-        localStorage.setItem('syd_gemini_key', GEMINI_API_KEY);
-        alert('Configuración guardada. Ya puedes generar reportes inteligentes.');
+function toggleGeminiConfig() {
+    const area = document.getElementById('geminiConfigArea');
+    area.style.display = area.style.display === 'none' ? 'block' : 'none';
+    if (area.style.display === 'block') {
+        document.getElementById('geminiKeyInput').value = GEMINI_API_KEY;
     }
+}
+
+function saveGeminiKeyInline() {
+    const key = document.getElementById('geminiKeyInput').value.trim();
+    GEMINI_API_KEY = key;
+    localStorage.setItem('syd_gemini_key', GEMINI_API_KEY);
+    alert('✅ Configuración de IA guardada.');
+    document.getElementById('geminiConfigArea').style.display = 'none';
+}
+
+function setGeminiKey() {
+    toggleGeminiConfig();
 }
 
 function initSpeech() {

@@ -649,15 +649,26 @@
             </div>
             
             <div style="display:grid; grid-template-columns:1fr 40px; gap:8px; margin-top:12px;">
-                <button onclick="generateReport()" id="btnReporte" style="background:#10b981; color:#fff; border:none; padding:14px; border-radius:14px; font-weight:700; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; opacity:0.5;">
+                <button onclick="generateReport()" id="btnReporte" style="background:#10b981; color:#fff; border:none; padding:14px; border-radius:14px; font-weight:700; font-size:0.9rem; cursor:pointer; flex:1; display:flex; align-items:center; justify-content:center; gap:8px;">
                     🚀 Generar Reporte PDF
                 </button>
-                <button onclick="setGeminiKey()" title="Configurar IA" style="background:rgba(255,255,255,0.1); color:#fff; border:none; border-radius:14px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1rem;">
+                <button onclick="toggleGeminiConfig()" title="Configurar IA" style="background:rgba(255,255,255,0.1); color:#fff; border:none; border-radius:14px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1.1rem; width:40px;">
                     ⚙️
                 </button>
             </div>
+
+            <div id="geminiConfigArea" style="display:none; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:12px; margin-top:12px;">
+                <div style="font-size:0.75rem; color:#fff; margin-bottom:8px; font-weight:700;">Configuración de IA (Gemini)</div>
+                <input type="password" id="geminiKeyInput" placeholder="Pega tu API Key aquí..." 
+                    style="width:100%; padding:8px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff; font-size:0.8rem; outline:none; margin-bottom:8px;">
+                <button onclick="saveGeminiKeyInline()" style="width:100%; background:#3b82f6; color:#fff; border:none; padding:8px; border-radius:8px; font-weight:700; font-size:0.75rem; cursor:pointer;">
+                    Guardar Configuración
+                </button>
+            </div>
+
             <div id="dictationStatus" style="font-size:0.65rem; color:#93c5fd; margin-top:10px; text-align:center; display:none;">Escuchando... Di algo sobre la obra</div>
-            
+
+
             <div id="clearNotesBtn" style="display:none; text-align:center; margin-top:12px;">
                 <button onclick="clearWeeklyNotes()" style="background:none; border:none; color:rgba(255,255,255,0.3); font-size:0.65rem; text-decoration:underline; cursor:pointer;">Limpiar notas de la semana</button>
             </div>
