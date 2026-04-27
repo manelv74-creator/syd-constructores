@@ -1636,6 +1636,30 @@ window.onload = async function() {
 <input type="file" id="fotoInput" accept="image/*" capture="environment" style="display:none" onchange="handleFotoSelected(event)">
 
 <script>
+let recognition = null;
+let weeklyNotes = [];
+
+function initSpeech() {
+    const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!Speech) return;
+    recognition = new Speech();
+    recognition.lang = 'es-MX';
+    recognition.onstart = () => {
+        document.getElementById('dictarIcon').textContent = '🛑';
+        document.getElementById('dictarText').textContent = 'Grabando...';
+        document.getElementById('dictationStatus').style.display = 'block';
+    };
+    recognition.onresult = (e) => {
+        const text = e.results[0][0].transcript;
+        saveWeeklyNote(text);
+    };
+    recognition.onend = () => {
+        document.getElementById('dictarIcon').textContent = '🎙️';
+        document.getElementById('dictarText').textContent = 'Dictar Nota';
+        document.getElementById('dictationStatus').style.display = 'none';
+    };
+}
+
 function startDictation() {
     if (!recognition) initSpeech();
     if (!recognition) {
@@ -1680,7 +1704,6 @@ async function loadWeeklyNotes() {
                         <button onclick="deleteSingleNote('${data.id}')" style="background:none; border:none; color:#ef4444; cursor:pointer;">✕</button>
                     </div>`;
         });
-        
         const preview = document.getElementById('notesPreview');
         if (preview) {
             preview.style.display = weeklyNotes.length > 0 ? 'block' : 'none';
@@ -1691,22 +1714,22 @@ async function loadWeeklyNotes() {
     } catch(e) { console.error(e); }
 }
 
-async function deleteSingleNote(docId) {
-    if(!confirm('¿Borrar nota?')) return;
-    try {
-        await db.collection('obras').doc(session.obra).collection('report_notes').doc(docId).delete();
-        loadWeeklyNotes();
-    } catch(e) { console.error(e); }
+async function deleteSingleNote(id) {
+    if(!confirm('¿Borrar esta nota?')) return;
+    await db.collection('obras').doc(session.obra).collection('report_notes').doc(id).delete();
+    loadWeeklyNotes();
 }
 
 async function clearWeeklyNotes() {
-    if(!confirm('¿Borrar todas?')) return;
+    if(!confirm('¿Borrar todas las notas de esta semana?')) return;
     const snap = await db.collection('obras').doc(session.obra).collection('report_notes').where('semana', '==', currentWeek).get();
     const batch = db.batch();
     snap.forEach(doc => batch.delete(doc.ref));
     await batch.commit();
     loadWeeklyNotes();
 }
+
+
 
 async function generateReport() {
     if (weeklyNotes.length === 0) { alert('Agrega notas.'); return; }
@@ -1775,104 +1798,7 @@ function getBase64Image(url) {
         img.src = url;
     });
 }
-        for(let i=1; i<=4; i++) {
-            html = html.replace(`{{trabajo_realizado_${i}}}`, reportData.avances[i-1] || "Actividad complementaria de obra");
-        }
 
-        // Reemplazos de Fotos
-        const fotosDocs = fotosSnap.docs;
-        for(let i=1; i<=4; i++) {
-            const f = fotosDocs[i-1] ? fotosDocs[i-1].data() : null;
-            html = html.replace(`{{url_foto_${i}}}`, f ? f.url : "https://via.placeholder.com/400x300?text=Sin+Foto");
-            html = html.replace(`{{descripcion_foto_${i}}}`, reportData.descripciones[i-1] || "Referencia de avance");
-        }
-
-        // --- RENDERIZADO PDF (USANDO VENTANA OCULTA PARA MÁXIMA COMPATIBILIDAD) ---
-        const worker = html2pdf().from(html).set({
-            margin: 10,
-            filename: `Reporte_SYD_S${currentWeek}_${new Date().getTime()}.pdf`,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true },
-            jsPDF: { unit: 'mm', format: 'letter', orientation: 'portrait' }
-        }).save();
-        
-        alert('✅ Informe generado correctamente utilizando tu plantilla.');
-    } catch(e) {
-        console.error('Error:', e);
-        alert('Error: ' + e.message);
-    } finally {
-        btn.disabled = false;
-        btn.innerHTML = oldText;
-    }
-} let cy = 35;
-        doc.setTextColor(...sydRed); doc.setFontSize(12); doc.setFont("helvetica", "bold");
-        doc.text("[RESUMEN EJECUTIVO / ESTADO DE OBRA]", 20, cy);
-        cy += 8;
-        doc.setTextColor(40,40,40); doc.setFontSize(10); doc.setFont("helvetica", "normal");
-        const splitE = doc.splitTextToSize(reportText.ejecutivo, 170);
-        doc.text(splitE, 20, cy);
-        cy += (splitE.length * 5) + 12;
-
-        doc.setTextColor(...sydRed); doc.setFontSize(12); doc.setFont("helvetica", "bold");
-        doc.text("[DESCRIPCIÓN DE TRABAJOS / AVANCES]", 20, cy);
-        cy += 8;
-        doc.setTextColor(40,40,40); doc.setFontSize(10); doc.setFont("helvetica", "normal");
-        reportText.avances.forEach(a => { if(a.trim()){ doc.text(`• ${a.trim().replace(/^- /,'')}`, 25, cy); cy += 6; }});
-        cy += 10;
-
-        doc.setTextColor(...sydRed); doc.setFontSize(12); doc.setFont("helvetica", "bold");
-        doc.text("[REGISTRO FOTOGRÁFICO]", 20, cy);
-        cy += 10;
-        if (!fotosSnap.empty) {
-            let fx = 20; let fcount = 0;
-            for (const fdoc of fotosSnap.docs) {
-                if (fcount >= 6) break;
-                try {
-                    const imgData = await getBase64Image(fdoc.data().url);
-                    doc.addImage(imgData, 'JPEG', fx, cy, 55, 40);
-                    fcount++;
-                    if (fcount % 3 === 0) { fx = 20; cy += 55; } else { fx += 60; }
-                } catch(e) {}
-            }
-        }
-
-        const pagesCount = doc.internal.getNumberOfPages();
-        for (let i = 1; i <= pagesCount; i++) {
-            doc.setPage(i);
-            doc.setFontSize(7); doc.setTextColor(150, 150, 150);
-            doc.text("SYD CONSTRUCTORES - www.sydconstructores.com.mx", 105, 285, {align:'center'});
-            doc.text(`${i}`, 195, 285, {align:'right'});
-        }
-
-        const timeStr = new Date().toLocaleTimeString('es-MX', { hour12: false, hour: '2-digit', minute: '2-digit' }).replace(':', '-');
-        doc.save(`Reporte_SYD_S${currentWeek}_${timeStr}.pdf`);
-        alert('✅ Reporte generado.');
-    } catch(e) {
-        console.error(e);
-        alert('Error: ' + e.message);
-    } finally {
-        btn.disabled = false;
-        btn.innerHTML = oldText;
-    }
-}
-
-// Helper para cargar imágenes externas en el PDF
-function getBase64Image(url) {
-    return new Promise((resolve, reject) => {
-        const img = new Image();
-        img.setAttribute('crossOrigin', 'anonymous');
-        img.onload = () => {
-            const canvas = document.createElement("canvas");
-            canvas.width = img.width;
-            canvas.height = img.height;
-            const ctx = canvas.getContext("2d");
-            ctx.drawImage(img, 0, 0);
-            resolve(canvas.toDataURL("image/jpeg"));
-        };
-        img.onerror = reject;
-        img.src = url;
-    });
-}
 // IMGBB — FOTOS (Punto 4, sin tarjeta)
 // ══════════════════════════════════════
 const IMGBB_API_KEY = 'ef497f7df24480c5df8656ba07fea071';

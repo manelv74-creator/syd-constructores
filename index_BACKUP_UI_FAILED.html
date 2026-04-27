@@ -19,14 +19,17 @@
     <meta property="og:image" content="assets/logo_syd.png">
     <meta property="og:url" content="https://manelv74-creator.github.io/syd-constructores/">
 
+    <!-- Librerías para PDF -->
+    <!-- html2pdf.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
-    <!-- Librerías para PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
         :root {
@@ -626,30 +629,38 @@
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
                 <div>
                     <div style="font-size:1.1rem; font-weight:800; color:#fff; display:flex; align-items:center; gap:8px;">
-                        <span>📋</span> Generador de Reporte
+                        <span>📋</span> Generador de Reporte Semanal
                     </div>
-                    <div style="font-size:0.7rem; color:rgba(255,255,255,0.6); margin-top:4px;">Acumula notas para el informe semanal</div>
+                    <div style="font-size:0.75rem; color:rgba(255,255,255,0.6); margin-top:4px;">Semana ${currentWeek} · Acumula notas para el informe</div>
                 </div>
                 <div id="noteCounter" style="background:rgba(255,255,255,0.1); padding:4px 12px; border-radius:20px; font-size:0.7rem; font-weight:700;">0 notas</div>
             </div>
             
+            <!-- Inline Note Input -->
+            <div style="margin-bottom:16px;">
+                <textarea id="manualNoteInput" placeholder="Escribe aquí un comentario sobre el avance..." 
+                    style="width:100%; height:60px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:10px; color:#fff; font-size:0.85rem; font-family:Inter,sans-serif; resize:none; outline:none;"></textarea>
+                <div style="display:flex; justify-content:flex-end; margin-top:8px;">
+                    <button onclick="saveManualInput()" style="background:#3b82f6; color:#fff; border:none; padding:8px 16px; border-radius:10px; font-weight:700; font-size:0.75rem; cursor:pointer;">
+                        💾 Guardar Nota
+                    </button>
+                </div>
+            </div>
+
             <div id="notesPreview" style="max-height:150px; overflow-y:auto; background:rgba(0,0,0,0.2); border-radius:12px; padding:12px; margin-bottom:16px; font-size:0.8rem; color:#cbd5e1; line-height:1.5; display:none;">
             </div>
 
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-                <button onclick="startDictation()" id="btnDictar" style="background:#3b82f6; color:#fff; border:none; padding:15px; border-radius:14px; font-weight:700; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;">
-                    <span id="dictarIcon">🎙️</span> <span id="dictarText">Dictar</span>
-                </button>
-                <button onclick="addManualNote()" style="background:rgba(255,255,255,0.05); color:#fff; border:1px solid rgba(255,255,255,0.1); padding:15px; border-radius:14px; font-weight:700; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
-                    ⌨️ Escribir
+            <div style="display:grid; grid-template-columns:1fr; gap:12px; margin-bottom:12px;">
+                <button onclick="startDictation()" id="btnDictar" style="background:rgba(255,255,255,0.05); color:#fff; border:1px solid rgba(255,255,255,0.1); padding:12px; border-radius:14px; font-weight:700; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;">
+                    <span id="dictarIcon">🎙️</span> <span id="dictarText">Dictar Nota (Voz)</span>
                 </button>
             </div>
             
-            <div style="display:grid; grid-template-columns:1fr 50px; gap:8px; margin-top:12px;">
-                <button onclick="generateReport()" id="btnReporte" style="background:#10b981; color:#fff; border:none; padding:15px; border-radius:14px; font-weight:700; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; opacity:0.5;">
-                    🚀 Generar PDF
+            <div style="display:grid; grid-template-columns:1fr 40px; gap:8px; margin-top:12px;">
+                <button onclick="generateReport()" id="btnReporte" style="background:#10b981; color:#fff; border:none; padding:14px; border-radius:14px; font-weight:700; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; opacity:0.5;">
+                    🚀 Generar Reporte PDF
                 </button>
-                <button onclick="setGeminiKey()" title="Configurar IA" style="background:rgba(255,255,255,0.1); color:#fff; border:none; border-radius:14px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1.2rem;">
+                <button onclick="setGeminiKey()" title="Configurar IA" style="background:rgba(255,255,255,0.1); color:#fff; border:none; border-radius:14px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1rem;">
                     ⚙️
                 </button>
             </div>
@@ -716,241 +727,6 @@ try {
         console.log('[SYD] Firebase no configurado — modo local');
     }
 } catch(e) { console.warn('[SYD] Firebase error:', e.message); }
-
-// ══════════════════════════════════════
-// GENERADOR DE REPORTES (Voz a Texto + PDF + IA)
-// ══════════════════════════════════════
-let recognition = null;
-let weeklyNotes = [];
-let GEMINI_API_KEY = localStorage.getItem('syd_gemini_key') || '';
-
-function setGeminiKey() {
-    const key = prompt('Pega aquí tu Gemini API Key:', GEMINI_API_KEY);
-    if (key !== null) {
-        GEMINI_API_KEY = key.trim();
-        localStorage.setItem('syd_gemini_key', GEMINI_API_KEY);
-        alert('Configuración guardada. Ya puedes generar reportes inteligentes.');
-    }
-}
-
-function initSpeech() {
-    const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!Speech) {
-        console.warn('Speech Recognition not supported');
-        return;
-    }
-    recognition = new Speech();
-    recognition.lang = 'es-MX';
-    recognition.continuous = false;
-    recognition.interimResults = false;
-
-    recognition.onstart = () => {
-        document.getElementById('dictarIcon').textContent = '🛑';
-        document.getElementById('dictarText').textContent = 'Grabando...';
-        document.getElementById('btnDictar').style.background = '#ef4444';
-        document.getElementById('dictationStatus').style.display = 'block';
-    };
-
-    recognition.onresult = (event) => {
-        const text = event.results[0][0].transcript;
-        saveWeeklyNote(text);
-    };
-
-    recognition.onend = () => {
-        document.getElementById('dictarIcon').textContent = '🎙️';
-        document.getElementById('dictarText').textContent = 'Dictar';
-        document.getElementById('btnDictar').style.background = '#3b82f6';
-        document.getElementById('dictationStatus').style.display = 'none';
-    };
-
-    recognition.onerror = (e) => {
-        console.error('Speech error:', e.error);
-        alert('Error de dictado: ' + e.error);
-    };
-}
-
-function startDictation() {
-    if (!recognition) initSpeech();
-    if (!recognition) {
-        addManualNote('Tu navegador no soporta dictado. Escribe tu nota aquí:');
-        return;
-    }
-    try {
-        recognition.start();
-    } catch(e) { recognition.stop(); }
-}
-
-function addManualNote(msg = 'Escribe tu nota sobre el avance:') {
-    const text = prompt(msg);
-    if (text && text.trim().length > 0) {
-        saveWeeklyNote(text.trim());
-    }
-}
-
-async function saveWeeklyNote(text) {
-    if (!db) { alert('Error: Base de datos no conectada'); return; }
-    if (!session || !session.obra) { alert('Error: No hay una obra seleccionada en la sesión'); return; }
-    
-    try {
-        console.log('[SYD] Guardando nota en:', session.obra, 'Semana:', currentWeek);
-        await db.collection('obras').doc(session.obra)
-            .collection('report_notes').add({
-                semana: currentWeek,
-                texto: text,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                usuario: session.email || 'anonimo'
-            });
-        
-        console.log('[SYD] Nota guardada con éxito');
-        alert('✅ Nota guardada correctamente');
-        loadWeeklyNotes();
-    } catch(e) { 
-        console.error('Error saving note:', e); 
-        alert('❌ Error al guardar nota: ' + e.message);
-    }
-}
-
-async function loadWeeklyNotes() {
-    if (!db || !session || !session.obra) return;
-    try {
-        console.log('[SYD] Cargando notas para semana:', currentWeek);
-        const snap = await db.collection('obras').doc(session.obra)
-            .collection('report_notes')
-            .where('semana', '==', currentWeek)
-            .get();
-        
-        let notesData = [];
-        snap.forEach(doc => {
-            notesData.push({ id: doc.id, ...doc.data() });
-        });
-
-        notesData.sort((a, b) => {
-            const tA = a.timestamp ? a.timestamp.toMillis() : 0;
-            const tB = b.timestamp ? b.timestamp.toMillis() : 0;
-            return tA - tB;
-        });
-
-        weeklyNotes = notesData.map(d => d.texto);
-        let html = "";
-        notesData.forEach(data => {
-            html += `
-                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:8px; padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.05);">
-                    <div style="flex:1;">• ${data.texto}</div>
-                    <button onclick="deleteSingleNote('${data.id}')" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:0.9rem; padding:0 4px;">✕</button>
-                </div>
-            `;
-        });
-        
-        const counter = document.getElementById('noteCounter');
-        const preview = document.getElementById('notesPreview');
-        const btnRep = document.getElementById('btnReporte');
-        const clearBtn = document.getElementById('clearNotesBtn');
-
-        if (counter) counter.textContent = `${weeklyNotes.length} nota(s)`;
-        if (preview) {
-            if (weeklyNotes.length > 0) {
-                preview.style.display = 'block';
-                preview.innerHTML = html;
-                if(btnRep) btnRep.style.opacity = '1';
-                if(clearBtn) clearBtn.style.display = 'block';
-            } else {
-                preview.style.display = 'none';
-                if(btnRep) btnRep.style.opacity = '0.5';
-                if(clearBtn) clearBtn.style.display = 'none';
-            }
-        }
-    } catch(e) { 
-        console.error('Error loading notes:', e);
-        if(!e.message.includes('index')) alert('Error cargando notas: ' + e.message);
-    }
-}
-async function deleteSingleNote(docId) {
-    if(!confirm('¿Borrar esta nota?')) return;
-    try {
-        await db.collection('obras').doc(session.obra)
-            .collection('report_notes').doc(docId).delete();
-        loadWeeklyNotes();
-    } catch(e) { console.error('Error deleting note:', e); }
-}
-
-async function clearWeeklyNotes() {
-    if(!confirm('¿Seguro que deseas borrar todas las notas de esta semana?')) return;
-    try {
-        const snap = await db.collection('obras').doc(session.obra).collection('report_notes').where('semana', '==', currentWeek).get();
-        const batch = db.batch();
-        snap.forEach(doc => batch.delete(doc.ref));
-        await batch.commit();
-        loadWeeklyNotes();
-    } catch(e) { console.error('Error clearing notes:', e); }
-}
-
-async function generateReport() {
-    if (weeklyNotes.length === 0) { alert('Agrega notas.'); return; }
-    const btn = document.getElementById('btnReporte');
-    const oldText = btn.innerHTML;
-    btn.disabled = true;
-    btn.innerHTML = '⏳ IA Analizando...';
-
-    try {
-        const fotosSnap = await db.collection('obras').doc(session.obra).collection('fotos').where('semana', '==', currentWeek).get();
-        let reportData = { resumen: weeklyNotes.join('. '), avances: weeklyNotes.slice(0,4), descripciones: weeklyNotes.slice(0,4) };
-        
-        if (GEMINI_API_KEY) {
-            try {
-                let aiParts = [{ text: `ACTÚA COMO: Ingeniero Civil Senior de SYD Constructores. MISIÓN: Análisis técnico profundo. NO TRANSCRIBAS LITERAL. Analiza materiales y procesos en fotos. Genera JSON: { "resumen": "narrativa técnica", "avances": ["4 puntos"], "descripciones": ["4 textos fotos"] }. NOTAS: ${weeklyNotes.join(' | ')}` }];
-                let count = 0;
-                for (const fdoc of fotosSnap.docs) {
-                    if (count >= 4) break;
-                    const b64 = await getBase64Image(fdoc.data().url);
-                    aiParts.push({ inlineData: { mimeType: "image/jpeg", data: b64.split(',')[1] } });
-                    count++;
-                }
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: aiParts }] }) });
-                const data = await response.json();
-                const aiJson = JSON.parse(data.candidates[0].content.parts[0].text.replace(/```json|```/g, ""));
-                reportData = { resumen: aiJson.resumen, avances: aiJson.avances, descripciones: aiJson.descripciones };
-            } catch(e) { console.error(e); }
-        }
-
-        btn.innerHTML = '📄 Generando...';
-        const templateHtml = await (await fetch('plantilla_syd.html')).text();
-        let logoB64 = ""; try { logoB64 = await getBase64Image('assets/logo_syd.png'); } catch(e) {}
-
-        let html = templateHtml
-            .replace('{{proyecto_nombre}}', currentObra?.name.toUpperCase() || "PROYECTO")
-            .replace('{{cliente_nombre}}', "CLIENTE")
-            .replace('{{fecha_informe}}', new Date().toLocaleDateString())
-            .replace('{{ubicacion_obra}}', currentObra?.location || "OBRA")
-            .replace('{{resumen_ejecutivo}}', reportData.resumen)
-            .replace('logo_syd Alta resolucion.png', logoB64)
-            .replace('logo_syd.png', logoB64);
-
-        for(let i=1; i<=4; i++) {
-            html = html.replace(`{{trabajo_realizado_${i}}}`, reportData.avances[i-1] || "Avance de obra");
-            const f = fotosSnap.docs[i-1]?.data();
-            html = html.replace(`{{url_foto_${i}}}`, f?.url || "https://via.placeholder.com/400x300");
-            html = html.replace(`{{descripcion_foto_${i}}}`, reportData.descripciones[i-1] || "Evidencia fotográfica");
-        }
-
-        html2pdf().from(html).set({ margin: 10, filename: `Reporte_M_S${currentWeek}.pdf`, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'letter' } }).save();
-        alert('✅ Reporte generado con tu plantilla.');
-    } catch(e) { alert('Error: ' + e.message); }
-    finally { btn.disabled = false; btn.innerHTML = oldText; }
-}
-
-function getBase64Image(url) {
-    return new Promise((resolve, reject) => {
-        const img = new Image();
-        img.setAttribute('crossOrigin', 'anonymous');
-        img.onload = () => {
-            const canvas = document.createElement("canvas");
-            canvas.width = img.width; canvas.height = img.height;
-            canvas.getContext("2d").drawImage(img, 0, 0);
-            resolve(canvas.toDataURL("image/jpeg"));
-        };
-        img.onerror = reject; img.src = url;
-    });
-}
 
 // ══ Log de acceso a Firestore ══
 async function logAccess(email, role, action='login', extra={}) {
@@ -1577,7 +1353,14 @@ function launchApp() {
     if(tabAcc) tabAcc.style.display = session.role==='master' ? '' : 'none';
 
     // Subtitle with real obra name
-    document.getElementById('appSubtitle').textContent = (currentObra.name || 'Proyecto') + (currentObra.location ? ' \u00b7 ' + currentObra.location : '');
+    document.getElementById('appSubtitle').textContent = (currentObra.name || 'Proyecto') + (currentObra.location ? ' · ' + currentObra.location : '');
+
+    // Generador de reporte visibility
+    const repCard = document.getElementById('reportGeneratorCard');
+    if(repCard) {
+        repCard.style.display = session.role==='master' ? 'block' : 'none';
+        if(session.role==='master') loadWeeklyNotes();
+    }
 
     // Hero image (foto de la obra en la cabecera del tab Tareas)
     const heroWrap  = document.getElementById('obraHeroWrap');
@@ -1640,6 +1423,9 @@ function updateDashboard() {
     if(currentTab==='tareas') renderTareas();
     else if(currentTab==='detalle') renderDetalle();
     else if(currentTab==='avance') renderAvance();
+
+    // Refrescar notas si es Master
+    if(session && session.role==='master') loadWeeklyNotes();
 }
 
 function updateWeekDots() {
@@ -1858,7 +1644,278 @@ window.onload = async function() {
 <input type="file" id="fotoInput" accept="image/*" capture="environment" style="display:none" onchange="handleFotoSelected(event)">
 
 <script>
-// ══════════════════════════════════════
+function startDictation() {
+    if (!recognition) initSpeech();
+    if (!recognition) {
+        addManualNote('Tu navegador no soporta dictado. Escribe tu nota aquí:');
+        return;
+    }
+    try { recognition.start(); } catch(e) { recognition.stop(); }
+}
+
+function saveManualInput() {
+    const el = document.getElementById('manualNoteInput');
+    const text = el.value.trim();
+    if (text) {
+        saveWeeklyNote(text);
+        el.value = '';
+    } else {
+        alert('Escribe algo antes de guardar.');
+    }
+}
+
+function addManualNote() {
+    // Mantengo por compatibilidad, pero ahora usamos saveManualInput
+    saveManualInput();
+}
+
+async function saveWeeklyNote(text) {
+    if (!db || !session.obra) return;
+    try {
+        await db.collection('obras').doc(session.obra).collection('report_notes').add({
+            semana: currentWeek,
+            texto: text,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            usuario: session.email || 'anonimo'
+        });
+        alert('✅ Nota guardada');
+        loadWeeklyNotes();
+    } catch(e) { alert('Error: ' + e.message); }
+}
+
+let _notesListener = null;
+
+async function loadWeeklyNotes() {
+    if (!db || !session || !session.obra) {
+        console.warn('[SYD] loadWeeklyNotes abortado: faltan datos de sesión', {session});
+        return;
+    }
+    
+    // Limpiar listener previo si existe
+    if (_notesListener) _notesListener();
+
+    console.log(`[SYD] Escuchando notas: Obra=${session.obra}, Sem=${currentWeek}`);
+
+    _notesListener = db.collection('obras').doc(session.obra)
+        .collection('report_notes')
+        .where('semana', '==', currentWeek)
+        .onSnapshot((snap) => {
+            let notesData = [];
+            snap.forEach(doc => notesData.push({ id: doc.id, ...doc.data() }));
+            
+            // Ordenar por timestamp
+            notesData.sort((a, b) => {
+                const tA = a.timestamp ? (a.timestamp.toMillis ? a.timestamp.toMillis() : 0) : 0;
+                const tB = b.timestamp ? (b.timestamp.toMillis ? b.timestamp.toMillis() : 0) : 0;
+                return tA - tB;
+            });
+
+            weeklyNotes = notesData.map(d => d.texto);
+            
+            let html = "";
+            notesData.forEach(data => {
+                html += `<div style="display:flex; justify-content:space-between; margin-bottom:8px; padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.05);">
+                            <div style="flex:1;">• ${data.texto}</div>
+                            <button onclick="deleteSingleNote('${data.id}')" style="background:none; border:none; color:#ef4444; cursor:pointer; padding:0 5px;">✕</button>
+                        </div>`;
+            });
+            
+            const preview = document.getElementById('notesPreview');
+            if (preview) {
+                preview.style.display = weeklyNotes.length > 0 ? 'block' : 'none';
+                preview.innerHTML = html;
+            }
+            const counter = document.getElementById('noteCounter');
+            if (counter) counter.textContent = `${weeklyNotes.length} nota(s)`;
+            
+            console.log(`[SYD] Notas actualizadas: ${weeklyNotes.length} encontradas.`);
+        }, (error) => {
+            console.error('[SYD] Error en el listener de notas:', error);
+        });
+}
+
+async function deleteSingleNote(docId) {
+    if(!confirm('¿Borrar nota?')) return;
+    try {
+        await db.collection('obras').doc(session.obra).collection('report_notes').doc(docId).delete();
+        loadWeeklyNotes();
+    } catch(e) { console.error(e); }
+}
+
+async function clearWeeklyNotes() {
+    if(!confirm('¿Borrar todas?')) return;
+    const snap = await db.collection('obras').doc(session.obra).collection('report_notes').where('semana', '==', currentWeek).get();
+    const batch = db.batch();
+    snap.forEach(doc => batch.delete(doc.ref));
+    await batch.commit();
+    loadWeeklyNotes();
+}
+
+async function generateReport() {
+    if (weeklyNotes.length === 0) { alert('Agrega notas.'); return; }
+    const btn = document.getElementById('btnReporte');
+    const oldText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '⏳ IA Analizando...';
+
+    try {
+        const fotosSnap = await db.collection('obras').doc(session.obra).collection('fotos').where('semana', '==', currentWeek).get();
+        let reportData = { resumen: weeklyNotes.join('. '), avances: weeklyNotes.slice(0,4), descripciones: weeklyNotes.slice(0,4) };
+        
+        if (GEMINI_API_KEY) {
+            try {
+                let aiParts = [{ text: `Actúa como Consultor de Obra. Analiza las notas técnicas y evidencias. Genera un reporte JSON con: "resumen" (narrativa profesional de 3 párrafos), "avances" (array de 4 puntos clave de obra), "descripciones" (array de 4 textos cortos para fotos). NOTAS: ${weeklyNotes.join(' | ')}` }];
+                let count = 0;
+                for (const fdoc of fotosSnap.docs) {
+                    if (count >= 4) break;
+                    const b64 = await getBase64Image(fdoc.data().url);
+                    aiParts.push({ inlineData: { mimeType: "image/jpeg", data: b64.split(',')[1] } });
+                    count++;
+                }
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: aiParts }] }) });
+                const data = await response.json();
+                const aiJson = JSON.parse(data.candidates[0].content.parts[0].text.replace(/```json|```/g, ""));
+                reportData = { resumen: aiJson.resumen, avances: aiJson.avances, descripciones: aiJson.descripciones };
+            } catch(e) { console.error(e); }
+        }
+
+        btn.innerHTML = '📄 Generando...';
+        const templateHtml = await (await fetch('plantilla_syd.html')).text();
+        let logoB64 = ""; try { logoB64 = await getBase64Image('assets/logo_syd.png'); } catch(e) {}
+
+        let html = templateHtml
+            .replace('{{proyecto_nombre}}', currentObra?.name.toUpperCase() || "PROYECTO")
+            .replace('{{cliente_nombre}}', "CLIENTE")
+            .replace('{{fecha_informe}}', new Date().toLocaleDateString())
+            .replace('{{ubicacion_obra}}', currentObra?.location || "OBRA")
+            .replace('{{resumen_ejecutivo}}', reportData.resumen)
+            .replace('logo_syd.png', logoB64);
+
+        for(let i=1; i<=4; i++) {
+            html = html.replace(`{{trabajo_realizado_${i}}}`, reportData.avances[i-1] || "Actividad de obra");
+            const f = fotosSnap.docs[i-1]?.data();
+            html = html.replace(`{{url_foto_${i}}}`, f?.url || "https://via.placeholder.com/400x300");
+            html = html.replace(`{{descripcion_foto_${i}}}`, reportData.descripciones[i-1] || "Evidencia fotográfica");
+        }
+
+        html2pdf().from(html).set({ margin: 10, filename: `Reporte_S${currentWeek}.pdf`, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'letter' } }).save();
+        alert('✅ Reporte generado.');
+    } catch(e) { alert('Error: ' + e.message); }
+    finally { btn.disabled = false; btn.innerHTML = oldText; }
+}
+
+function getBase64Image(url) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.setAttribute('crossOrigin', 'anonymous');
+        img.onload = () => {
+            const canvas = document.createElement("canvas");
+            canvas.width = img.width; canvas.height = img.height;
+            canvas.getContext("2d").drawImage(img, 0, 0);
+            resolve(canvas.toDataURL("image/jpeg"));
+        };
+        img.onerror = reject;
+        img.src = url;
+    });
+}
+        for(let i=1; i<=4; i++) {
+            html = html.replace(`{{trabajo_realizado_${i}}}`, reportData.avances[i-1] || "Actividad complementaria de obra");
+        }
+
+        // Reemplazos de Fotos
+        const fotosDocs = fotosSnap.docs;
+        for(let i=1; i<=4; i++) {
+            const f = fotosDocs[i-1] ? fotosDocs[i-1].data() : null;
+            html = html.replace(`{{url_foto_${i}}}`, f ? f.url : "https://via.placeholder.com/400x300?text=Sin+Foto");
+            html = html.replace(`{{descripcion_foto_${i}}}`, reportData.descripciones[i-1] || "Referencia de avance");
+        }
+
+        // --- RENDERIZADO PDF (USANDO VENTANA OCULTA PARA MÁXIMA COMPATIBILIDAD) ---
+        const worker = html2pdf().from(html).set({
+            margin: 10,
+            filename: `Reporte_SYD_S${currentWeek}_${new Date().getTime()}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true },
+            jsPDF: { unit: 'mm', format: 'letter', orientation: 'portrait' }
+        }).save();
+        
+        alert('✅ Informe generado correctamente utilizando tu plantilla.');
+    } catch(e) {
+        console.error('Error:', e);
+        alert('Error: ' + e.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = oldText;
+    }
+} let cy = 35;
+        doc.setTextColor(...sydRed); doc.setFontSize(12); doc.setFont("helvetica", "bold");
+        doc.text("[RESUMEN EJECUTIVO / ESTADO DE OBRA]", 20, cy);
+        cy += 8;
+        doc.setTextColor(40,40,40); doc.setFontSize(10); doc.setFont("helvetica", "normal");
+        const splitE = doc.splitTextToSize(reportText.ejecutivo, 170);
+        doc.text(splitE, 20, cy);
+        cy += (splitE.length * 5) + 12;
+
+        doc.setTextColor(...sydRed); doc.setFontSize(12); doc.setFont("helvetica", "bold");
+        doc.text("[DESCRIPCIÓN DE TRABAJOS / AVANCES]", 20, cy);
+        cy += 8;
+        doc.setTextColor(40,40,40); doc.setFontSize(10); doc.setFont("helvetica", "normal");
+        reportText.avances.forEach(a => { if(a.trim()){ doc.text(`• ${a.trim().replace(/^- /,'')}`, 25, cy); cy += 6; }});
+        cy += 10;
+
+        doc.setTextColor(...sydRed); doc.setFontSize(12); doc.setFont("helvetica", "bold");
+        doc.text("[REGISTRO FOTOGRÁFICO]", 20, cy);
+        cy += 10;
+        if (!fotosSnap.empty) {
+            let fx = 20; let fcount = 0;
+            for (const fdoc of fotosSnap.docs) {
+                if (fcount >= 6) break;
+                try {
+                    const imgData = await getBase64Image(fdoc.data().url);
+                    doc.addImage(imgData, 'JPEG', fx, cy, 55, 40);
+                    fcount++;
+                    if (fcount % 3 === 0) { fx = 20; cy += 55; } else { fx += 60; }
+                } catch(e) {}
+            }
+        }
+
+        const pagesCount = doc.internal.getNumberOfPages();
+        for (let i = 1; i <= pagesCount; i++) {
+            doc.setPage(i);
+            doc.setFontSize(7); doc.setTextColor(150, 150, 150);
+            doc.text("SYD CONSTRUCTORES - www.sydconstructores.com.mx", 105, 285, {align:'center'});
+            doc.text(`${i}`, 195, 285, {align:'right'});
+        }
+
+        const timeStr = new Date().toLocaleTimeString('es-MX', { hour12: false, hour: '2-digit', minute: '2-digit' }).replace(':', '-');
+        doc.save(`Reporte_SYD_S${currentWeek}_${timeStr}.pdf`);
+        alert('✅ Reporte generado.');
+    } catch(e) {
+        console.error(e);
+        alert('Error: ' + e.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = oldText;
+    }
+}
+
+// Helper para cargar imágenes externas en el PDF
+function getBase64Image(url) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.setAttribute('crossOrigin', 'anonymous');
+        img.onload = () => {
+            const canvas = document.createElement("canvas");
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0);
+            resolve(canvas.toDataURL("image/jpeg"));
+        };
+        img.onerror = reject;
+        img.src = url;
+    });
+}
 // IMGBB — FOTOS (Punto 4, sin tarjeta)
 // ══════════════════════════════════════
 const IMGBB_API_KEY = 'ef497f7df24480c5df8656ba07fea071';
@@ -1974,8 +2031,9 @@ function loadFotosGallery(zIdx, semana, containerId, filterByWeek = false) {
                     const d = docData.data;
                     const thumbSrc = d.thumb || d.url;
                     const caption = `${d.zona} · Sem ${d.semana} · ${d.tarea||''}`;
+                    
                     html += `
-                        <div style="position:relative; display:inline-block;">
+                        <div style="position:relative; display:inline-block; margin-right:8px; margin-bottom:8px;">
                             <img class="foto-thumb" src="${thumbSrc}"
                                   onclick="openLightbox('${d.url}','${caption}')"
                                   alt="Foto de avance">
@@ -1984,7 +2042,7 @@ function loadFotosGallery(zIdx, semana, containerId, filterByWeek = false) {
                                      style="position:absolute; top:-5px; right:-5px; background:#ef4444; color:#fff; 
                                             width:22px; height:22px; border-radius:50%; display:flex; align-items:center; 
                                             justify-content:center; font-size:0.7rem; cursor:pointer; border:2px solid var(--surface);
-                                            box-shadow:0 2px 8px rgba(0,0,0,0.4);">
+                                            box-shadow:0 2px 8px rgba(0,0,0,0.4); z-index:10;">
                                     🗑️
                                 </div>
                             ` : ''}

@@ -810,59 +810,64 @@ async function saveWeeklyNote(text) {
     }
 }
 
+let _notesListener = null;
+
 async function loadWeeklyNotes() {
-    if (!db || !session || !session.obra) return;
-    try {
-        console.log('[SYD] Cargando notas para semana:', currentWeek);
-        const snap = await db.collection('obras').doc(session.obra)
-            .collection('report_notes')
-            .where('semana', '==', currentWeek)
-            .get();
-        
-        let notesData = [];
-        snap.forEach(doc => {
-            notesData.push({ id: doc.id, ...doc.data() });
-        });
-
-        notesData.sort((a, b) => {
-            const tA = a.timestamp ? a.timestamp.toMillis() : 0;
-            const tB = b.timestamp ? b.timestamp.toMillis() : 0;
-            return tA - tB;
-        });
-
-        weeklyNotes = notesData.map(d => d.texto);
-        let html = "";
-        notesData.forEach(data => {
-            html += `
-                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:8px; padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.05);">
-                    <div style="flex:1;">• ${data.texto}</div>
-                    <button onclick="deleteSingleNote('${data.id}')" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:0.9rem; padding:0 4px;">✕</button>
-                </div>
-            `;
-        });
-        
-        const counter = document.getElementById('noteCounter');
-        const preview = document.getElementById('notesPreview');
-        const btnRep = document.getElementById('btnReporte');
-        const clearBtn = document.getElementById('clearNotesBtn');
-
-        if (counter) counter.textContent = `${weeklyNotes.length} nota(s)`;
-        if (preview) {
-            if (weeklyNotes.length > 0) {
-                preview.style.display = 'block';
-                preview.innerHTML = html;
-                if(btnRep) btnRep.style.opacity = '1';
-                if(clearBtn) clearBtn.style.display = 'block';
-            } else {
-                preview.style.display = 'none';
-                if(btnRep) btnRep.style.opacity = '0.5';
-                if(clearBtn) clearBtn.style.display = 'none';
-            }
-        }
-    } catch(e) { 
-        console.error('Error loading notes:', e);
-        if(!e.message.includes('index')) alert('Error cargando notas: ' + e.message);
+    if (!db || !session || !session.obra) {
+        console.warn('[SYD-M] loadWeeklyNotes abortado: faltan datos', {session});
+        return;
     }
+    
+    if (_notesListener) _notesListener();
+
+    console.log(`[SYD-M] Escuchando notas: Obra=${session.obra}, Sem=${currentWeek}`);
+
+    _notesListener = db.collection('obras').doc(session.obra)
+        .collection('report_notes')
+        .where('semana', '==', currentWeek)
+        .onSnapshot((snap) => {
+            let notesData = [];
+            snap.forEach(doc => notesData.push({ id: doc.id, ...doc.data() }));
+
+            notesData.sort((a, b) => {
+                const tA = a.timestamp ? (a.timestamp.toMillis ? a.timestamp.toMillis() : 0) : 0;
+                const tB = b.timestamp ? (b.timestamp.toMillis ? b.timestamp.toMillis() : 0) : 0;
+                return tA - tB;
+            });
+
+            weeklyNotes = notesData.map(d => d.texto);
+            let html = "";
+            notesData.forEach(data => {
+                html += `
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:8px; padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.05);">
+                        <div style="flex:1;">• ${data.texto}</div>
+                        <button onclick="deleteSingleNote('${data.id}')" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:0.9rem; padding:0 4px;">✕</button>
+                    </div>
+                `;
+            });
+            
+            const counter = document.getElementById('noteCounter');
+            const preview = document.getElementById('notesPreview');
+            const btnRep = document.getElementById('btnReporte');
+            const clearBtn = document.getElementById('clearNotesBtn');
+
+            if (counter) counter.textContent = `${weeklyNotes.length} nota(s)`;
+            if (preview) {
+                if (weeklyNotes.length > 0) {
+                    preview.style.display = 'block';
+                    preview.innerHTML = html;
+                    if(btnRep) btnRep.style.opacity = '1';
+                    if(clearBtn) clearBtn.style.display = 'block';
+                } else {
+                    preview.style.display = 'none';
+                    if(btnRep) btnRep.style.opacity = '0.5';
+                    if(clearBtn) clearBtn.style.display = 'none';
+                }
+            }
+            console.log(`[SYD-M] Notas actualizadas: ${weeklyNotes.length} encontradas.`);
+        }, (error) => {
+            console.error('[SYD-M] Error listener:', error);
+        });
 }
 async function deleteSingleNote(docId) {
     if(!confirm('¿Borrar esta nota?')) return;
@@ -936,6 +941,13 @@ async function generateReport() {
         alert('✅ Reporte generado con tu plantilla.');
     } catch(e) { alert('Error: ' + e.message); }
     finally { btn.disabled = false; btn.innerHTML = oldText; }
+}
+        console.error(e);
+        alert('Error: ' + e.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = oldText;
+    }
 }
 
 function getBase64Image(url) {
