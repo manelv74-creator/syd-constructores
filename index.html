@@ -1649,6 +1649,24 @@ window.onload = async function() {
 <script>
 let recognition = null;
 let weeklyNotes = [];
+let GEMINI_API_KEY = localStorage.getItem('syd_gemini_key') || '';
+
+function toggleGeminiConfig() {
+    const area = document.getElementById('geminiConfigArea');
+    if (!area) return;
+    area.style.display = area.style.display === 'none' ? 'block' : 'none';
+    if (area.style.display === 'block') {
+        document.getElementById('geminiKeyInput').value = GEMINI_API_KEY;
+    }
+}
+
+function saveGeminiKeyInline() {
+    const key = document.getElementById('geminiKeyInput').value.trim();
+    GEMINI_API_KEY = key;
+    localStorage.setItem('syd_gemini_key', GEMINI_API_KEY);
+    alert('✅ Configuración de IA guardada.');
+    document.getElementById('geminiConfigArea').style.display = 'none';
+}
 
 function initSpeech() {
     const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
