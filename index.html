@@ -1916,16 +1916,22 @@ async function generateReport() {
                     const imgData = await getBase64Image(f.url);
                     doc.addImage(imgData, 'JPEG', fx, fy, 80, 60);
                     doc.setFontSize(7); doc.setTextColor(100, 100, 100);
-                    doc.text(`${f.zona}: ${f.tarea || ''}`, fx, fy + 65);
-                    fcount++;
-                    if (fcount % 2 === 0) { fx = 20; fy += 80; } else { fx = 110; }
-                    if (fy > 230) { doc.addPage(); fy = 30; fx = 20; fcount = 0; }
-                } catch(e) {}
+} catch(e) {}
             }
         }
 
-        doc.save(`Reporte_IA_Semana_${currentWeek}.pdf`);
-        alert('✅ Reporte generado con éxito.');
+        // Guardar y Descargar (Método compatible con móviles)
+        const pdfBlob = doc.output('blob');
+        const url = URL.createObjectURL(pdfBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `Reporte_SYD_S${currentWeek}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        
+        alert('✅ Reporte generado con éxito. Revisa tus descargas.');
 
     } catch(e) {
         console.error('Error:', e);

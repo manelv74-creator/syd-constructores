@@ -985,8 +985,18 @@ async function generateReport() {
             }
         }
 
-        doc.save(`Reporte_Movil_S${currentWeek}.pdf`);
-        alert('✅ Reporte PDF generado.');
+        // Guardar y Descargar (Método compatible con móviles)
+        const pdfBlob = doc.output('blob');
+        const url = URL.createObjectURL(pdfBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `Reporte_Móvil_S${currentWeek}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+
+        alert('✅ Reporte generado. Revisa tus descargas.');
 
     } catch(e) {
         alert('Error: ' + e.message);
