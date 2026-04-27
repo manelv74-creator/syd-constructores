@@ -1748,7 +1748,6 @@ async function loadWeeklyNotes() {
             const tB = b.timestamp ? b.timestamp.toMillis() : 0;
             return tA - tB;
         });
-
         weeklyNotes = notesData.map(d => d.texto);
         let html = "";
         notesData.forEach(data => {
@@ -1780,7 +1779,6 @@ async function loadWeeklyNotes() {
         }
     } catch(e) { 
         console.error('Error loading notes:', e);
-        // Solo alertar si el error es grave
         if(!e.message.includes('index')) alert('Error cargando notas: ' + e.message);
     }
 }
@@ -1788,8 +1786,7 @@ async function loadWeeklyNotes() {
 async function deleteSingleNote(docId) {
     if(!confirm('¿Borrar esta nota?')) return;
     try {
-        await db.collection('obras').doc(session.obra)
-            .collection('report_notes').doc(docId).delete();
+        await db.collection('obras').doc(session.obra).collection('report_notes').doc(docId).delete();
         loadWeeklyNotes();
     } catch(e) { console.error('Error deleting note:', e); }
 }
@@ -1797,9 +1794,7 @@ async function deleteSingleNote(docId) {
 async function clearWeeklyNotes() {
     if(!confirm('¿Seguro que deseas borrar todas las notas de esta semana?')) return;
     try {
-        const snap = await db.collection('obras').doc(session.obra)
-            .collection('report_notes')
-            .where('semana', '==', currentWeek).get();
+        const snap = await db.collection('obras').doc(session.obra).collection('report_notes').where('semana', '==', currentWeek).get();
         const batch = db.batch();
         snap.forEach(doc => batch.delete(doc.ref));
         await batch.commit();
@@ -1822,32 +1817,31 @@ async function generateReport() {
         const fotosSnap = await db.collection('obras').doc(session.obra)
             .collection('fotos').where('semana', '==', currentWeek).get();
         
-        let reportText = "";
+        let reportText = { ejecutivo: "", avances: [] };
         
-        // --- LLAMADA A GEMINI IA (PROMPT PROFESIONAL) ---
+        // --- LLAMADA A GEMINI IA ---
         if (GEMINI_API_KEY) {
-            btn.innerHTML = '🧠 IA Analizando Obra...';
+            btn.innerHTML = '🧠 IA Redactando...';
             try {
                 let aiParts = [
-                    { text: `Eres un Director de Proyecto Senior en SYD Constructores. Tu objetivo es redactar un informe de avance semanal impecable para un cliente de alto perfil.
+                    { text: `Eres un Director de Proyecto Senior en SYD Constructores. 
+                             Analiza estas notas y fotos para generar dos secciones:
+                             1. RESUMEN EJECUTIVO: Un párrafo fluido y profesional.
+                             2. DESCRIPCIÓN DE TRABAJOS: Una lista de puntos clave.
                              
-                             CONTEXTO:
-                             - Semana de obra: ${currentWeek}
-                             - Proyecto: ${currentObra ? currentObra.name : 'Sauces'}
-                             - Notas del Supervisor: ${weeklyNotes.join(' | ')}
+                             PROYECTO: ${currentObra ? currentObra.name : 'Sauces'}
+                             NOTAS: ${weeklyNotes.join(' | ')}
                              
-                             INSTRUCCIONES:
-                             1. RESUMEN GENERAL: Redacta un texto fluido y profesional que analice el progreso global (no una lista). Relaciona las notas con la evidencia visual.
-                             2. HITOS ALCANZADOS: Identifica y destaca los logros clave de la semana.
-                             3. PRÓXIMOS PASOS: Proyecta el trabajo de la siguiente semana.
-                             
-                             Tono: Formal, ejecutivo y orientado a resultados. Idioma: Español formal (México).
-                             No incluyas saludos ni despedidas, entrega directamente el cuerpo del informe.` }
+                             Devuelve el resultado en este formato:
+                             [EJECUTIVO] texto...
+                             [AVANCES]
+                             - punto 1
+                             - punto 2...` }
                 ];
 
                 let count = 0;
                 for (const fdoc of fotosSnap.docs) {
-                    if (count >= 10) break;
+                    if (count >= 6) break;
                     const b64 = await getBase64Image(fdoc.data().url);
                     aiParts.push({ inlineData: { mimeType: "image/jpeg", data: b64.split(',')[1] } });
                     count++;
@@ -1860,80 +1854,106 @@ async function generateReport() {
                 });
 
                 const data = await response.json();
-                reportText = data.candidates[0].content.parts[0].text;
+                const raw = data.candidates[0].content.parts[0].text;
+                const parts = raw.split('[AVANCES]');
+                reportText.ejecutivo = parts[0].replace('[EJECUTIVO]', '').trim();
+                reportText.avances = parts[1] ? parts[1].trim().split('\n') : [];
             } catch(e) {
-                console.error('Gemini Error:', e);
-                reportText = "RESUMEN DE AVANCE:\n\n" + weeklyNotes.map(n => `• ${n}`).join('\n');
+                reportText.ejecutivo = weeklyNotes.join('. ');
+                reportText.avances = weeklyNotes.map(n => `- ${n}`);
             }
         } else {
-            reportText = "RESUMEN DE AVANCE:\n\n" + weeklyNotes.map(n => `• ${n}`).join('\n');
+            reportText.ejecutivo = weeklyNotes.join('. ');
+            reportText.avances = weeklyNotes.map(n => `- ${n}`);
         }
 
-        // --- GENERACIÓN DE PDF (DISEÑO ELEGANTE) ---
-        btn.innerHTML = '📄 Generando PDF...';
+        // --- PDF DESIGN ---
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        const primaryColor = [30, 58, 138];
+        const sydRed = [165, 42, 42];
+        const salmon = [244, 204, 204];
 
-        // Cabecera
-        doc.setFillColor(...primaryColor); doc.rect(0, 0, 210, 40, 'F');
-        doc.setTextColor(255, 255, 255);
-        doc.setFontSize(22); doc.setFont("helvetica", "bold");
-        doc.text("SYD CONSTRUCTORES", 20, 20);
-        doc.setFontSize(10); doc.setFont("helvetica", "normal");
-        doc.text("Reporte de Avance Semanal con IA", 20, 28);
-        doc.setFontSize(12);
-        doc.text(`SEMANA ${currentWeek}`, 170, 25, { align: 'right' });
-        doc.text(new Date().toLocaleDateString(), 170, 32, { align: 'right' });
+        // ════════ PÁGINA 1: PORTADA ════════
+        try {
+            const logoB64 = await getBase64Image('assets/logo_syd.png');
+            doc.addImage(logoB64, 'PNG', 55, 20, 100, 45);
+        } catch(e) {
+            doc.setFontSize(40); doc.setTextColor(...sydRed); doc.text("SYD", 105, 45, {align:'center'});
+        }
 
-        // Proyecto
-        doc.setTextColor(60, 60, 60);
-        doc.setFontSize(14); doc.text("PROYECTO:", 20, 55);
-        doc.setFont("helvetica", "bold");
-        doc.text(currentObra ? currentObra.name.toUpperCase() : "PROYECTO SAUCES", 60, 55);
-        doc.setDrawColor(200, 200, 200); doc.line(20, 60, 190, 60);
+        doc.setDrawColor(...sydRed); doc.setLineWidth(1.5); doc.line(25, 75, 185, 75);
+        doc.setTextColor(...sydRed); doc.setFontSize(28); doc.setFont("helvetica", "bold");
+        doc.text(currentObra ? currentObra.name.toUpperCase() : "PROYECTO", 105, 95, {align:'center'});
+        
+        doc.setTextColor(60, 60, 60); doc.setFontSize(16); doc.text("INFORME DE AVANCE SEMANAL", 105, 108, {align:'center'});
+        doc.setFontSize(10); doc.setFont("helvetica", "normal"); doc.text(`(SEMANA ${currentWeek})`, 105, 115, {align:'center'});
 
-        // Resumen Ejecutivo (IA)
-        doc.setFont("helvetica", "bold"); doc.text("RESUMEN EJECUTIVO:", 20, 75);
-        doc.setFont("helvetica", "normal"); doc.setFontSize(10);
-        const splitText = doc.splitTextToSize(reportText, 170);
-        doc.text(splitText, 20, 85);
+        let ty = 140;
+        const drawLabel = (label, value) => {
+            doc.setFillColor(...salmon); doc.rect(25, ty, 45, 10, 'F');
+            doc.setFontSize(9); doc.setFont("helvetica", "bold"); doc.setTextColor(0,0,0);
+            doc.text(label, 27, ty+6.5);
+            doc.setFont("helvetica", "normal"); doc.text(value, 75, ty+6.5);
+            ty += 12;
+        };
+        drawLabel("CLIENTE:", "SYD CONSTRUCTORES");
+        drawLabel("UBICACIÓN:", currentObra ? currentObra.location : "GUADALAJARA");
+        drawLabel("FECHA:", new Date().toLocaleDateString());
+        drawLabel("REFERENCIA:", `REP-${currentWeek}`);
 
-        // Fotos
+        // ════════ PÁGINA 2: CONTENIDO ════════
+        doc.addPage();
+        try {
+            const logoSmall = await getBase64Image('assets/logo_syd.png');
+            doc.addImage(logoSmall, 'PNG', 15, 10, 20, 10);
+        } catch(e) {}
+        doc.setDrawColor(...sydRed); doc.setLineWidth(1); doc.line(40, 15, 195, 15);
+
+        let cy = 35;
+        doc.setTextColor(...sydRed); doc.setFontSize(12); doc.setFont("helvetica", "bold");
+        doc.text("[RESUMEN EJECUTIVO / ESTADO DE OBRA]", 20, cy);
+        cy += 8;
+        doc.setTextColor(40,40,40); doc.setFontSize(10); doc.setFont("helvetica", "normal");
+        const splitE = doc.splitTextToSize(reportText.ejecutivo, 170);
+        doc.text(splitE, 20, cy);
+        cy += (splitE.length * 5) + 12;
+
+        doc.setTextColor(...sydRed); doc.setFontSize(12); doc.setFont("helvetica", "bold");
+        doc.text("[DESCRIPCIÓN DE TRABAJOS / AVANCES]", 20, cy);
+        cy += 8;
+        doc.setTextColor(40,40,40); doc.setFontSize(10); doc.setFont("helvetica", "normal");
+        reportText.avances.forEach(a => { if(a.trim()){ doc.text(`• ${a.trim().replace(/^- /,'')}`, 25, cy); cy += 6; }});
+        cy += 10;
+
+        doc.setTextColor(...sydRed); doc.setFontSize(12); doc.setFont("helvetica", "bold");
+        doc.text("[REGISTRO FOTOGRÁFICO]", 20, cy);
+        cy += 10;
         if (!fotosSnap.empty) {
-            doc.addPage();
-            doc.setFillColor(...primaryColor); doc.rect(0, 0, 210, 15, 'F');
-            doc.setTextColor(255, 255, 255); doc.setFontSize(12);
-            doc.text("EVIDENCIA FOTOGRÁFICA", 20, 10);
-            
-            let fy = 30; let fx = 20;
-            let fcount = 0;
+            let fx = 20; let fcount = 0;
             for (const fdoc of fotosSnap.docs) {
-                const f = fdoc.data();
+                if (fcount >= 6) break;
                 try {
-                    const imgData = await getBase64Image(f.url);
-                    doc.addImage(imgData, 'JPEG', fx, fy, 80, 60);
-                    doc.setFontSize(7); doc.setTextColor(100, 100, 100);
-} catch(e) {}
+                    const imgData = await getBase64Image(fdoc.data().url);
+                    doc.addImage(imgData, 'JPEG', fx, cy, 55, 40);
+                    fcount++;
+                    if (fcount % 3 === 0) { fx = 20; cy += 55; } else { fx += 60; }
+                } catch(e) {}
             }
         }
 
-        // Guardar y Descargar (Método compatible con móviles con nombre único)
-        const timeStr = new Date().toLocaleTimeString('es-MX', { hour12: false, hour: '2-digit', minute: '2-digit' }).replace(':', '-');
-        const pdfBlob = doc.output('blob');
-        const url = URL.createObjectURL(pdfBlob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `Reporte_SYD_S${currentWeek}_${timeStr}.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-        
-        alert('✅ Reporte generado con éxito. Revisa tus descargas.');
+        const pagesCount = doc.internal.getNumberOfPages();
+        for (let i = 1; i <= pagesCount; i++) {
+            doc.setPage(i);
+            doc.setFontSize(7); doc.setTextColor(150, 150, 150);
+            doc.text("SYD CONSTRUCTORES - www.sydconstructores.com.mx", 105, 285, {align:'center'});
+            doc.text(`${i}`, 195, 285, {align:'right'});
+        }
 
+        const timeStr = new Date().toLocaleTimeString('es-MX', { hour12: false, hour: '2-digit', minute: '2-digit' }).replace(':', '-');
+        doc.save(`Reporte_SYD_S${currentWeek}_${timeStr}.pdf`);
+        alert('✅ Reporte generado.');
     } catch(e) {
-        console.error('Error:', e);
+        console.error(e);
         alert('Error: ' + e.message);
     } finally {
         btn.disabled = false;
