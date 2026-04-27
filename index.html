@@ -1708,22 +1708,34 @@ async function saveWeeklyNote(text) {
 }
 
 async function loadWeeklyNotes() {
-    if (!db || !session.obra) return;
+    if (!db || !session || !session.obra) return;
     try {
+        console.log('[SYD] Cargando notas para semana:', currentWeek);
+        // Quitamos el orderBy para evitar requerir un índice compuesto en Firebase
         const snap = await db.collection('obras').doc(session.obra)
             .collection('report_notes')
             .where('semana', '==', currentWeek)
-            .orderBy('timestamp', 'asc').get();
+            .get();
         
-        weeklyNotes = [];
-        let html = "";
+        let notesData = [];
         snap.forEach(doc => {
-            const data = doc.data();
-            weeklyNotes.push(data.texto);
+            notesData.push({ id: doc.id, ...doc.data() });
+        });
+
+        // Ordenamos manualmente por timestamp
+        notesData.sort((a, b) => {
+            const tA = a.timestamp ? a.timestamp.toMillis() : 0;
+            const tB = b.timestamp ? b.timestamp.toMillis() : 0;
+            return tA - tB;
+        });
+
+        weeklyNotes = notesData.map(d => d.texto);
+        let html = "";
+        notesData.forEach(data => {
             html += `
                 <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:8px; padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.05);">
                     <div style="flex:1;">• ${data.texto}</div>
-                    <button onclick="deleteSingleNote('${doc.id}')" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:0.9rem; padding:0 4px;">✕</button>
+                    <button onclick="deleteSingleNote('${data.id}')" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:0.9rem; padding:0 4px;">✕</button>
                 </div>
             `;
         });
@@ -1733,18 +1745,24 @@ async function loadWeeklyNotes() {
         const btnRep = document.getElementById('btnReporte');
         const clearBtn = document.getElementById('clearNotesBtn');
 
-        counter.textContent = `${weeklyNotes.length} nota(s)`;
-        if (weeklyNotes.length > 0) {
-            preview.style.display = 'block';
-            preview.innerHTML = html;
-            btnRep.style.opacity = '1';
-            if(clearBtn) clearBtn.style.display = 'block';
-        } else {
-            preview.style.display = 'none';
-            btnRep.style.opacity = '0.5';
-            if(clearBtn) clearBtn.style.display = 'none';
+        if (counter) counter.textContent = `${weeklyNotes.length} nota(s)`;
+        if (preview) {
+            if (weeklyNotes.length > 0) {
+                preview.style.display = 'block';
+                preview.innerHTML = html;
+                if(btnRep) btnRep.style.opacity = '1';
+                if(clearBtn) clearBtn.style.display = 'block';
+            } else {
+                preview.style.display = 'none';
+                if(btnRep) btnRep.style.opacity = '0.5';
+                if(clearBtn) clearBtn.style.display = 'none';
+            }
         }
-    } catch(e) { console.error('Error loading notes:', e); }
+    } catch(e) { 
+        console.error('Error loading notes:', e);
+        // Solo alertar si el error es grave
+        if(!e.message.includes('index')) alert('Error cargando notas: ' + e.message);
+    }
 }
 
 async function deleteSingleNote(docId) {
