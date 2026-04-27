@@ -1765,84 +1765,96 @@ async function generateReport() {
     const btn = document.getElementById('btnReporte');
     const oldText = btn.innerHTML;
     btn.disabled = true;
-    btn.innerHTML = '⏳ Preparando...';
+    btn.innerHTML = '⏳ Buscando fotos...';
 
     try {
-        // 1. Cargar fotos de la semana
+        // 1. Buscar fotos de la obra (SIN filtro de semana para no perderse ninguna)
         const fotosSnap = await db.collection('obras').doc(session.obra)
-            .collection('fotos').where('semana', '==', currentWeek).get();
+            .collection('fotos').orderBy('timestamp', 'desc').limit(8).get();
         const fotoUrls = [];
         fotosSnap.forEach(doc => fotoUrls.push(doc.data().url));
-        console.log(`[SYD] Fotos encontradas: ${fotoUrls.length}`);
+        console.log(`[SYD] Fotos encontradas en toda la obra: ${fotoUrls.length}`);
 
         // 2. Datos por defecto (sin IA)
         let reportData = {
             resumen: weeklyNotes.join(' '),
-            avances: [...weeklyNotes.slice(0,4)],
-            descripciones: fotoUrls.slice(0,4).map((_,i) => `Vista de avance ${i+1}`)
+            avances: [...weeklyNotes.slice(0, 4)],
+            descripciones: fotoUrls.slice(0, 4).map((_, i) => `Vista de avance ${i + 1}`)
         };
         while (reportData.avances.length < 4) reportData.avances.push('Actividad de obra en proceso');
-        while (reportData.descripciones.length < 4) reportData.descripciones.push('Evidencia fotogrfica del avance');
+        while (reportData.descripciones.length < 4) reportData.descripciones.push('Evidencia fotográfica del avance');
 
         // 3. Llamar a Gemini si hay API Key
         if (GEMINI_API_KEY) {
             btn.innerHTML = '🤖 IA Analizando...';
             try {
-                const prompt = `Eres un Residente de Obra senior. Analiza las siguientes notas de campo y genera un informe técnico profesional en español. Devuelve EXCLUSIVAMENTE un objeto JSON válido (sin markdown, sin texto adicional) con esta estructura exacta:
+                // Construir prompt completo con URLs de imagénes incluidas
+                const fotosList = fotoUrls.slice(0, 4).map((url, i) => `  Foto ${i+1}: ${url}`).join('\n');
+                const prompt = `Eres un Residente de Obra senior de SYD Constructores.
+Analiza las notas de campo de esta semana y genera un INFORME TÉCNICO PROFESIONAL.
+
+IMPORTANTE: NO transcribas las notas literalmente. Interpreta el trabajo realizado y redáctalo con lenguaje técnico de ingeniería civil. Usa terminología de construcción (especificaciones, normas, materiales, procesos constructivos).
+
+NOTAS DEL RESIDENTE ESTA SEMANA:
+${weeklyNotes.map((n, i) => `${i + 1}. ${n}`).join('\n')}
+
+${fotoUrls.length > 0 ? `FOTOS DISPONIBLES (${fotoUrls.length} imágenes):
+${fotosList}
+
+Describe cada foto técnicamente basándote en el contexto de las notas.` : 'No hay fotos disponibles esta semana.'}
+
+Devuelve EXCLUSIVAMENTE este JSON válido (sin markdown, sin texto adicional antes o después):
 {
-  "resumen": "[Narrativa profesional de 2-3 párrafos describiendo el estado general de la obra, avances significativos y condiciones encontradas]",
-  "avances": ["[Punto de trabajo 1]", "[Punto de trabajo 2]", "[Punto de trabajo 3]", "[Punto de trabajo 4]"],
-  "descripciones": ["[Descripción técnica foto 1]", "[Descripción técnica foto 2]", "[Descripción técnica foto 3]", "[Descripción técnica foto 4]"]
-}
-
-NOTAS DE CAMPO DE ESTA SEMANA:
-${weeklyNotes.map((n,i) => `${i+1}. ${n}`).join('\n')}
-
-Número de fotos disponibles: ${fotoUrls.length}`;
-
-                const aiParts = [{ text: prompt }];
-
-                // Agregar imágenes a Gemini (hasta 4)
-                let imgCount = 0;
-                for (const url of fotoUrls) {
-                    if (imgCount >= 4) break;
-                    try {
-                        const b64 = await getBase64ImageSafe(url);
-                        if (b64) {
-                            aiParts.push({ inlineData: { mimeType: 'image/jpeg', data: b64 } });
-                            imgCount++;
-                            console.log(`[SYD] Imagen ${imgCount} enviada a Gemini`);
-                        }
-                    } catch(imgErr) {
-                        console.warn('[SYD] No se pudo cargar imagen para IA:', imgErr.message);
-                    }
-                }
+  "resumen": "Narrativa profesional de 3 párrafos. Párrafo 1: estado general de la obra y avances de esta semana. Párrafo 2: descripción técnica de los trabajos ejecutados con materiales y procesos. Párrafo 3: condiciones actuales y próximos pasos.",
+  "avances": [
+    "Descripción técnica punto 1 (máx 15 palabras)",
+    "Descripción técnica punto 2 (máx 15 palabras)",
+    "Descripción técnica punto 3 (máx 15 palabras)",
+    "Descripción técnica punto 4 (máx 15 palabras)"
+  ],
+  "descripciones": [
+    "Pie de foto 1: descripción técnica de la imagen",
+    "Pie de foto 2: descripción técnica de la imagen",
+    "Pie de foto 3: descripción técnica de la imagen",
+    "Pie de foto 4: descripción técnica de la imagen"
+  ]
+}`;
 
                 const response = await fetch(
                     `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
-                    { method: 'POST', headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ contents: [{ parts: aiParts }] }) }
+                    {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                    }
                 );
                 const data = await response.json();
-                console.log('[SYD] Respuesta Gemini:', JSON.stringify(data).substring(0, 300));
+                console.log('[SYD] Gemini status:', response.status);
+                console.log('[SYD] Respuesta cruda:', JSON.stringify(data).substring(0, 500));
 
                 if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
-                    const rawText = data.candidates[0].content.parts[0].text;
-                    // Extraer JSON de forma robusta (aunque haya texto extra alrededor)
-                    const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-                    if (jsonMatch) {
-                        const aiJson = JSON.parse(jsonMatch[0]);
-                        reportData.resumen = aiJson.resumen || reportData.resumen;
+                    const rawText = data.candidates[0].content.parts[0].text.trim();
+                    // Extraer JSON robusto (entre primer { y último })
+                    const start = rawText.indexOf('{');
+                    const end = rawText.lastIndexOf('}');
+                    if (start !== -1 && end !== -1) {
+                        const jsonStr = rawText.substring(start, end + 1);
+                        const aiJson = JSON.parse(jsonStr);
+                        if (aiJson.resumen) reportData.resumen = aiJson.resumen;
                         if (Array.isArray(aiJson.avances) && aiJson.avances.length > 0)
-                            reportData.avances = aiJson.avances;
+                            reportData.avances = aiJson.avances.slice(0, 4);
                         if (Array.isArray(aiJson.descripciones) && aiJson.descripciones.length > 0)
-                            reportData.descripciones = aiJson.descripciones;
-                        console.log('[SYD] IA generó el informe correctamente');
+                            reportData.descripciones = aiJson.descripciones.slice(0, 4);
+                        console.log('[SYD] ✅ IA generó el informe correctamente');
+                    } else {
+                        console.warn('[SYD] Respuesta IA no contiene JSON válido:', rawText.substring(0, 200));
                     }
+                } else if (data.error) {
+                    console.error('[SYD] Error API Gemini:', data.error.message);
+                    alert(`⚠️ Gemini: ${data.error.message}\n\nEl informe se generara sin IA.`);
                 }
-            } catch(aiErr) {
-                console.error('[SYD] Error Gemini:', aiErr);
-                // Continuar con datos por defecto
+            } catch (aiErr) {
+                console.error('[SYD] Error llamando Gemini:', aiErr);
             }
         }
 
@@ -1852,16 +1864,15 @@ Número de fotos disponibles: ${fotoUrls.length}`;
         if (!templateResponse.ok) throw new Error('No se pudo cargar plantilla_syd.html');
         let html = await templateResponse.text();
 
-        // 5. Insertar logo como Base64 (para que se vea en el PDF)
+        // 5. Insertar logo como Base64
         try {
             const logoB64 = await getBase64ImageSafe('assets/logo_syd.png');
             if (logoB64) {
                 const logoDataUri = `data:image/png;base64,${logoB64}`;
-                // Reemplazar TODAS las variantes del nombre del logo
                 html = html.replace('logo_syd Alta resolucion.png', logoDataUri);
                 html = html.replace('logo_syd.png', logoDataUri);
             }
-        } catch(logoErr) {
+        } catch (logoErr) {
             console.warn('[SYD] Logo no cargado:', logoErr.message);
         }
 
@@ -1870,45 +1881,42 @@ Número de fotos disponibles: ${fotoUrls.length}`;
         html = html
             .replace('{{proyecto_nombre}}', obraName.toUpperCase())
             .replace('{{cliente_nombre}}', currentObra?.cliente || 'CLIENTE')
-            .replace('{{fecha_informe}}', new Date().toLocaleDateString('es-MX', {day:'2-digit',month:'long',year:'numeric'}))
+            .replace('{{fecha_informe}}', new Date().toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' }))
             .replace('{{ubicacion_obra}}', currentObra?.location || currentObra?.ubicacion || 'Zapopan, Jalisco')
             .replace('{{resumen_ejecutivo}}', reportData.resumen);
 
         // 7. Insertar avances y fotos
-        for (let i = 1; i <= 4; i++) {
-            html = html.replace(`{{trabajo_realizado_${i}}}`, reportData.avances[i-1] || 'Actividad de obra en proceso');
-            html = html.replace(`{{descripcion_foto_${i}}}`, reportData.descripciones[i-1] || `Vista de avance ${i}`);
+        // Asegurarse de tener 4 elementos en descripciones
+        while (reportData.descripciones.length < 4) reportData.descripciones.push(`Vista de avance ${reportData.descripciones.length + 1}`);
 
-            // Insertar fotos: primero intentar Base64, si falla usar URL directa
-            const fotoUrl = fotoUrls[i-1];
+        for (let i = 1; i <= 4; i++) {
+            html = html.replace(`{{trabajo_realizado_${i}}}`, reportData.avances[i - 1] || 'Actividad de obra en proceso');
+            html = html.replace(`{{descripcion_foto_${i}}}`, reportData.descripciones[i - 1] || `Evidencia fotográfica ${i}`);
+
+            const fotoUrl = fotoUrls[i - 1];
             if (fotoUrl) {
-                try {
-                    const fotoB64 = await getBase64ImageSafe(fotoUrl);
-                    if (fotoB64) {
-                        html = html.replace(`{{url_foto_${i}}}`, `data:image/jpeg;base64,${fotoB64}`);
-                    } else {
-                        html = html.replace(`{{url_foto_${i}}}`, fotoUrl);
-                    }
-                } catch(fErr) {
-                    html = html.replace(`{{url_foto_${i}}}`, fotoUrl);
-                }
+                // Intentar Base64 primero, si falla usar URL directa
+                const fotoB64 = await getBase64ImageSafe(fotoUrl);
+                html = html.replace(`{{url_foto_${i}}}`,
+                    fotoB64 ? `data:image/jpeg;base64,${fotoB64}` : fotoUrl);
             } else {
                 html = html.replace(`{{url_foto_${i}}}`, 'https://via.placeholder.com/400x300?text=Sin+Foto');
             }
         }
 
-        // 8. Generar PDF
-        const timestamp = new Date().getTime();
+        // 8. Generar PDF con timestamp para no sobreescribir
+        const ts = new Date();
+        const fileName = `Reporte_SYD_S${currentWeek}_${ts.getDate()}${ts.getMonth()+1}${ts.getHours()}${ts.getMinutes()}.pdf`;
         await html2pdf().from(html).set({
             margin: [10, 15, 10, 15],
-            filename: `Reporte_SYD_S${currentWeek}_${timestamp}.pdf`,
+            filename: fileName,
             image: { type: 'jpeg', quality: 0.95 },
             html2canvas: { scale: 2, useCORS: true, allowTaint: true, logging: false },
             jsPDF: { unit: 'mm', format: 'letter', orientation: 'portrait' }
         }).save();
 
-        alert('✅ Reporte generado correctamente.');
-    } catch(e) {
+        alert(`✅ Reporte generado: ${fileName}\n📷 Fotos incluidas: ${Math.min(fotoUrls.length, 4)} de ${fotoUrls.length} disponibles`);
+    } catch (e) {
         console.error('[SYD] Error generateReport:', e);
         alert('Error al generar reporte: ' + e.message);
     } finally {
