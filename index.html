@@ -1875,8 +1875,14 @@ async function generateReport() {
 
         // ════════ PÁGINA 1: PORTADA ════════
         try {
-            const logoB64 = await getBase64Image('assets/logo_syd.png');
-            doc.addImage(logoB64, 'PNG', 55, 20, 100, 45);
+            const logoData = await getBase64Image('assets/logo_syd.png');
+            const img = new Image();
+            img.src = logoData;
+            await new Promise(r => img.onload = r);
+            const ratio = img.width / img.height;
+            const targetWidth = 80;
+            const targetHeight = targetWidth / ratio;
+            doc.addImage(logoData, 'PNG', (210 - targetWidth) / 2, 20, targetWidth, targetHeight);
         } catch(e) {
             doc.setFontSize(40); doc.setTextColor(...sydRed); doc.text("SYD", 105, 45, {align:'center'});
         }
@@ -1905,7 +1911,7 @@ async function generateReport() {
         doc.addPage();
         try {
             const logoSmall = await getBase64Image('assets/logo_syd.png');
-            doc.addImage(logoSmall, 'PNG', 15, 10, 20, 10);
+            doc.addImage(logoSmall, 'PNG', 15, 8, 20, 10, undefined, 'FAST');
         } catch(e) {}
         doc.setDrawColor(...sydRed); doc.setLineWidth(1); doc.line(40, 15, 195, 15);
 
