@@ -1796,25 +1796,32 @@ async function generateReport() {
             btn.innerHTML = '🤖 IA Analizando imágenes...';
             try {
                 // Prompt de texto — sin URLs (Gemini no puede descargarlas)
-                const prompt = `Eres un Residente de Obra senior de SYD Constructores.
-Analiza las notas de campo y las imágenes adjuntas de esta semana de obra.
-Genera un INFORME TÉCNICO PROFESIONAL en español.
+                const notasTexto = weeklyNotes.map((n, i) => `${i + 1}. ${n}`).join('\n');
+                const prompt = `Eres un Ingeniero Civil Residente de Obra redactando un INFORME SEMANAL FORMAL para el cliente propietario de SYD Constructores.
 
-REGLAS IMPORTANTES:
-- NO copies ni transcribas las notas literalmente
-- Interpreta los trabajos con lenguaje técnico de ingeniería civil
-- Describe lo que VES en las imágenes (materiales, acabados, instalaciones, estado)
-- Usa terminología profesional de construcción
+TAREA: Reescribe las notas de campo como un documento técnico profesional de ingeniería civil.
 
-NOTAS DEL RESIDENTE:
-${weeklyNotes.map((n, i) => `${i + 1}. ${n}`).join('\n')}
+REGLAS ESTRICTAS — SI LAS INCUMPLES EL INFORME ES INVÁLIDO:
+1. NUNCA copies ni parafrasees las notas. Reescríbelas completamente con otro vocabulario.
+2. NUNCA uses lenguaje informal: "todo listo", "ya quedó", "el cliente", "nada más", "falta", "quedan listos", "listos para que".
+3. SIEMPRE escribe en tercera persona formal y voz pasiva técnica.
+4. USA OBLIGATORIAMENTE estos tipos de términos técnicos de construcción:
+   - "se ejecutó la instalación de [elemento]"
+   - "se completó la habilitación de los aparatos sanitarios"  
+   - "se verificó la hermeticidad del sistema hidráulico"
+   - "los muebles sanitarios fueron instalados y conectados a la red de suministro"
+   - "el firme de concreto se encuentra en condiciones óptimas para recibir el recubrimiento de piso"
+   - "se realizaron las pruebas hidráulicas reglamentarias"
+   - "los accesorios sanitarios presentan funcionamiento correcto"
+   - "se completó el proceso de acabados en los módulos de baño"
 
-Responde ÚNICAMENTE con este JSON válido (sin markdown ni texto adicional):
-{
-  "resumen": "3 párrafos técnicos: 1) avances generales de la semana, 2) descripción técnica de los trabajos y materiales observados en las fotos, 3) estado actual y siguientes pasos",
-  "avances": ["punto técnico 1", "punto técnico 2", "punto técnico 3", "punto técnico 4"],
-  "descripciones": ["descripción técnica foto 1", "descripción técnica foto 2", "descripción técnica foto 3", "descripción técnica foto 4"]
-}`;
+NOTAS DEL RESIDENTE (material fuente — NO copiar):
+${notasTexto}
+
+CONTEXTO: Proyecto de remodelación residencial. Fase actual: instalaciones hidráulico-sanitarias y acabados. ${fotoUrls.length} fotografías de avance disponibles.
+
+Devuelve ÚNICAMENTE este JSON sin markdown:
+{"resumen":"[Escribe 3 párrafos técnicos separados por salto de línea. Párrafo 1: avance general técnico de la semana con porcentaje estimado. Párrafo 2: descripción técnica específica de todos los trabajos ejecutados con materiales y especificaciones. Párrafo 3: estado de entrega y programa de la siguiente semana.]","avances":["[Avance técnico 1: máx 12 palabras con sustantivos de construcción]","[Avance técnico 2]","[Avance técnico 3]","[Avance técnico 4]"],"descripciones":["[Pie de foto 1: descripción técnica de instalación sanitaria]","[Pie de foto 2: descripción de acabados o estructura visible]","[Pie de foto 3: descripción técnica de avance]","[Pie de foto 4: descripción técnica de avance]"]}`;
 
                 // Construir partes del mensaje: texto + imágenes en Base64
                 const parts = [{ text: prompt }];
