@@ -904,23 +904,31 @@ async function generateReport() {
         
         let reportText = "";
         
-        // --- LLAMADA A GEMINI IA ---
+        // --- LLAMADA A GEMINI IA (PROMPT PROFESIONAL) ---
         if (GEMINI_API_KEY) {
             btn.innerHTML = '🧠 IA Analizando...';
             try {
                 let aiParts = [
-                    { text: `Actúa como un supervisor de obra senior para SYD Constructores. 
-                             Genera un resumen ejecutivo profesional basado en estas notas de voz y fotos de la semana ${currentWeek}.
-                             Relaciona lo que se ve en las fotos con lo que dicen las notas.
-                             PROYECTO: ${currentObra ? currentObra.name : 'Sauces'}
-                             NOTAS: ${weeklyNotes.join(' | ')}` }
+                    { text: `Eres un Director de Proyecto Senior en SYD Constructores. Tu objetivo es redactar un informe de avance semanal impecable para un cliente de alto perfil.
+                             
+                             CONTEXTO:
+                             - Semana de obra: ${currentWeek}
+                             - Proyecto: ${currentObra ? currentObra.name : 'Sauces'}
+                             - Notas: ${weeklyNotes.join(' | ')}
+                             
+                             INSTRUCCIONES:
+                             1. RESUMEN GENERAL: Redacta un texto fluido y profesional que analice el progreso global (no una lista). Relaciona las notas con la evidencia visual.
+                             2. HITOS ALCANZADOS: Destaca logros clave.
+                             3. PRÓXIMOS PASOS: Proyecta la siguiente semana.
+                             
+                             Tono: Formal y ejecutivo. Español (México).
+                             No incluyas saludos ni despedidas.` }
                 ];
 
                 let count = 0;
                 for (const fdoc of fotosSnap.docs) {
-                    if (count >= 6) break; // Límite para móvil
-                    const f = fdoc.data();
-                    const b64 = await getBase64Image(f.url);
+                    if (count >= 6) break;
+                    const b64 = await getBase64Image(fdoc.data().url);
                     aiParts.push({ inlineData: { mimeType: "image/jpeg", data: b64.split(',')[1] } });
                     count++;
                 }
@@ -941,37 +949,49 @@ async function generateReport() {
             reportText = "Avances registrados:\n\n" + weeklyNotes.map(n => `• ${n}`).join('\n');
         }
 
-        // --- GENERACIÓN DE PDF ---
+        // --- GENERACIÓN DE PDF (DISEÑO ELEGANTE) ---
         btn.innerHTML = '📄 Generando PDF...';
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        const primaryColor = [30, 58, 138];
+        
+        const navy = [26, 35, 126];
+        const gold = [255, 193, 7];
 
-        doc.setFillColor(...primaryColor); doc.rect(0, 0, 210, 40, 'F');
+        // 1. Header
+        doc.setFillColor(...navy); doc.rect(0, 0, 210, 45, 'F');
+        try {
+            const logoB64 = await getBase64Image('assets/logo_syd.png');
+            doc.addImage(logoB64, 'PNG', 15, 10, 25, 25);
+        } catch(e) {
+            doc.setTextColor(255, 255, 255); doc.setFontSize(22); doc.text("SYD", 15, 25);
+        }
+
         doc.setTextColor(255, 255, 255);
-        doc.setFontSize(22); doc.setFont("helvetica", "bold");
-        doc.text("SYD CONSTRUCTORES", 20, 20);
-        doc.setFontSize(10); doc.setFont("helvetica", "normal");
-        doc.text("Reporte Móvil con IA", 20, 28);
-        doc.setFontSize(12); doc.text(`SEMANA ${currentWeek}`, 170, 25, { align: 'right' });
+        doc.setFontSize(18); doc.setFont("helvetica", "bold");
+        doc.text("INFORME DE AVANCE", 50, 23);
+        doc.setFontSize(14); doc.setFillColor(...gold); doc.rect(160, 10, 40, 25, 'F');
+        doc.setTextColor(navy[0], navy[1], navy[2]);
+        doc.text(`SEM ${currentWeek}`, 180, 22, { align: 'center' });
 
-        doc.setTextColor(60, 60, 60);
-        doc.setFontSize(14); doc.text("PROYECTO:", 20, 55);
-        doc.setFont("helvetica", "bold"); doc.text(currentObra ? currentObra.name.toUpperCase() : "SAUCES", 60, 55);
-        doc.setDrawColor(200, 200, 200); doc.line(20, 60, 190, 60);
+        // 2. Info
+        doc.setTextColor(55, 71, 79);
+        doc.setFontSize(12); doc.text("PROYECTO:", 20, 60);
+        doc.setFont("helvetica", "bold"); doc.text(currentObra ? currentObra.name.toUpperCase() : "SAUCES", 50, 60);
+        doc.setDrawColor(...gold); doc.line(20, 63, 190, 63);
 
-        doc.setFont("helvetica", "bold"); doc.text("RESUMEN EJECUTIVO:", 20, 75);
+        // 3. Resumen
+        doc.setFontSize(13); doc.text("RESUMEN EJECUTIVO", 20, 75);
         doc.setFont("helvetica", "normal"); doc.setFontSize(10);
-        const splitText = doc.splitTextToSize(reportText, 170);
+        const splitText = doc.splitTextToSize(reportText, 175);
         doc.text(splitText, 20, 85);
 
+        // 4. Galería
         if (!fotosSnap.empty) {
             doc.addPage();
-            doc.setFillColor(...primaryColor); doc.rect(0, 0, 210, 15, 'F');
-            doc.setTextColor(255, 255, 255); doc.setFontSize(12);
-            doc.text("EVIDENCIA FOTOGRÁFICA", 20, 10);
+            doc.setFillColor(...navy); doc.rect(0, 0, 210, 15, 'F');
+            doc.setTextColor(255, 255, 255); doc.text("REGISTRO FOTOGRÁFICO", 20, 10);
             
-            let fy = 30;
+            let fy = 25;
             for (const fdoc of fotosSnap.docs) {
                 const f = fdoc.data();
                 try {
