@@ -2041,6 +2041,7 @@ Devuelve ÚNICAMENTE este JSON sin markdown:
         }
 
         // 8. Mostrar el informe en un modal de pantalla completa (sin window.open)
+        window._lastReportHtml = html; // Guardar para WhatsApp
         showReportModal(html, fileName, fotoUrls.length);
 
         // Mostrar botón de WhatsApp y guardar nombre del informe
@@ -2109,8 +2110,7 @@ async function sendReportWhatsApp() {
         // Subir el informe a Firebase Storage para poder compartir el link
         let reportLink = '';
         try {
-            const reportModal = document.getElementById('reportModal');
-            const reportHtml = reportModal ? reportModal.innerHTML : '';
+            const reportHtml = window._lastReportHtml || '';
             if (reportHtml) {
                 const semanaStr = window._lastReportWeek || currentWeek;
                 const ts2 = new Date();
@@ -2130,18 +2130,24 @@ async function sendReportWhatsApp() {
         for (const [phone, nombre] of clients) {
             const firstName = nombre.split(' ')[0].toUpperCase();
 
-            const mensaje =
+            // Usamos unicode escapes para los emojis para evitar problemas de codificación
+            const emojiCalendar = '\uD83D\uDCC5';
+            const emojiDoc = '\uD83D\uDCC4';
+            const emojiEmail = '\uD83D\uDCE7';
+            const emojiPhone = '\uD83D\uDCDE';
+
+            const mensaje = 
 `${saludo}, ${firstName}.
 
 Le enviamos el informe semanal correspondiente a los trabajos realizados en su obra *${obraName}*.
 
-📅 Semana ${semana} — ${fecha}
-${reportLink ? `\n📄 *Ver informe completo:*\n${reportLink}\n` : ''}
+${emojiCalendar} Semana ${semana} — ${fecha}
+${reportLink ? `\n${emojiDoc} *Ver informe completo:*\n${reportLink}\n` : ''}
 Cualquier duda o comentario estamos a sus órdenes.
 
 _SYD Constructores_
-📧 info@sydconstructores.com.mx
-📞 333 250 3313`;
+${emojiEmail} info@sydconstructores.com.mx
+${emojiPhone} 333 250 3313`;
 
             // Formatear teléfono: asegurar que empiece con código de país
             let tel = phone.replace(/[^\d]/g, '');
