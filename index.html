@@ -2105,6 +2105,28 @@ async function sendReportWhatsApp() {
 
         // Abrir una ventana de WhatsApp por cada cliente
         let sent = 0;
+
+        // Subir el informe a Firebase Storage para poder compartir el link
+        let reportLink = '';
+        try {
+            const reportModal = document.getElementById('reportModal');
+            const reportHtml = reportModal ? reportModal.innerHTML : '';
+            if (reportHtml) {
+                const semanaStr = window._lastReportWeek || currentWeek;
+                const ts2 = new Date();
+                const reportFileName = `informes/${obraId}/Reporte_S${semanaStr}_${ts2.getTime()}.html`;
+                const storageRef = firebase.storage().ref(reportFileName);
+                const fullHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Informe SYD - Semana ${semanaStr}</title>
+<style>body{font-family:Arial,sans-serif;max-width:800px;margin:0 auto;padding:20px;}</style>
+</head><body>${reportHtml}</body></html>`;
+                const blob = new Blob([fullHtml], { type: 'text/html' });
+                const snapshot = await storageRef.put(blob);
+                reportLink = await snapshot.ref.getDownloadURL();
+            }
+        } catch(storageErr) {
+            console.warn('[SYD] No se pudo subir informe a Storage:', storageErr);
+        }
+
         for (const [phone, nombre] of clients) {
             const firstName = nombre.split(' ')[0].toUpperCase();
 
@@ -2114,12 +2136,12 @@ async function sendReportWhatsApp() {
 Le enviamos el informe semanal correspondiente a los trabajos realizados en su obra *${obraName}*.
 
 📅 Semana ${semana} — ${fecha}
-
+${reportLink ? `\n📄 *Ver informe completo:*\n${reportLink}\n` : ''}
 Cualquier duda o comentario estamos a sus órdenes.
 
 _SYD Constructores_
 📧 info@sydconstructores.com.mx
-📞 (33) XXXX-XXXX`;
+📞 333 250 3313`;
 
             // Formatear teléfono: asegurar que empiece con código de país
             let tel = phone.replace(/[^\d]/g, '');
@@ -2142,7 +2164,7 @@ _SYD Constructores_
             await new Promise(r => setTimeout(r, 800));
         }
 
-        alert(`✅ Se abrieron ${sent} conversación(es) de WhatsApp.\n\nRevisa cada pestaña y pulsa Enviar en WhatsApp Web.`);
+        alert(`✅ Se abrieron ${sent} conversación(es) de WhatsApp.\n${reportLink ? '📄 El informe se subió correctamente y se incluyó el link.' : '⚠️ No se pudo subir el informe (generalo primero).'}\n\nRevisa cada pestaña y pulsa Enviar en WhatsApp Web.`);
 
     } catch (e) {
         console.error('[SYD] Error WhatsApp:', e);
