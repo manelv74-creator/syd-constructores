@@ -679,6 +679,13 @@
                     📱 Enviar por WhatsApp a Clientes
                 </button>
             </div>
+
+            <!-- Botón DEBUG IA (temporal para diagnóstico) -->
+            <div style="margin-top:10px;">
+                <button onclick="debugGemini()" style="width:100%; background:rgba(251,191,36,0.15); border:1px dashed #fbbf24; color:#fbbf24; padding:10px; border-radius:10px; font-weight:700; font-size:0.75rem; cursor:pointer;">
+                    🔬 Diagnóstico IA (Debug)
+                </button>
+            </div>
         </div>
 
         <div id="zoneCards"></div>
@@ -1766,6 +1773,129 @@ async function clearWeeklyNotes() {
 }
 
 
+
+// ══ FUNCIÓN DE DIAGNÓSTICO IA (temporal) ══
+async function debugGemini() {
+    if (!GEMINI_API_KEY) {
+        alert('⚠️ No hay API Key configurada.\nPulsa el engranaje ⚙️ y guarda tu Gemini Key primero.');
+        return;
+    }
+    if (weeklyNotes.length === 0) {
+        alert('⚠️ No hay notas esta semana. Agrega al menos una nota para diagnosticar.');
+        return;
+    }
+
+    // ── Paso 1: Buscar fotos ──
+    let fotoUrls = [];
+    try {
+        const fotosSnap = await db.collection('obras').doc(session.obra)
+            .collection('fotos').orderBy('timestamp', 'desc').limit(8).get();
+        fotosSnap.forEach(doc => fotoUrls.push(doc.data().url));
+    } catch(e) { console.warn('Debug: Error obteniendo fotos', e); }
+
+    // ── Paso 2: Intentar convertir fotos a Base64 ──
+    const imgResults = [];
+    for (const url of fotoUrls.slice(0, 4)) {
+        const b64 = await getBase64ImageSafe(url);
+        imgResults.push({ url, ok: !!b64, preview: b64 ? b64.substring(0, 30) + '...' : 'FALLO CORS' });
+    }
+
+    // ── Paso 3: Construir el prompt EXACTO que se enviará ──
+    const notasTexto = weeklyNotes.map((n, i) => `${i + 1}. ${n}`).join('\n');
+    const prompt = `Eres un Ingeniero Civil Residente de Obra redactando un INFORME SEMANAL FORMAL para el cliente propietario de SYD Constructores.
+
+TAREA: Reescribe las notas de campo como un documento técnico profesional de ingeniería civil.
+
+REGLAS ESTRICTAS — SI LAS INCUMPLES EL INFORME ES INVÁLIDO:
+1. NUNCA copies ni parafrasees las notas. Reescríbelas completamente con otro vocabulario.
+2. NUNCA uses lenguaje informal: "todo listo", "ya quedó", "el cliente", "nada más", "falta", "quedan listos".
+3. SIEMPRE escribe en tercera persona formal y voz pasiva técnica.
+4. USA OBLIGATORIAMENTE términos técnicos como:
+   - "se ejecutó la instalación de [elemento]"
+   - "se completó la habilitación de los aparatos sanitarios"
+   - "se verificó la hermeticidad del sistema hidráulico"
+   - "los muebles sanitarios fueron instalados y conectados a la red de suministro"
+
+NOTAS DEL RESIDENTE (material fuente — NO copiar):
+${notasTexto}
+
+CONTEXTO: Remodelación residencial. Fase: instalaciones hidráulico-sanitarias y acabados. Fotos disponibles: ${fotoUrls.length}
+
+Devuelve ÚNICAMENTE este JSON sin markdown:
+{"resumen":"[3 párrafos técnicos]","avances":["[Avance 1]","[Avance 2]","[Avance 3]","[Avance 4]"],"descripciones":["[Pie foto 1]","[Pie foto 2]","[Pie foto 3]","[Pie foto 4]"]}`;
+
+    // ── VENTANA 1: Mostrar el PROMPT que se envía ──
+    const win1 = window.open('', '_blank');
+    if (win1) {
+        win1.document.write(`<!DOCTYPE html><html><head><title>🔬 DEBUG - PROMPT ENVIADO A GEMINI</title>
+        <style>body{font-family:monospace;background:#0f172a;color:#e2e8f0;padding:20px;line-height:1.6;}
+        h2{color:#fbbf24;border-bottom:2px solid #fbbf24;padding-bottom:8px;}
+        .box{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:16px;margin:12px 0;white-space:pre-wrap;word-break:break-all;}
+        .ok{color:#10b981;} .fail{color:#ef4444;} .info{color:#93c5fd;}</style></head><body>
+        <h2>🔬 DIAGNÓSTICO — DATOS ENVIADOS A GEMINI</h2>
+        <h3 class="info">📝 NOTAS DISPONIBLES (${weeklyNotes.length}):</h3>
+        <div class="box">${weeklyNotes.map((n,i)=>`${i+1}. ${n}`).join('\n')}</div>
+        <h3 class="info">📷 FOTOS ENCONTRADAS EN FIREBASE (${fotoUrls.length}):</h3>
+        <div class="box">${fotoUrls.length > 0 ? fotoUrls.map((u,i)=>`Foto ${i+1}: ${u}`).join('\n') : 'SIN FOTOS'}</div>
+        <h3 class="info">🖼️ CONVERSIÓN A BASE64 (para enviar a Gemini):</h3>
+        <div class="box">${imgResults.length > 0 ? imgResults.map((r,i)=>`Foto ${i+1}: <span class="${r.ok?'ok':'fail'}">${r.ok?'✅ OK - '+r.preview:'❌ '+r.fail}</span>\nURL: ${r.url}`).join('\n\n') : '❌ Sin fotos para convertir'}</div>
+        <h3 class="info">📤 PROMPT COMPLETO ENVIADO A GEMINI:</h3>
+        <div class="box">${prompt.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+        <p style="color:#64748b;font-size:0.8rem;">Generado: ${new Date().toLocaleString('es-MX')} | API Key: ${GEMINI_API_KEY.substring(0,8)}...</p>
+        </body></html>`);
+        win1.document.close();
+    }
+
+    // ── Paso 4: Llamar a Gemini y mostrar respuesta cruda ──
+    const parts = [{ text: prompt }];
+    for (const r of imgResults) {
+        if (r.ok) {
+            const b64full = await getBase64ImageSafe(r.url);
+            if (b64full) parts.push({ inlineData: { mimeType: 'image/jpeg', data: b64full } });
+        }
+    }
+
+    let rawResponse = '⏳ Esperando respuesta...';
+    let statusCode = '?';
+    try {
+        const res = await fetch(
+            `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+            { method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ contents: [{ parts }] }) }
+        );
+        statusCode = res.status;
+        const data = await res.json();
+        rawResponse = JSON.stringify(data, null, 2);
+    } catch(e) {
+        rawResponse = '❌ ERROR DE RED: ' + e.message;
+    }
+
+    // ── VENTANA 2: Mostrar la RESPUESTA de Gemini ──
+    const win2 = window.open('', '_blank');
+    if (win2) {
+        const imgsSent = imgResults.filter(r=>r.ok).length;
+        const hasError = rawResponse.includes('"error"');
+        const hasText = rawResponse.includes('"text"');
+        win2.document.write(`<!DOCTYPE html><html><head><title>🔬 DEBUG - RESPUESTA DE GEMINI</title>
+        <style>body{font-family:monospace;background:#0f172a;color:#e2e8f0;padding:20px;line-height:1.6;}
+        h2{color:#fbbf24;border-bottom:2px solid #fbbf24;padding-bottom:8px;}
+        .box{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:16px;margin:12px 0;white-space:pre-wrap;word-break:break-all;font-size:0.8rem;}
+        .ok{color:#10b981;} .fail{color:#ef4444;} .warn{color:#fbbf24;} .info{color:#93c5fd;}</style></head><body>
+        <h2>🔬 DIAGNÓSTICO — RESPUESTA DE GEMINI</h2>
+        <h3 class="info">📊 RESUMEN:</h3>
+        <div class="box">HTTP Status: <span class="${statusCode===200?'ok':'fail'}">${statusCode}</span>
+Imágenes enviadas con el prompt: <span class="${imgsSent>0?'ok':'warn'}">${imgsSent} de ${fotoUrls.length}</span>
+Respuesta contiene error: <span class="${hasError?'fail':'ok'}">${hasError?'SÍ ❌':'NO ✅'}</span>
+Respuesta contiene texto: <span class="${hasText?'ok':'fail'}">${hasText?'SÍ ✅':'NO ❌'}</span></div>
+        <h3 class="info">📥 RESPUESTA CRUDA COMPLETA DE GEMINI:</h3>
+        <div class="box">${rawResponse.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+        <p style="color:#64748b;font-size:0.8rem;">Generado: ${new Date().toLocaleString('es-MX')}</p>
+        </body></html>`);
+        win2.document.close();
+    }
+
+    alert('🔬 Diagnóstico completo.\nRevisar las 2 ventanas abiertas:\n• Ventana 1: Lo que se ENVIÓ a Gemini\n• Ventana 2: Lo que Gemini RESPONDIÓ');
+}
 
 async function generateReport() {
     if (weeklyNotes.length === 0) { alert('Agrega al menos una nota primero.'); return; }
