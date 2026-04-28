@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -740,6 +740,17 @@ let recognition = null;
 let weeklyNotes = [];
 let GEMINI_API_KEY = localStorage.getItem('syd_gemini_key') || '';
 
+async function loadGeminiKeyFromFirebase() {
+    try {
+        const doc = await db.collection('config').doc('gemini').get();
+        if (doc.exists && doc.data().apiKey) {
+            GEMINI_API_KEY = doc.data().apiKey;
+            localStorage.setItem('syd_gemini_key', GEMINI_API_KEY);
+            console.log('[SYD] ✅ Gemini key cargada desde Firebase');
+        }
+    } catch(e) { console.log('[SYD] Gemini key desde localStorage'); }
+}
+
 function toggleGeminiConfig() {
     const area = document.getElementById('geminiConfigArea');
     area.style.display = area.style.display === 'none' ? 'block' : 'none';
@@ -748,11 +759,17 @@ function toggleGeminiConfig() {
     }
 }
 
-function saveGeminiKeyInline() {
+async function saveGeminiKeyInline() {
     const key = document.getElementById('geminiKeyInput').value.trim();
+    if (!key) { alert('⚠️ La clave no puede estar vacía.'); return; }
     GEMINI_API_KEY = key;
     localStorage.setItem('syd_gemini_key', GEMINI_API_KEY);
-    alert('✅ Configuración de IA guardada.');
+    try {
+        await db.collection('config').doc('gemini').set({ apiKey: key, updatedAt: new Date().toISOString() });
+        alert('✅ Clave de IA guardada (Firebase + local). No se perderá al actualizar.');
+    } catch(e) {
+        alert('✅ Clave guardada localmente.\n⚠️ Firebase: ' + e.message);
+    }
     document.getElementById('geminiConfigArea').style.display = 'none';
 }
 
@@ -839,6 +856,7 @@ async function saveWeeklyNote(text) {
 
 async function loadWeeklyNotes() {
     if (!db || !session || !session.obra) return;
+    await loadGeminiKeyFromFirebase();
     try {
         console.log('[SYD] Cargando notas para semana:', currentWeek);
         const snap = await db.collection('obras').doc(session.obra)

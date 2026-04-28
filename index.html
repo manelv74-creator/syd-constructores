@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -1672,6 +1672,20 @@ let recognition = null;
 let weeklyNotes = [];
 let GEMINI_API_KEY = localStorage.getItem('syd_gemini_key') || '';
 
+// Cargar la key desde Firebase (persiste entre dispositivos y modos incógnito)
+async function loadGeminiKeyFromFirebase() {
+    try {
+        const doc = await db.collection('config').doc('gemini').get();
+        if (doc.exists && doc.data().apiKey) {
+            GEMINI_API_KEY = doc.data().apiKey;
+            localStorage.setItem('syd_gemini_key', GEMINI_API_KEY); // sincronizar local
+            console.log('[SYD] ✅ Gemini key cargada desde Firebase');
+        }
+    } catch(e) {
+        console.log('[SYD] Gemini key desde localStorage (Firebase no disponible)');
+    }
+}
+
 function toggleGeminiConfig() {
     const area = document.getElementById('geminiConfigArea');
     if (!area) return;
@@ -1681,13 +1695,22 @@ function toggleGeminiConfig() {
     }
 }
 
-function saveGeminiKeyInline() {
+async function saveGeminiKeyInline() {
     const key = document.getElementById('geminiKeyInput').value.trim();
+    if (!key) { alert('⚠️ La clave no puede estar vacía.'); return; }
     GEMINI_API_KEY = key;
+    // Guardar en localStorage (respaldo local)
     localStorage.setItem('syd_gemini_key', GEMINI_API_KEY);
-    alert('✅ Configuración de IA guardada.');
+    // Guardar en Firebase (persiste en todos los dispositivos y sesiones)
+    try {
+        await db.collection('config').doc('gemini').set({ apiKey: key, updatedAt: new Date().toISOString() });
+        alert('✅ Clave de IA guardada (Firebase + local). No se perderá al actualizar.');
+    } catch(e) {
+        alert('✅ Clave guardada localmente.\n⚠️ No se pudo guardar en Firebase: ' + e.message);
+    }
     document.getElementById('geminiConfigArea').style.display = 'none';
 }
+
 
 function initSpeech() {
     const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -1740,6 +1763,8 @@ async function saveWeeklyNote(text) {
 
 async function loadWeeklyNotes() {
     if (!db || !session.obra) return;
+    // Cargar key de Gemini desde Firebase al inicio (no se pierde entre sesiones)
+    await loadGeminiKeyFromFirebase();
     try {
         const snap = await db.collection('obras').doc(session.obra).collection('report_notes').where('semana', '==', currentWeek).get();
         let notesData = [];
