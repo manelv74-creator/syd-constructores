@@ -680,6 +680,13 @@
                 </button>
             </div>
 
+            <!-- Botón DEBUG IA (temporal) -->
+            <div style="margin-top:10px;">
+                <button onclick="debugGemini()" style="width:100%; background:rgba(251,191,36,0.12); border:1px dashed #fbbf24; color:#fbbf24; padding:9px; border-radius:10px; font-weight:700; font-size:0.72rem; cursor:pointer;">
+                    🔬 Diagnóstico IA — Ver qué envía/recibe Gemini
+                </button>
+            </div>
+
             <!-- Botón DEBUG IA (temporal para diagnóstico) -->
             <div style="margin-top:10px;">
                 <button onclick="debugGemini()" style="width:100%; background:rgba(251,191,36,0.15); border:1px dashed #fbbf24; color:#fbbf24; padding:10px; border-radius:10px; font-weight:700; font-size:0.75rem; cursor:pointer;">
@@ -2522,4 +2529,5 @@ window.addEventListener('appinstalled', () => {
 });
 </script>
 </body>
+<script src="debug_gemini.js"></script>
 </html>
