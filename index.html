@@ -882,25 +882,42 @@ function updateLogDeleteButton() {
 }
 
 async function deleteSelectedLogs() {
-    if (!confirm('¿Seguro que deseas eliminar los registros seleccionados?')) return;
+    if (!confirm('¿Seguro que deseas eliminar los registros seleccionados?\nEsto también eliminará su acceso al sistema.')) return;
     const ids = Array.from(document.querySelectorAll('.log-check:checked')).map(c => c.value);
     const btn = document.getElementById('btnDeleteLogs');
     btn.disabled = true;
     btn.textContent = '⏳ Eliminando...';
-    
+
     try {
         const batch = db.batch();
-        ids.forEach(id => {
+
+        for (const id of ids) {
+            // 1. Borrar de access_logs
             batch.delete(db.collection('access_logs').doc(id));
-        });
+
+            // 2. Buscar y borrar también de 'clientes' (por el email del log)
+            try {
+                const logDoc = await db.collection('access_logs').doc(id).get();
+                if (logDoc.exists && logDoc.data().email) {
+                    const email = logDoc.data().email;
+                    const clienteSnap = await db.collection('clientes').where('email', '==', email).get();
+                    clienteSnap.forEach(cdoc => batch.delete(cdoc.ref));
+                }
+            } catch(inner) {
+                console.warn('[SYD] No se pudo borrar cliente:', inner);
+            }
+        }
+
         await batch.commit();
         await renderRegistrosCompletos();
+        alert(`✅ ${ids.length} registro(s) eliminado(s) correctamente.`);
     } catch(e) {
         alert('Error al eliminar: ' + e.message);
         btn.disabled = false;
         btn.textContent = '🗑️ Eliminar seleccionados';
     }
 }
+
 
 // ══ Log de cambios en avance (Punto 3) ══
 let _cambioTimer = null;
