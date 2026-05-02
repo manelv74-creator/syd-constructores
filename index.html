@@ -689,7 +689,7 @@
             </div>
             
             <div style="margin-top:20px; text-align:center; opacity:0.3; font-size:0.6rem; color:#fff;">
-                SYD v1.3.1 (UX-REPORT-FIX) <br>
+                SYD v1.3.2 (HEADER-FIX) <br>
                 <span onclick="forceUpdateApp()" style="text-decoration:underline; cursor:pointer;">Forzar actualización de versión</span>
             </div>
         </div>
@@ -2238,7 +2238,7 @@ async function sendReportWhatsApp() {
         const saludo = hour < 12 ? 'Buenos días' : 'Buenas tardes';
         const obraName = currentObra?.name || obraId;
         const semana = window._lastReportWeek || currentWeek;
-        const fecha = new Date().toLocaleDateString('es-MX', dateOptsShort);
+        const fecha = new Date().toLocaleDateString('es-MX', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
         // 3. MOSTRAR MODAL DE CONFIRMACIÓN
         const modalId = 'waConfirmModal';
@@ -2650,6 +2650,8 @@ window.addEventListener('appinstalled', () => {
 </body>
 <script src="debug_gemini.js"></script>
 </html>
+
+
 
 
 

@@ -188,7 +188,7 @@
 <body>
 
     <!-- Encabezado con logo y datos -->
-    <div class="report-header" style="display:flex; flex-direction:column; gap:10px;"> <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding-bottom:10px;"> <div class="header-logo" style="width:120px;"> <img src="https://manelv74-creator.github.io/syd-constructores/assets/logo_syd.png" alt="Logo SYD Constructores" style="max-width:100%;"> </div> <div style="text-align:right;"> <span class="info-label">Proyecto:</span><br> <span class="info-value" style="font-weight:bold; font-size:12pt; border:none;">{{proyecto_nombre}}</span> </div> </div> <div style="display:flex; justify-content:space-between; align-items:flex-end;"> <div> <span class="info-label">Generado:</span> <span class="info-value" style="border:none;">{{fecha_informe}}</span> </div> <div style="text-align:right;"> <span class="info-label">Periodo:</span> <span class="info-value" style="border:none;">{{periodo_semana}}</span> </div> </div> </div>
+    <div class="report-header" style="border-bottom: 3px solid #D8262C; padding-bottom: 15px; margin-bottom: 25px;"> <table style="width:100%; border-collapse:collapse; font-size:10pt;"> <tr> <td style="width:35%; vertical-align:middle; text-align:left;"> <img src="https://manelv74-creator.github.io/syd-constructores/assets/logo_syd.png" alt="Logo SYD Constructores" style="max-width:120px;"> </td> <td style="width:65%; vertical-align:middle; text-align:right;"> <div style="display:inline-block; text-align:center;"> <span style="font-weight:bold; color:#B59A76; text-transform:uppercase;">Proyecto:</span><br> <span style="font-weight:bold; font-size:12pt; color:#231F20;">{{proyecto_nombre}}</span> </div> </td> </tr> </table> <table style="width:100%; border-collapse:collapse; font-size:10pt; margin-top:15px;"> <tr> <td style="width:50%; vertical-align:top; text-align:left;"> <span style="font-weight:bold; color:#B59A76; text-transform:uppercase;">Generado:</span><br> <span style="color:#231F20;">{{fecha_informe}}</span> </td> <td style="width:50%; vertical-align:top; text-align:right;"> <table style="display:inline-table; text-align:left;"> <tr> <td style="font-weight:bold; color:#B59A76; text-transform:uppercase; padding-right:5px; vertical-align:top;">Periodo:</td> <td style="color:#231F20;">{{periodo_semana}}</td> </tr> </table> </td> </tr> </table> </div>
 
     <!-- Título del documento -->
     <h1 class="main-title">Reporte Semanal de Avance</h1>
@@ -257,6 +257,7 @@
 
 </body>
 </html>
+
 
 
 
