@@ -188,15 +188,7 @@
 <body>
 
     <!-- Encabezado con logo y datos -->
-    <div class="report-header">
-        <div class="header-logo">
-            <!-- La ruta de la imagen debe ser accesible para Antigravity. Puedes usar Base64 o una URL pública -->
-            <img src="https://manelv74-creator.github.io/syd-constructores/assets/logo_syd.png" alt="Logo SYD Constructores">
-        </div>
-        <div class="header-info">
-            <table class="info-table"><tr><td class="info-label">Proyecto:</td><td class="info-value">{{proyecto_nombre}}</td><td class="info-label">Generado:</td><td class="info-value">{{fecha_informe}}</td></tr><tr><td class="info-label">Periodo:</td><td class="info-value" colspan="3">{{periodo_semana}}</td></tr></table>
-        </div>
-    </div>
+    <div class="report-header" style="display:flex; flex-direction:column; gap:10px;"> <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding-bottom:10px;"> <div class="header-logo" style="width:120px;"> <img src="https://manelv74-creator.github.io/syd-constructores/assets/logo_syd.png" alt="Logo SYD Constructores" style="max-width:100%;"> </div> <div style="text-align:right;"> <span class="info-label">Proyecto:</span><br> <span class="info-value" style="font-weight:bold; font-size:12pt; border:none;">{{proyecto_nombre}}</span> </div> </div> <div style="display:flex; justify-content:space-between; align-items:flex-end;"> <div> <span class="info-label">Generado:</span> <span class="info-value" style="border:none;">{{fecha_informe}}</span> </div> <div style="text-align:right;"> <span class="info-label">Periodo:</span> <span class="info-value" style="border:none;">{{periodo_semana}}</span> </div> </div> </div>
 
     <!-- Título del documento -->
     <h1 class="main-title">Reporte Semanal de Avance</h1>
@@ -265,6 +257,7 @@
 
 </body>
 </html>
+
 
 
 

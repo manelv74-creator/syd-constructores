@@ -1,5 +1,5 @@
-// SYD Constructores — Service Worker v1.3.0 (UX-REPORT)
-const CACHE_NAME = 'syd-app-v1.3.0';
+// SYD Constructores — Service Worker v1.3.1 (UX-REPORT-FIX)
+const CACHE_NAME = 'syd-app-v1.3.1';
 
 const ASSETS = [
     '/syd-constructores/',

@@ -689,7 +689,7 @@
             </div>
             
             <div style="margin-top:20px; text-align:center; opacity:0.3; font-size:0.6rem; color:#fff;">
-                SYD v1.3.0 (UX-REPORT) <br>
+                SYD v1.3.1 (UX-REPORT-FIX) <br>
                 <span onclick="forceUpdateApp()" style="text-decoration:underline; cursor:pointer;">Forzar actualización de versión</span>
             </div>
         </div>
@@ -1880,20 +1880,20 @@ function showReportModal(html, fileName, numFotos) {
             <button onclick="document.getElementById('reportModal').remove()"
                 style="background:#f1f5f9;color:#475569;border:1px solid #cbd5e1;
                 padding:8px 14px;border-radius:24px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;box-shadow:0 2px 4px rgba(0,0,0,0.02);">
-                <svg viewBox="0 0 24 24" style="width:18px;height:18px;margin-right:4px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round"><path d="M15 18l-6-6 6-6"/></svg> Regresar
+                <svg viewBox="0 0 24 24" style="width:18px;height:18px;margin-right:4px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round"><path d="M15 18l-6-6 6-6"/></svg> <span class="hide-mobile">Regresar</span>
             </button>
         </div>
         <div style="display:flex; gap:10px;">
             <button onclick="saveReportEdits(this)"
                 style="background:#f59e0b;color:#fff;border:none;padding:8px 14px;
                 border-radius:24px;font-weight:700;font-size:14px;cursor:pointer;display:flex;align-items:center;box-shadow:0 2px 4px rgba(245,158,11,0.2);">
-                💾 Guardar
+                💾 <span class="hide-mobile">Guardar</span>
             </button>
             <button onclick="window.print()"
                 style="background:#fff;color:#2563eb;border:1px solid #bfdbfe;
                 padding:8px 14px;border-radius:24px;font-weight:600;font-size:14px;cursor:pointer;display:flex;align-items:center;box-shadow:0 2px 4px rgba(37,99,235,0.05);">
                 <svg viewBox="0 0 24 24" style="width:18px;height:18px;margin-right:4px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-                <span>PDF</span>
+                <span class="hide-mobile">PDF</span>
             </button>
             <button onclick="sendReportWhatsApp()"
                 style="background:#25D366;color:#fff;border:none;padding:8px 16px;
@@ -2045,15 +2045,13 @@ Devuelve ÚNICAMENTE este JSON sin markdown:
         
         const today = new Date();
         const day = today.getDay();
-        const diffToMonday = today.getDate() - day + (day === 0 ? -6 : 1);
-        const monday = new Date(today.setDate(diffToMonday));
-        const saturday = new Date(today.setDate(diffToMonday + 5));
+        const diffToMonday = today.getDate() - day + (day === 0 ? -6 : 1); const monday = new Date(new Date(today).setDate(diffToMonday)); const saturday = new Date(new Date(today).setDate(diffToMonday + 5));
         const dateOptions = { day: '2-digit', month: 'long', timeZone: 'America/Mexico_City' };
         const dateOptsShort = { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'America/Mexico_City' }; const periodoStr = `Del ${monday.toLocaleDateString('es-MX', dateOptsShort)} al ${saturday.toLocaleDateString('es-MX', dateOptsShort)}`;
 
         html = html
             .replace('{{proyecto_nombre}}', obraName.toUpperCase())
-            .replace('{{fecha_informe}}', new Date().toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' }))
+            .replace('{{fecha_informe}}', new Date().toLocaleDateString('es-MX', dateOptsShort))
             .replace('{{periodo_semana}}', periodoStr)
             .replace('{{resumen_ejecutivo}}', reportData.resumen);
 
@@ -2119,10 +2117,7 @@ function forceUpdateApp() {
 }
 
 async function saveReportEdits(btnElement) {
-    if (!db || !window._lastReportDocId) {
-        alert('No se puede guardar porque el informe aún no se ha subido a la nube.');
-        return false;
-    }
+    if (!db) { alert('No hay conexión con la base de datos.'); return false; }
     const oldText = btnElement ? btnElement.innerHTML : '';
     if (btnElement) {
         btnElement.innerHTML = '⏳ Guardando...';
@@ -2135,9 +2130,21 @@ async function saveReportEdits(btnElement) {
             cleanHtml = cleanHtml.replace(/contenteditable="true"/g, '');
             cleanHtml = cleanHtml.replace(/style="outline:none;"/g, '');
             
-            await db.collection('informes_compartidos').doc(window._lastReportDocId).update({
-                html: cleanHtml
-            });
+            if (window._lastReportDocId) {
+                await db.collection('informes_compartidos').doc(window._lastReportDocId).update({
+                    html: cleanHtml
+                });
+            } else {
+                const docRef = await db.collection('informes_compartidos').add({
+                    obra: session.obra,
+                    semana: window._lastReportWeek || currentWeek,
+                    creado: firebase.firestore.FieldValue.serverTimestamp(),
+                    html: cleanHtml
+                });
+                window._lastReportDocId = docRef.id;
+                const baseUrl = window.location.href.split('?')[0].replace('index.html', '');
+                window._lastReportLink = `${baseUrl}view_report.html?id=${docRef.id}`;
+            }
             console.log('[SYD] Ediciones guardadas manualmente.');
             if (btnElement) {
                 btnElement.innerHTML = '✅ Guardado';
@@ -2231,7 +2238,7 @@ async function sendReportWhatsApp() {
         const saludo = hour < 12 ? 'Buenos días' : 'Buenas tardes';
         const obraName = currentObra?.name || obraId;
         const semana = window._lastReportWeek || currentWeek;
-        const fecha = new Date().toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' });
+        const fecha = new Date().toLocaleDateString('es-MX', dateOptsShort);
 
         // 3. MOSTRAR MODAL DE CONFIRMACIÓN
         const modalId = 'waConfirmModal';
@@ -2643,6 +2650,10 @@ window.addEventListener('appinstalled', () => {
 </body>
 <script src="debug_gemini.js"></script>
 </html>
+
+
+
+
 
 
 
