@@ -3,8 +3,9 @@
     "id": "sauces",
     "name": "Residencial Los Sauces",
     "location": "Zapopan, Jalisco",
-    "img": "assets/obra_sauces.jpg",
+    "img": "obras/sauces/portada.jpg",
     "status": "activa",
-    "dataFile": "database/sauces.json"
+    "dataFile": "obras/sauces/data.json",
+    "totalSemanas": 32
   }
 ]

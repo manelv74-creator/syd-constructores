@@ -1098,6 +1098,7 @@ async function loadProjectData(obraId) {
         const data = await resp.json();
         projectData = data.zones;
         currentObra = obra;
+        TOTAL_WEEKS = currentObra.totalSemanas || 32;
         return true;
     } catch(e) {
         console.error('[SYD] Error cargando datos de obra:', e);
@@ -1152,6 +1153,7 @@ async function selectObra(obraId) {
 // STATE
 // ══════════════════════════════════════
 let session = null;   // { role, email }
+let TOTAL_WEEKS = 32;
 let currentWeek = 1;
 let currentTab = 'tareas';
 let selectedRole = 'client';
@@ -1449,7 +1451,7 @@ function launchApp() {
 function buildWeekDots() {
     const c = document.getElementById('weekDots');
     c.innerHTML = '';
-    for(let i=1;i<=32;i++){
+    for(let i=1;i<=TOTAL_WEEKS;i++){
         const d=document.createElement('div');
         d.className='week-dot';d.id=`dot-${i}`;c.appendChild(d);
     }
@@ -1458,7 +1460,7 @@ function buildWeekDots() {
 function buildGanttTable() {
     const t = document.getElementById('ganttTable');
     let html = '<thead><tr><th style="min-width:80px;text-align:left;padding-left:8px">Zona</th>';
-    for(let i=1;i<=32;i++) html+=`<th id="gh-${i}">S${i}</th>`;
+    for(let i=1;i<=TOTAL_WEEKS;i++) html+=`<th id="gh-${i}">S${i}</th>`;
     html+='</tr></thead><tbody>';
     projectData.forEach((row,ri)=>{
         html+=`<tr><td class="zone-cell">${row.emoji} Z${ri+1}</td>`;
@@ -1489,14 +1491,14 @@ function updateDashboard() {
 }
 
 function updateWeekDots() {
-    for(let i=1;i<=32;i++){
+    for(let i=1;i<=TOTAL_WEEKS;i++){
         const d=document.getElementById(`dot-${i}`);
         if(d) d.className='week-dot'+(i===currentWeek?' active':i<currentWeek?' past':'');
     }
 }
 
 function updateGantt() {
-    for(let i=1;i<=32;i++){
+    for(let i=1;i<=TOTAL_WEEKS;i++){
         const th=document.getElementById(`gh-${i}`);
         if(th) th.className=i===currentWeek?'active-col':'';
     }
@@ -1535,7 +1537,7 @@ function renderTareas() {
         <div class="stat-card animate-in"><div class="stat-value">${currentWeek}</div><div class="stat-label">Semana</div></div>
         <div class="stat-card animate-in"><div class="stat-value" style="color:var(--accent2)">${avgP}%</div><div class="stat-label">Avance prom.</div></div>
         <div class="stat-card animate-in"><div class="stat-value" style="color:var(--accent3)">${currentWeek-1}</div><div class="stat-label">Semanas completas</div></div>
-        <div class="stat-card animate-in"><div class="stat-value" style="color:#8b5cf6">${32-currentWeek}</div><div class="stat-label">Semanas restantes</div></div>
+        <div class="stat-card animate-in"><div class="stat-value" style="color:#8b5cf6">${TOTAL_WEEKS-currentWeek}</div><div class="stat-label">Semanas restantes</div></div>
     `;
 
     // Readonly banner for non-master
@@ -1632,7 +1634,7 @@ function renderAvance() {
         const color=ZONE_COLORS[idx];
         const overall=Math.round(row.progress[currentWeek-1] || 0);
         let pips='';
-        for(let w=1;w<=32;w++){
+        for(let w=1;w<=TOTAL_WEEKS;w++){
             const p=row.progress[w-1];
             const h=Math.max(3,(p/100)*26);
             pips+=`<div class="week-pip ${w===currentWeek?'pip-current':''}" title="Sem ${w}: ${p}%">
@@ -1655,7 +1657,7 @@ function renderAvance() {
 
 
 function changeWeek(delta) {
-    currentWeek = Math.min(32,Math.max(1,currentWeek+delta));
+    currentWeek = Math.min(TOTAL_WEEKS,Math.max(1,currentWeek+delta));
     updateDashboard();
 }
 
