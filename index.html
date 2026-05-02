@@ -689,7 +689,7 @@
             </div>
             
             <div style="margin-top:20px; text-align:center; opacity:0.3; font-size:0.6rem; color:#fff;">
-                SYD v1.2.8 (EDIT-REPORT) <br>
+                SYD v1.2.9 (UI-FIX) <br>
                 <span onclick="forceUpdateApp()" style="text-decoration:underline; cursor:pointer;">Forzar actualización de versión</span>
             </div>
         </div>
@@ -1869,29 +1869,31 @@ function showReportModal(html, fileName, numFotos) {
     bar.id = 'reportActionBar';
     bar.style.cssText = `
         position:sticky; top:0; z-index:10;
-        background:#1e3a8a; color:#fff;
-        padding:10px 20px; display:flex;
+        background:#ffffff; color:#1e293b;
+        padding:12px 15px; display:flex;
         align-items:center; justify-content:space-between;
-        box-shadow:0 2px 8px rgba(0,0,0,0.3);
-        font-size:13px;
+        box-shadow:0 4px 15px rgba(0,0,0,0.08);
+        border-bottom:1px solid #e2e8f0;
     `;
     bar.innerHTML = `
-        <span>📋 <strong>${name}</strong> &nbsp;·&nbsp; ${numFotos} foto(s)</span>
+        <div style="display:flex; align-items:center; gap:10px;">
+            <button onclick="document.getElementById('reportModal').remove()"
+                style="background:#f1f5f9;color:#475569;border:1px solid #cbd5e1;
+                padding:8px 14px;border-radius:24px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;box-shadow:0 2px 4px rgba(0,0,0,0.02);">
+                <svg viewBox="0 0 24 24" style="width:18px;height:18px;margin-right:4px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round"><path d="M15 18l-6-6 6-6"/></svg> Regresar
+            </button>
+        </div>
         <div style="display:flex;gap:10px;">
+            <button onclick="window.print()"
+                style="background:#fff;color:#2563eb;border:1px solid #bfdbfe;
+                padding:8px 14px;border-radius:24px;font-weight:600;font-size:14px;cursor:pointer;display:flex;align-items:center;box-shadow:0 2px 4px rgba(37,99,235,0.05);">
+                <svg viewBox="0 0 24 24" style="width:18px;height:18px;margin-right:4px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                <span>PDF</span>
+            </button>
             <button onclick="sendReportWhatsApp()"
                 style="background:#25D366;color:#fff;border:none;padding:8px 16px;
-                border-radius:6px;font-weight:700;font-size:13px;cursor:pointer;display:flex;align-items:center;">
-                <svg viewBox="0 0 24 24" style="width:16px;height:16px;margin-right:6px;fill:#fff"><path d="M12.031 0C5.385 0 .001 5.382.001 12.028c0 2.124.553 4.195 1.604 6.015L.01 24l6.115-1.603a11.972 11.972 0 005.906 1.558h.005c6.645 0 12.028-5.382 12.028-12.028S18.676 0 12.031 0zm0 21.947h-.003a9.927 9.927 0 01-5.06-1.38l-.363-.215-3.766.988.997-3.673-.236-.376a9.932 9.932 0 01-1.52-5.263c0-5.485 4.464-9.95 9.95-9.95 2.658 0 5.158 1.036 7.037 2.915a9.924 9.924 0 012.912 7.034c-.001 5.486-4.467 9.951-9.953 9.951zm5.457-7.448c-.299-.15-1.768-.872-2.042-.972-.274-.1-.473-.15-.673.15-.199.3-.772.973-.946 1.173-.174.2-.348.225-.647.075-1.32-.663-2.39-1.226-3.32-2.825-.174-.3.018-.462.167-.611.134-.134.299-.35.449-.525.15-.175.2-.3.299-.5s.05-.375-.025-.525c-.075-.15-.673-1.625-.922-2.225-.243-.585-.49-.505-.673-.515-.174-.01-.374-.01-.573-.01-.2 0-.523.075-.797.375-.274.3-1.046 1.025-1.046 2.5s1.071 2.895 1.221 3.095c.15.2 2.112 3.22 5.114 4.516.715.31 1.272.495 1.706.635.717.228 1.37.195 1.884.118.577-.086 1.768-.722 2.017-1.422.25-.7.25-1.3.175-1.422-.075-.125-.274-.2-.573-.35z"/></svg> WhatsApp
-            </button>
-            <button onclick="window.print()"
-                style="background:#10b981;color:#fff;border:none;padding:8px 16px;
-                border-radius:6px;font-weight:700;font-size:13px;cursor:pointer;">
-                🖨️ Imprimir / PDF
-            </button>
-            <button onclick="document.getElementById('reportModal').remove()"
-                style="background:rgba(255,255,255,0.2);color:#fff;border:none;
-                padding:8px 14px;border-radius:6px;font-size:13px;cursor:pointer;">
-                ✕ Cerrar
+                border-radius:24px;font-weight:700;font-size:14px;cursor:pointer;display:flex;align-items:center;box-shadow:0 4px 10px rgba(37,211,102,0.3);">
+                <svg viewBox="0 0 24 24" style="width:18px;height:18px;margin-right:6px;fill:#fff"><path d="M12.031 0C5.385 0 .001 5.382.001 12.028c0 2.124.553 4.195 1.604 6.015L.01 24l6.115-1.603a11.972 11.972 0 005.906 1.558h.005c6.645 0 12.028-5.382 12.028-12.028S18.676 0 12.031 0zm0 21.947h-.003a9.927 9.927 0 01-5.06-1.38l-.363-.215-3.766.988.997-3.673-.236-.376a9.932 9.932 0 01-1.52-5.263c0-5.485 4.464-9.95 9.95-9.95 2.658 0 5.158 1.036 7.037 2.915a9.924 9.924 0 012.912 7.034c-.001 5.486-4.467 9.951-9.953 9.951zm5.457-7.448c-.299-.15-1.768-.872-2.042-.972-.274-.1-.473-.15-.673.15-.199.3-.772.973-.946 1.173-.174.2-.348.225-.647.075-1.32-.663-2.39-1.226-3.32-2.825-.174-.3.018-.462.167-.611.134-.134.299-.35.449-.525.15-.175.2-.3.299-.5s.05-.375-.025-.525c-.075-.15-.673-1.625-.922-2.225-.243-.585-.49-.505-.673-.515-.174-.01-.374-.01-.573-.01-.2 0-.523.075-.797.375-.274.3-1.046 1.025-1.046 2.5s1.071 2.895 1.221 3.095c.15.2 2.112 3.22 5.114 4.516.715.31 1.272.495 1.706.635.717.228 1.37.195 1.884.118.577-.086 1.768-.722 2.017-1.422.25-.7.25-1.3.175-1.422-.075-.125-.274-.2-.573-.35z"/></svg> WhatsApp
             </button>
         </div>
     `;
@@ -2166,7 +2168,8 @@ async function sendReportWhatsApp() {
         }
 
         // 2. Asegurar que el link del informe esté listo
-        if (!window._lastReportLink && window._lastReportHtmlLight) {
+        let finalLink = window._lastReportLink;
+        if (!finalLink && window._lastReportHtml) {
             btn.innerHTML = '⏳ Subiendo informe...';
             try {
                 const uploadPromise = db.collection('informes_compartidos').add({
@@ -2179,14 +2182,18 @@ async function sendReportWhatsApp() {
                 
                 const docRef = await Promise.race([uploadPromise, uploadTimeout]);
                 const baseUrl = window.location.href.split('?')[0].replace('index.html', '');
-                window._lastReportLink = `${baseUrl}view_report.html?id=${docRef.id}`;
+                finalLink = `${baseUrl}view_report.html?id=${docRef.id}`;
+                window._lastReportLink = finalLink; // Guardar para futuro
             } catch(e) { 
                 console.warn('Error guardando en Firestore:', e); 
-                // Continuamos aunque no haya link
             }
         }
 
-        const reportLink = window._lastReportLink;
+        if (!finalLink) {
+            alert('⚠️ El enlace web del informe no pudo generarse. Se enviará el mensaje sin el link. Verifica tu conexión e inténtalo de nuevo si deseas adjuntarlo.');
+        }
+
+        const reportLink = finalLink;
         const hour = new Date().getHours();
         const saludo = hour < 12 ? 'Buenos días' : 'Buenas tardes';
         const obraName = currentObra?.name || obraId;
@@ -2603,4 +2610,5 @@ window.addEventListener('appinstalled', () => {
 </body>
 <script src="debug_gemini.js"></script>
 </html>
+
 
