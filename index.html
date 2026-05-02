@@ -692,7 +692,7 @@
             </div>
             
             <div style="margin-top:20px; text-align:center; opacity:0.3; font-size:0.6rem; color:#fff;">
-                SYD v1.4.1 (BUGFIX) <br>
+                SYD v1.4.2 (FIX-ZONAS) <br>
                 <span onclick="forceUpdateApp()" style="text-decoration:underline; cursor:pointer;">Forzar actualización de versión</span>
             </div>
         </div>
@@ -1630,7 +1630,7 @@ function renderAvance() {
     let html='';
     zones.forEach(({data:row,idx},i)=>{
         const color=ZONE_COLORS[idx];
-        const overall=Math.round(row.progress.reduce((s,v)=>s+parseFloat(v),0)/32);
+        const overall=Math.round(row.progress[currentWeek-1] || 0);
         let pips='';
         for(let w=1;w<=32;w++){
             const p=row.progress[w-1];
@@ -2068,7 +2068,7 @@ Devuelve ÚNICAMENTE este JSON sin markdown:
         let avancesZonasHtml = '';
         const zonesData = getVisibleZones();
         zonesData.forEach(({data:row}) => {
-            const overall = Math.round(row.progress.reduce((s,v) => s + parseFloat(v), 0) / 32);
+            const overall = Math.round(row.progress[currentWeek-1] || 0);
             avancesZonasHtml += `<li contenteditable="true" style="outline:none;"><strong>${row.zone}:</strong> ${overall}% de avance acumulado</li>`;
         });
         html = html.replace('{{avance_zonas}}', avancesZonasHtml);
