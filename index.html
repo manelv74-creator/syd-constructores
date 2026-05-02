@@ -688,7 +688,7 @@
             </div>
             
             <div style="margin-top:20px; text-align:center; opacity:0.3; font-size:0.6rem; color:#fff;">
-                SYD v1.2.0 (WA-FIX) <br>
+                SYD v1.2.1 (WA-FIX-2) <br>
                 <span onclick="forceUpdateApp()" style="text-decoration:underline; cursor:pointer;">Forzar actualización de versión</span>
             </div>
         </div>
@@ -2133,6 +2133,7 @@ async function sendReportWhatsApp() {
 
         // 2. Asegurar que el link del informe esté listo
         if (!window._lastReportLink && window._lastReportHtml) {
+            btn.innerHTML = '⏳ Subiendo informe...';
             try {
                 const semanaStr = window._lastReportWeek || currentWeek;
                 const ts2 = new Date();
@@ -2140,9 +2141,16 @@ async function sendReportWhatsApp() {
                 const storageRef = firebase.storage().ref(reportFileName);
                 const fullHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Informe SYD</title>
 <style>body{font-family:Arial,sans-serif;padding:20px;}</style></head><body>${window._lastReportHtml}</body></html>`;
-                const snapshot = await storageRef.put(new Blob([fullHtml], { type: 'text/html' }));
+                
+                const uploadPromise = storageRef.put(new Blob([fullHtml], { type: 'text/html' }));
+                const uploadTimeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout de subida')), 8000));
+                
+                const snapshot = await Promise.race([uploadPromise, uploadTimeout]);
                 window._lastReportLink = await snapshot.ref.getDownloadURL();
-            } catch(e) { console.warn('Error subida:', e); }
+            } catch(e) { 
+                console.warn('Error subida:', e); 
+                // Continuamos aunque no haya link, para no bloquear el WhatsApp
+            }
         }
 
         const reportLink = window._lastReportLink;
