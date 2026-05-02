@@ -2087,14 +2087,8 @@ async function sendReportWhatsApp() {
         btn.innerHTML = '⏳ Preparando...';
         btn.disabled = true;
 
-        // Buscar clientes registrados en esta obra en access_logs
-        const snap = await db.collection('access_logs')
-            .where('obra', '==', obraId)
-            .where('role', '==', 'client')
-            .where('action', 'in', ['registro', 'registro_y_login'])
-            .get();
-
-        // Deduplicar por teléfono
+        // 1. Buscar clientes registrados directamente en la colección 'clientes' (más rápido)
+        const snap = await db.collection('clientes').where('obra', '==', obraId).get();
         const clientMap = {};
         snap.forEach(doc => {
             const d = doc.data();
@@ -2105,28 +2099,24 @@ async function sendReportWhatsApp() {
         });
 
         const clients = Object.entries(clientMap);
-
         if (clients.length === 0) {
-            alert('⚠️ No se encontraron clientes con teléfono registrado en esta obra.');
+            alert('⚠️ No se encontraron clientes registrados en esta obra.');
             btn.innerHTML = oldBtnText; btn.disabled = false;
             return;
         }
 
-        // Si el link aún no está listo (pre-subida lenta), esperamos un poco
+        // 2. Asegurar que el link del informe esté listo
         if (!window._lastReportLink && window._lastReportHtml) {
-            // Intentar subirlo rápido si falló la pre-subida
             try {
                 const semanaStr = window._lastReportWeek || currentWeek;
                 const ts2 = new Date();
                 const reportFileName = `informes/${obraId}/Reporte_S${semanaStr}_${ts2.getTime()}.html`;
                 const storageRef = firebase.storage().ref(reportFileName);
-                const fullHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Informe SYD - Semana ${semanaStr}</title>
-<style>body{font-family:Arial,sans-serif;max-width:800px;margin:0 auto;padding:20px;}</style>
-</head><body>${window._lastReportHtml}</body></html>`;
-                const blob = new Blob([fullHtml], { type: 'text/html' });
-                const snapshot = await storageRef.put(blob);
+                const fullHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Informe SYD</title>
+<style>body{font-family:Arial,sans-serif;padding:20px;}</style></head><body>${window._lastReportHtml}</body></html>`;
+                const snapshot = await storageRef.put(new Blob([fullHtml], { type: 'text/html' }));
                 window._lastReportLink = await snapshot.ref.getDownloadURL();
-            } catch(e) { console.warn('Error subida manual:', e); }
+            } catch(e) { console.warn('Error subida:', e); }
         }
 
         const reportLink = window._lastReportLink;
@@ -2136,27 +2126,60 @@ async function sendReportWhatsApp() {
         const semana = window._lastReportWeek || currentWeek;
         const fecha = new Date().toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' });
 
-        // Confirmar con el usuario
-        const confirmMsg = `Se enviará el informe por WhatsApp a ${clients.length} cliente(s):\n\n` +
-                           clients.map(([p, n]) => `• ${n} (${p})`).join('\n') +
-                           `\n\n¿Continuar?`;
-        
-        if (!window.confirm(confirmMsg)) {
-            btn.innerHTML = oldBtnText; btn.disabled = false;
-            return;
-        }
+        // 3. EN LUGAR DE window.confirm, USAMOS UN MODAL PROPIO
+        // Esto garantiza que el clic en "ENVIAR" sea un gesto fresco para el navegador móvil
+        const modalId = 'waConfirmModal';
+        const oldModal = document.getElementById(modalId);
+        if (oldModal) oldModal.remove();
 
-        // A PARTIR DE AQUÍ TODO DEBE SER SÍNCRONO (sin await) PARA EVITAR BLOQUEO DE POPUPS
-        let sent = 0;
-        for (const [phone, nombre] of clients) {
-            const firstName = nombre.split(' ')[0].toUpperCase();
-            const emojiCalendar = '\uD83D\uDCC5';
-            const emojiDoc = '\uD83D\uDCC4';
-            const emojiEmail = '\uD83D\uDCE7';
-            const emojiPhone = '\uD83D\uDCDE';
+        const modal = document.createElement('div');
+        modal.id = modalId;
+        modal.style.cssText = `
+            position:fixed; inset:0; z-index:100000;
+            background:rgba(0,0,0,0.85); display:flex; align-items:center; justify-content:center;
+            padding:20px; font-family:sans-serif;
+        `;
 
-            const mensaje = 
-`${saludo}, ${firstName}.
+        const card = document.createElement('div');
+        card.style.cssText = `
+            background:#1e293b; border-radius:20px; width:100%; max-width:340px;
+            padding:24px; color:#fff; text-align:center; box-shadow:0 10px 25px rgba(0,0,0,0.5);
+        `;
+
+        card.innerHTML = `
+            <div style="font-size:1.2rem; font-weight:700; margin-bottom:15px; color:#25d366;">📱 Enviar Informe</div>
+            <div style="font-size:0.9rem; color:#94a3b8; margin-bottom:20px;">
+                Se enviará a ${clients.length} cliente(s):<br>
+                <div style="margin-top:10px; background:rgba(255,255,255,0.05); padding:10px; border-radius:10px; text-align:left; font-size:0.8rem;">
+                    ${clients.map(([p, n]) => `• <strong>${n}</strong> (${p})`).join('<br>')}
+                </div>
+            </div>
+            <button id="btnWAConfirmNow" style="width:100%; background:#25d366; color:#fff; border:none; padding:15px; border-radius:12px; font-weight:700; font-size:1rem; cursor:pointer; margin-bottom:10px;">
+                CONFIRMAR Y ENVIAR
+            </button>
+            <button onclick="document.getElementById('${modalId}').remove()" style="width:100%; background:transparent; color:#94a3b8; border:none; padding:10px; font-size:0.85rem; cursor:pointer;">
+                Cancelar
+            </button>
+        `;
+
+        modal.appendChild(card);
+        document.body.appendChild(modal);
+
+        // RESETEAR BOTÓN PRINCIPAL
+        btn.innerHTML = oldBtnText;
+        btn.disabled = false;
+
+        // ACCIÓN REAL AL PULSAR EL BOTÓN DEL MODAL (Gesto fresco)
+        document.getElementById('btnWAConfirmNow').onclick = function() {
+            let sent = 0;
+            for (const [phone, nombre] of clients) {
+                const firstName = nombre.split(' ')[0].toUpperCase();
+                const emojiCalendar = '\uD83D\uDCC5';
+                const emojiDoc = '\uD83D\uDCC4';
+                const emojiEmail = '\uD83D\uDCE7';
+                const emojiPhone = '\uD83D\uDCDE';
+
+                const mensaje = `${saludo}, ${firstName}.
 
 Le enviamos el informe semanal correspondiente a los trabajos realizados en su obra *${obraName}*.
 
@@ -2168,23 +2191,18 @@ _SYD Constructores_
 ${emojiEmail} info@sydconstructores.com.mx
 ${emojiPhone} 333 250 3313`;
 
-            let tel = phone.replace(/[^\d]/g, '');
-            if (tel.length === 10) tel = '52' + tel;
-            else if (tel.startsWith('33') && tel.length === 10) tel = '52' + tel;
+                let tel = phone.replace(/[^\d]/g, '');
+                if (tel.length === 10) tel = '52' + tel;
+                else if (tel.startsWith('33') && tel.length === 10) tel = '52' + tel;
 
-            const url = `https://wa.me/${tel}?text=${encodeURIComponent(mensaje)}`;
-            
-            // IMPORTANTE: window.open inmediatamente después del confirm/gesture
-            window.open(url, '_blank');
-            sent++;
-        }
+                const url = `https://wa.me/${tel}?text=${encodeURIComponent(mensaje)}`;
+                window.open(url, '_blank');
+                sent++;
+            }
 
-        btn.innerHTML = oldBtnText;
-        btn.disabled = false;
-        
-        if (sent > 0) {
-            alert(`✅ Se abrieron ${sent} ventana(s) de WhatsApp.`);
-        }
+            document.getElementById(modalId).remove();
+            if (sent > 0) alert(`✅ Se abrieron ${sent} ventana(s) de WhatsApp.`);
+        };
 
     } catch (e) {
         console.error('[SYD] Error WhatsApp:', e);
