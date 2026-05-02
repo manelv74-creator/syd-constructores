@@ -692,7 +692,7 @@
             </div>
             
             <div style="margin-top:20px; text-align:center; opacity:0.3; font-size:0.6rem; color:#fff;">
-                SYD v1.4.0 (HISTORY-FIX) <br>
+                SYD v1.4.1 (BUGFIX) <br>
                 <span onclick="forceUpdateApp()" style="text-decoration:underline; cursor:pointer;">Forzar actualización de versión</span>
             </div>
         </div>
@@ -2239,7 +2239,7 @@ async function showReportHistory() {
         list.innerHTML = html;
     } catch (e) {
         console.error('[SYD] Error cargando historial:', e);
-        document.getElementById('historyList').innerHTML = \`<div style="color:#ef4444; padding:20px; text-align:center;">Error: \${e.message}</div>\`;
+        document.getElementById('historyList').innerHTML = `<div style="color:#ef4444; padding:20px; text-align:center;">Error: ${e.message}</div>`;
     }
 }
 
