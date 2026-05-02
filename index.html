@@ -688,7 +688,7 @@
             </div>
             
             <div style="margin-top:20px; text-align:center; opacity:0.3; font-size:0.6rem; color:#fff;">
-                SYD v1.2.1 (WA-FIX-2) <br>
+                SYD v1.2.2 (WA-FIX-FIRESTORE) <br>
                 <span onclick="forceUpdateApp()" style="text-decoration:underline; cursor:pointer;">Forzar actualización de versión</span>
             </div>
         </div>
@@ -2030,23 +2030,32 @@ Devuelve ÚNICAMENTE este JSON sin markdown:
         // Asegurarse de tener 4 elementos en descripciones
         while (reportData.descripciones.length < 4) reportData.descripciones.push(`Vista de avance ${reportData.descripciones.length + 1}`);
 
+        let htmlLight = html; // Versión ligera sin base64 para guardar en Firestore
+
         for (let i = 1; i <= 4; i++) {
             html = html.replace(`{{trabajo_realizado_${i}}}`, reportData.avances[i - 1] || 'Actividad de obra en proceso');
             html = html.replace(`{{descripcion_foto_${i}}}`, reportData.descripciones[i - 1] || `Evidencia fotográfica ${i}`);
+            
+            htmlLight = htmlLight.replace(`{{trabajo_realizado_${i}}}`, reportData.avances[i - 1] || 'Actividad de obra en proceso');
+            htmlLight = htmlLight.replace(`{{descripcion_foto_${i}}}`, reportData.descripciones[i - 1] || `Evidencia fotográfica ${i}`);
 
             const fotoUrl = fotoUrls[i - 1];
             if (fotoUrl) {
-                // Intentar Base64 primero, si falla usar URL directa
+                // Versión ligera usa URLs directas (poco peso)
+                htmlLight = htmlLight.replace(`{{url_foto_${i}}}`, fotoUrl);
+                
+                // Versión pesada intenta usar Base64 para el modal y PDF (mucho peso)
                 const fotoB64 = await getBase64ImageSafe(fotoUrl);
-                html = html.replace(`{{url_foto_${i}}}`,
-                    fotoB64 ? `data:image/jpeg;base64,${fotoB64}` : fotoUrl);
+                html = html.replace(`{{url_foto_${i}}}`, fotoB64 ? `data:image/jpeg;base64,${fotoB64}` : fotoUrl);
             } else {
                 html = html.replace(`{{url_foto_${i}}}`, 'https://via.placeholder.com/400x300?text=Sin+Foto');
+                htmlLight = htmlLight.replace(`{{url_foto_${i}}}`, 'https://via.placeholder.com/400x300?text=Sin+Foto');
             }
         }
 
         // 8. Mostrar el informe en un modal de pantalla completa (sin window.open)
-        window._lastReportHtml = html; // Guardar para WhatsApp
+        window._lastReportHtml = html; // Guardar para Modal/PDF
+        window._lastReportHtmlLight = htmlLight; // Guardar para enviar
         showReportModal(html, fileName, fotoUrls.length);
 
         // Mostrar botón de WhatsApp y guardar nombre del informe
@@ -2054,22 +2063,22 @@ Devuelve ÚNICAMENTE este JSON sin markdown:
         window._lastReportName = fileName;
         window._lastReportWeek = currentWeek;
 
-        // PRE-SUBIDA: Subir a Storage de una vez para que el link esté listo (evita bloqueo de popups en móvil)
+        // PRE-SUBIDA: Guardar en Firestore (evitando Firebase Storage Limits/Billing)
         window._lastReportLink = '';
         try {
-            const semanaStr = currentWeek;
-            const ts2 = new Date();
-            const reportFileName = `informes/${obraId}/Reporte_S${semanaStr}_${ts2.getTime()}.html`;
-            const storageRef = firebase.storage().ref(reportFileName);
-            const fullHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Informe SYD - Semana ${semanaStr}</title>
-<style>body{font-family:Arial,sans-serif;max-width:800px;margin:0 auto;padding:20px;}</style>
-</head><body>${html}</body></html>`;
-            const blob = new Blob([fullHtml], { type: 'text/html' });
-            storageRef.put(blob).then(snapshot => snapshot.ref.getDownloadURL()).then(url => {
-                window._lastReportLink = url;
-                console.log('[SYD] Informe pre-subido:', url);
-            }).catch(e => console.warn('[SYD] Error pre-subida:', e));
-        } catch(e) {}
+            const docRef = await db.collection('informes_compartidos').add({
+                obra: obraId,
+                semana: currentWeek,
+                creado: firebase.firestore.FieldValue.serverTimestamp(),
+                html: window._lastReportHtmlLight
+            });
+            // Construir URL pública hacia view_report.html
+            const baseUrl = window.location.href.split('?')[0].replace('index.html', '');
+            window._lastReportLink = `${baseUrl}view_report.html?id=${docRef.id}`;
+            console.log('[SYD] Informe guardado en Firestore:', window._lastReportLink);
+        } catch(e) {
+            console.warn('[SYD] Error guardando informe en Firestore:', e);
+        }
     } catch (e) {
         console.error('[SYD] Error generateReport:', e);
         alert('Error al generar reporte: ' + e.message);
@@ -2132,24 +2141,23 @@ async function sendReportWhatsApp() {
         }
 
         // 2. Asegurar que el link del informe esté listo
-        if (!window._lastReportLink && window._lastReportHtml) {
+        if (!window._lastReportLink && window._lastReportHtmlLight) {
             btn.innerHTML = '⏳ Subiendo informe...';
             try {
-                const semanaStr = window._lastReportWeek || currentWeek;
-                const ts2 = new Date();
-                const reportFileName = `informes/${obraId}/Reporte_S${semanaStr}_${ts2.getTime()}.html`;
-                const storageRef = firebase.storage().ref(reportFileName);
-                const fullHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Informe SYD</title>
-<style>body{font-family:Arial,sans-serif;padding:20px;}</style></head><body>${window._lastReportHtml}</body></html>`;
-                
-                const uploadPromise = storageRef.put(new Blob([fullHtml], { type: 'text/html' }));
+                const uploadPromise = db.collection('informes_compartidos').add({
+                    obra: obraId,
+                    semana: window._lastReportWeek || currentWeek,
+                    creado: firebase.firestore.FieldValue.serverTimestamp(),
+                    html: window._lastReportHtmlLight
+                });
                 const uploadTimeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout de subida')), 8000));
                 
-                const snapshot = await Promise.race([uploadPromise, uploadTimeout]);
-                window._lastReportLink = await snapshot.ref.getDownloadURL();
+                const docRef = await Promise.race([uploadPromise, uploadTimeout]);
+                const baseUrl = window.location.href.split('?')[0].replace('index.html', '');
+                window._lastReportLink = `${baseUrl}view_report.html?id=${docRef.id}`;
             } catch(e) { 
-                console.warn('Error subida:', e); 
-                // Continuamos aunque no haya link, para no bloquear el WhatsApp
+                console.warn('Error guardando en Firestore:', e); 
+                // Continuamos aunque no haya link
             }
         }
 
