@@ -649,12 +649,9 @@
                 </button>
             </div>
             
-            <div style="display:grid; grid-template-columns:1fr 1fr 40px; gap:8px; margin-top:12px;">
+            <div style="display:grid; grid-template-columns:1fr 40px; gap:8px; margin-top:12px;">
                 <button onclick="generateReport()" id="btnReporte" style="background:#10b981; color:#fff; border:none; padding:14px; border-radius:14px; font-weight:700; font-size:0.9rem; cursor:pointer; flex:1; display:flex; align-items:center; justify-content:center; gap:8px;">
-                    🚀 Generar
-                </button>
-                <button onclick="showReportHistory()" style="background:#3b82f6; color:#fff; border:none; padding:14px; border-radius:14px; font-weight:700; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
-                    📅 Historial
+                    🚀 Generar Reporte PDF
                 </button>
                 <button onclick="toggleGeminiConfig()" title="Configurar IA" style="background:rgba(255,255,255,0.1); color:#fff; border:none; border-radius:14px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1.1rem; width:40px;">
                     ⚙️
@@ -692,7 +689,7 @@
             </div>
             
             <div style="margin-top:20px; text-align:center; opacity:0.3; font-size:0.6rem; color:#fff;">
-                SYD v1.4.0 (HISTORY-FIX) <br>
+                SYD v1.3.3 (FINAL-UX) <br>
                 <span onclick="forceUpdateApp()" style="text-decoration:underline; cursor:pointer;">Forzar actualización de versión</span>
             </div>
         </div>
@@ -1941,13 +1938,13 @@ async function generateReport() {
         const fileName = `Reporte_SYD_S${currentWeek}_${ts.getDate()}${ts.getMonth()+1}${ts.getHours()}${ts.getMinutes()}`;
 
         // 2. Datos por defecto (sin IA)
-        // 2. Datos por defecto (sin IA)
         let reportData = {
             resumen: weeklyNotes.join(' '),
-            avances: [...weeklyNotes],
-            descripciones: fotoUrls.map((_, i) => `Vista de avance ${i + 1}`)
+            avances: [...weeklyNotes.slice(0, 4)],
+            descripciones: fotoUrls.slice(0, 4).map((_, i) => `Vista de avance ${i + 1}`)
         };
-        if (reportData.avances.length === 0) reportData.avances.push('Actividad de obra en proceso');
+        while (reportData.avances.length < 4) reportData.avances.push('Actividad de obra en proceso');
+        while (reportData.descripciones.length < 4) reportData.descripciones.push('Evidencia fotográfica del avance');
 
         // 3. Llamar a Gemini si hay API Key
         if (GEMINI_API_KEY) {
@@ -1979,14 +1976,14 @@ ${notasTexto}
 CONTEXTO: Proyecto de remodelación residencial. Fase actual: instalaciones hidráulico-sanitarias y acabados. ${fotoUrls.length} fotografías de avance disponibles.
 
 Devuelve ÚNICAMENTE este JSON sin markdown:
-{"resumen":"[3 párrafos técnicos]","avances":["[Lista de trabajos realizados - genera tantos como sea necesario]"],"descripciones":["[Genera exactamente ${fotoUrls.length} pies de foto técnicos, uno para cada imagen]"]}`;
+{"resumen":"[Escribe 3 párrafos técnicos separados por salto de línea. Párrafo 1: avance general técnico de la semana con porcentaje estimado. Párrafo 2: descripción técnica específica de todos los trabajos ejecutados con materiales y especificaciones. Párrafo 3: estado de entrega y programa de la siguiente semana.]","avances":["[Avance técnico 1: máx 12 palabras con sustantivos de construcción]","[Avance técnico 2]","[Avance técnico 3]","[Avance técnico 4]"],"descripciones":["[Pie de foto 1: descripción técnica de instalación sanitaria]","[Pie de foto 2: descripción de acabados o estructura visible]","[Pie de foto 3: descripción técnica de avance]","[Pie de foto 4: descripción técnica de avance]"]}`;
 
                 // Construir partes del mensaje: texto + imágenes en Base64
                 const parts = [{ text: prompt }];
 
-                // Intentar convertir hasta 6 fotos a Base64 para enviarlas a Gemini
+                // Intentar convertir hasta 4 fotos a Base64 para enviarlas a Gemini
                 let imgSent = 0;
-                for (const url of fotoUrls.slice(0, 6)) {
+                for (const url of fotoUrls.slice(0, 4)) {
                     const b64 = await getBase64ImageSafe(url);
                     if (b64) {
                         parts.push({ inlineData: { mimeType: 'image/jpeg', data: b64 } });
@@ -2018,9 +2015,9 @@ Devuelve ÚNICAMENTE este JSON sin markdown:
                         const aiJson = JSON.parse(rawText.substring(start, end + 1));
                         if (aiJson.resumen) reportData.resumen = aiJson.resumen;
                         if (Array.isArray(aiJson.avances) && aiJson.avances.length > 0)
-                            reportData.avances = aiJson.avances;
+                            reportData.avances = aiJson.avances.slice(0, 4);
                         if (Array.isArray(aiJson.descripciones) && aiJson.descripciones.length > 0)
-                            reportData.descripciones = aiJson.descripciones;
+                            reportData.descripciones = aiJson.descripciones.slice(0, 4);
                         console.log('[SYD] ✅ IA generó el informe con análisis visual');
                     } else {
                         console.warn('[SYD] JSON no encontrado en respuesta:', rawText.substring(0, 200));
@@ -2057,35 +2054,21 @@ Devuelve ÚNICAMENTE este JSON sin markdown:
             .replace('{{periodo_semana}}', periodoStr)
             .replace('{{resumen_ejecutivo}}', reportData.resumen);
 
-        // 7. Insertar avances (Sección 2)
-        let listaTrabajosHtml = '';
-        reportData.avances.forEach(av => {
-            listaTrabajosHtml += `<li contenteditable="true" style="outline:none;">${av}</li>`;
-        });
-        html = html.replace('{{lista_trabajos}}', listaTrabajosHtml);
+        // 7. Insertar avances y fotos
+        // Asegurarse de tener 4 elementos en descripciones
+        while (reportData.descripciones.length < 4) reportData.descripciones.push(`Vista de avance ${reportData.descripciones.length + 1}`);
 
-        // 8. Insertar Avances por Zona (Sección 4)
-        let avancesZonasHtml = '';
-        const zonesData = getVisibleZones();
-        zonesData.forEach(({data:row}) => {
-            const overall = Math.round(row.progress.reduce((s,v) => s + parseFloat(v), 0) / 32);
-            avancesZonasHtml += `<li contenteditable="true" style="outline:none;"><strong>${row.zone}:</strong> ${overall}% de avance acumulado</li>`;
-        });
-        html = html.replace('{{avance_zonas}}', avancesZonasHtml);
+        for (let i = 1; i <= 4; i++) {
+            html = html.replace(`{{trabajo_realizado_${i}}}`, reportData.avances[i - 1] || 'Actividad de obra en proceso');
+            html = html.replace(`{{descripcion_foto_${i}}}`, reportData.descripciones[i - 1] || `Evidencia fotográfica ${i}`);
 
-        // 9. Insertar Fotos Dinámicas (Sección 3)
-        let fotosHtml = '';
-        fotoUrls.forEach((url, i) => {
-            const desc = reportData.descripciones[i] || `Vista de avance ${i+1}`;
-            fotosHtml += `
-            <div class="photo-item">
-                <div class="photo-image-container">
-                    <img src="${url}" alt="Evidencia ${i+1}">
-                </div>
-                <p class="photo-caption" contenteditable="true" style="outline:none;"><strong>Foto ${i+1}:</strong> ${desc}</p>
-            </div>`;
-        });
-        html = html.replace('{{fotos_dinamicas}}', fotosHtml);
+            const fotoUrl = fotoUrls[i - 1];
+            if (fotoUrl) {
+                html = html.replace(`{{url_foto_${i}}}`, fotoUrl);
+            } else {
+                html = html.replace(`{{url_foto_${i}}}`, 'https://via.placeholder.com/400x300?text=Sin+Foto');
+            }
+        }
 
         // 8. Mostrar el informe en un modal de pantalla completa (sin window.open)
         window._lastReportHtml = html; // Guardar para Modal/PDF
@@ -2177,88 +2160,6 @@ async function saveReportEdits(btnElement) {
         alert('Error al guardar: ' + e.message);
     }
     return false;
-}
-
-async function showReportHistory() {
-    if (!db) { alert('Firebase no conectado.'); return; }
-    const obraId = session.obra;
-    if (!obraId) { alert('No hay obra seleccionada.'); return; }
-
-    const modal = document.createElement('div');
-    modal.id = 'historyModal';
-    modal.style.cssText = `position:fixed; inset:0; z-index:100000; background:rgba(0,0,0,0.8); display:flex; align-items:center; justify-content:center; padding:20px;`;
-    
-    const container = document.createElement('div');
-    container.style.cssText = `background:#fff; width:100%; max-width:500px; max-height:80vh; border-radius:24px; padding:24px; overflow-y:auto; position:relative; box-shadow:0 20px 50px rgba(0,0,0,0.5);`;
-    
-    container.innerHTML = `
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid #eee; padding-bottom:15px;">
-            <h3 style="margin:0; font-size:1.2rem; color:#1e293b;">📅 Historial de Reportes</h3>
-            <button onclick="document.getElementById('historyModal').remove()" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:#94a3b8;">&times;</button>
-        </div>
-        <div id="historyList" style="display:flex; flex-direction:column; gap:12px;">
-            <div style="text-align:center; padding:20px; color:#64748b;">Cargando historial...</div>
-        </div>
-    `;
-    
-    modal.appendChild(container);
-    document.body.appendChild(modal);
-    
-    try {
-        const snap = await db.collection('informes_compartidos')
-            .where('obra', '==', obraId)
-            .orderBy('creado', 'desc')
-            .get();
-        
-        const list = document.getElementById('historyList');
-        if (snap.empty) {
-            list.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">No se han generado reportes aún.</div>';
-            return;
-        }
-        
-        let html = '';
-        snap.forEach(doc => {
-            const data = doc.data();
-            const date = data.creado ? data.creado.toDate().toLocaleDateString('es-MX', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'}) : 'Sin fecha';
-            const baseUrl = window.location.href.split('?')[0].replace('index.html', '');
-            const link = `${baseUrl}view_report.html?id=${doc.id}`;
-            
-            html += `
-                <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:16px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; gap:10px;">
-                    <div style="flex:1;">
-                        <div style="font-weight:700; color:#1e293b; font-size:0.85rem;">Semana ${data.semana || '?'}</div>
-                        <div style="font-size:0.7rem; color:#64748b;">${date}</div>
-                    </div>
-                    <div style="display:flex; gap:8px;">
-                        <a href="${link}" target="_blank" style="background:#3b82f6; color:#fff; text-decoration:none; padding:8px 12px; border-radius:10px; font-size:0.75rem; font-weight:700;">Ver</a>
-                        <button onclick="deleteReport('${doc.id}', this)" style="background:#ef4444; color:#fff; border:none; padding:8px 12px; border-radius:10px; font-size:0.75rem; font-weight:700; cursor:pointer;">Eliminar</button>
-                    </div>
-                </div>
-            `;
-        });
-        list.innerHTML = html;
-    } catch (e) {
-        console.error('[SYD] Error cargando historial:', e);
-        document.getElementById('historyList').innerHTML = \`<div style="color:#ef4444; padding:20px; text-align:center;">Error: \${e.message}</div>\`;
-    }
-}
-
-async function deleteReport(id, btn) {
-    if (!confirm('¿Estás seguro de que deseas eliminar este reporte permanentemente?\\nEl link compartido dejará de funcionar.')) return;
-    
-    btn.innerHTML = '...';
-    btn.disabled = true;
-    try {
-        await db.collection('informes_compartidos').doc(id).delete();
-        btn.closest('div').parentElement.remove();
-        if (document.getElementById('historyList').children.length === 0) {
-            document.getElementById('historyList').innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">No se han generado reportes aún.</div>';
-        }
-    } catch (e) {
-        alert('Error al eliminar: ' + e.message);
-        btn.innerHTML = 'Eliminar';
-        btn.disabled = false;
-    }
 }
 
 async function sendReportWhatsApp() {

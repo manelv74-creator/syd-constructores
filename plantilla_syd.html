@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -206,8 +206,10 @@
     <div class="section">
         <h2 class="section-title">2. Descripción de Trabajos Realizados</h2>
         <div class="section-content">
-            <ul id="edit_trabajos">
-                {{lista_trabajos}}
+            <ul id="edit_trabajos"><li contenteditable="true" style="outline:none;">{{trabajo_realizado_1}}</li>
+                <li contenteditable="true" style="outline:none;">{{trabajo_realizado_2}}</li>
+                <li contenteditable="true" style="outline:none;">{{trabajo_realizado_3}}</li>
+                <li contenteditable="true" style="outline:none;">{{trabajo_realizado_4}}</li>
             </ul>
         </div>
     </div>
@@ -216,17 +218,35 @@
     <div class="section">
         <h2 class="section-title">3. Registro Fotográfico</h2>
         <div class="photo-grid">
-            {{fotos_dinamicas}}
-        </div>
-    </div>
+            
+            <div class="photo-item">
+                <div class="photo-image-container">
+                    <img src="{{url_foto_1}}" alt="Evidencia 1">
+                </div>
+                <p class="photo-caption" id="edit_caption_1" contenteditable="true" style="outline:none;"><strong>Foto 1:</strong> {{descripcion_foto_1}}</p>
+            </div>
 
-    <!-- Sección 4: Avance por Área -->
-    <div class="section">
-        <h2 class="section-title">4. Avance de Obra por Área</h2>
-        <div class="section-content">
-            <ul id="edit_avances_zona">
-                {{avance_zonas}}
-            </ul>
+            <div class="photo-item">
+                <div class="photo-image-container">
+                    <img src="{{url_foto_2}}" alt="Evidencia 2">
+                </div>
+                <p class="photo-caption" id="edit_caption_2" contenteditable="true" style="outline:none;"><strong>Foto 2:</strong> {{descripcion_foto_2}}</p>
+            </div>
+
+            <div class="photo-item">
+                <div class="photo-image-container">
+                    <img src="{{url_foto_3}}" alt="Evidencia 3">
+                </div>
+                <p class="photo-caption" id="edit_caption_3" contenteditable="true" style="outline:none;"><strong>Foto 3:</strong> {{descripcion_foto_3}}</p>
+            </div>
+
+            <div class="photo-item">
+                <div class="photo-image-container">
+                    <img src="{{url_foto_4}}" alt="Evidencia 4">
+                </div>
+                <p class="photo-caption" id="edit_caption_4" contenteditable="true" style="outline:none;"><strong>Foto 4:</strong> {{descripcion_foto_4}}</p>
+            </div>
+
         </div>
     </div>
 
