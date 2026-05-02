@@ -2048,6 +2048,23 @@ Devuelve ÚNICAMENTE este JSON sin markdown:
         document.getElementById('whatsappSendBtn').style.display = 'block';
         window._lastReportName = fileName;
         window._lastReportWeek = currentWeek;
+
+        // PRE-SUBIDA: Subir a Storage de una vez para que el link esté listo (evita bloqueo de popups en móvil)
+        window._lastReportLink = '';
+        try {
+            const semanaStr = currentWeek;
+            const ts2 = new Date();
+            const reportFileName = `informes/${obraId}/Reporte_S${semanaStr}_${ts2.getTime()}.html`;
+            const storageRef = firebase.storage().ref(reportFileName);
+            const fullHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Informe SYD - Semana ${semanaStr}</title>
+<style>body{font-family:Arial,sans-serif;max-width:800px;margin:0 auto;padding:20px;}</style>
+</head><body>${html}</body></html>`;
+            const blob = new Blob([fullHtml], { type: 'text/html' });
+            storageRef.put(blob).then(snapshot => snapshot.ref.getDownloadURL()).then(url => {
+                window._lastReportLink = url;
+                console.log('[SYD] Informe pre-subido:', url);
+            }).catch(e => console.warn('[SYD] Error pre-subida:', e));
+        } catch(e) {}
     } catch (e) {
         console.error('[SYD] Error generateReport:', e);
         alert('Error al generar reporte: ' + e.message);
@@ -2063,7 +2080,13 @@ async function sendReportWhatsApp() {
     const obraId = session.obra;
     if (!obraId) { alert('No hay obra seleccionada.'); return; }
 
+    const btn = document.querySelector('#whatsappSendBtn button');
+    const oldBtnText = btn.innerHTML;
+
     try {
+        btn.innerHTML = '⏳ Preparando...';
+        btn.disabled = true;
+
         // Buscar clientes registrados en esta obra en access_logs
         const snap = await db.collection('access_logs')
             .where('obra', '==', obraId)
@@ -2081,56 +2104,52 @@ async function sendReportWhatsApp() {
             }
         });
 
-        const clients = Object.entries(clientMap); // [[phone, name], ...]
+        const clients = Object.entries(clientMap);
 
         if (clients.length === 0) {
-            alert('⚠️ No se encontraron clientes con teléfono registrado en esta obra.\n\nAsegúrate de que los clientes se hayan registrado con su número de WhatsApp.');
+            alert('⚠️ No se encontraron clientes con teléfono registrado en esta obra.');
+            btn.innerHTML = oldBtnText; btn.disabled = false;
             return;
         }
 
-        // Determinar saludo según la hora
-        const hour = new Date().getHours();
-        const saludo = hour < 12 ? 'Buenos días' : 'Buenas tardes';
-
-        const obraName = currentObra?.name || obraId;
-        const semana = window._lastReportWeek || currentWeek;
-        const fecha = new Date().toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' });
-
-        // Confirmar con el usuario antes de enviar
-        const confirm = window.confirm(
-            `Se enviará el informe por WhatsApp a ${clients.length} cliente(s):\n\n` +
-            clients.map(([p, n]) => `• ${n} (${p})`).join('\n') +
-            `\n\n¿Continuar?`
-        );
-        if (!confirm) return;
-
-        // Abrir una ventana de WhatsApp por cada cliente
-        let sent = 0;
-
-        // Subir el informe a Firebase Storage para poder compartir el link
-        let reportLink = '';
-        try {
-            const reportHtml = window._lastReportHtml || '';
-            if (reportHtml) {
+        // Si el link aún no está listo (pre-subida lenta), esperamos un poco
+        if (!window._lastReportLink && window._lastReportHtml) {
+            // Intentar subirlo rápido si falló la pre-subida
+            try {
                 const semanaStr = window._lastReportWeek || currentWeek;
                 const ts2 = new Date();
                 const reportFileName = `informes/${obraId}/Reporte_S${semanaStr}_${ts2.getTime()}.html`;
                 const storageRef = firebase.storage().ref(reportFileName);
                 const fullHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Informe SYD - Semana ${semanaStr}</title>
 <style>body{font-family:Arial,sans-serif;max-width:800px;margin:0 auto;padding:20px;}</style>
-</head><body>${reportHtml}</body></html>`;
+</head><body>${window._lastReportHtml}</body></html>`;
                 const blob = new Blob([fullHtml], { type: 'text/html' });
                 const snapshot = await storageRef.put(blob);
-                reportLink = await snapshot.ref.getDownloadURL();
-            }
-        } catch(storageErr) {
-            console.warn('[SYD] No se pudo subir informe a Storage:', storageErr);
+                window._lastReportLink = await snapshot.ref.getDownloadURL();
+            } catch(e) { console.warn('Error subida manual:', e); }
         }
 
+        const reportLink = window._lastReportLink;
+        const hour = new Date().getHours();
+        const saludo = hour < 12 ? 'Buenos días' : 'Buenas tardes';
+        const obraName = currentObra?.name || obraId;
+        const semana = window._lastReportWeek || currentWeek;
+        const fecha = new Date().toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' });
+
+        // Confirmar con el usuario
+        const confirmMsg = `Se enviará el informe por WhatsApp a ${clients.length} cliente(s):\n\n` +
+                           clients.map(([p, n]) => `• ${n} (${p})`).join('\n') +
+                           `\n\n¿Continuar?`;
+        
+        if (!window.confirm(confirmMsg)) {
+            btn.innerHTML = oldBtnText; btn.disabled = false;
+            return;
+        }
+
+        // A PARTIR DE AQUÍ TODO DEBE SER SÍNCRONO (sin await) PARA EVITAR BLOQUEO DE POPUPS
+        let sent = 0;
         for (const [phone, nombre] of clients) {
             const firstName = nombre.split(' ')[0].toUpperCase();
-
-            // Usamos unicode escapes para los emojis para evitar problemas de codificación
             const emojiCalendar = '\uD83D\uDCC5';
             const emojiDoc = '\uD83D\uDCC4';
             const emojiEmail = '\uD83D\uDCE7';
@@ -2149,34 +2168,33 @@ _SYD Constructores_
 ${emojiEmail} info@sydconstructores.com.mx
 ${emojiPhone} 333 250 3313`;
 
-            // Formatear teléfono: asegurar que empiece con código de país
             let tel = phone.replace(/[^\d]/g, '');
-            if (tel.startsWith('1') && tel.length === 11) {
-                // Formato +1 XXXXXXXX (EUA)
-            } else if (tel.length === 10) {
-                // México: agregar 52
-                tel = '52' + tel;
-            } else if (tel.startsWith('52') && tel.length === 12) {
-                // Ya tiene código MX sin +
-            } else if (tel.startsWith('521') && tel.length === 13) {
-                // Ya tiene código MX con 1
-            }
+            if (tel.length === 10) tel = '52' + tel;
+            else if (tel.startsWith('33') && tel.length === 10) tel = '52' + tel;
 
             const url = `https://wa.me/${tel}?text=${encodeURIComponent(mensaje)}`;
+            
+            // IMPORTANTE: window.open inmediatamente después del confirm/gesture
             window.open(url, '_blank');
             sent++;
-
-            // Pequeña pausa entre ventanas para no saturar el navegador
-            await new Promise(r => setTimeout(r, 800));
         }
 
-        alert(`✅ Se abrieron ${sent} conversación(es) de WhatsApp.\n${reportLink ? '📄 El informe se subió correctamente y se incluyó el link.' : '⚠️ No se pudo subir el informe (generalo primero).'}\n\nRevisa cada pestaña y pulsa Enviar en WhatsApp Web.`);
+        btn.innerHTML = oldBtnText;
+        btn.disabled = false;
+        
+        if (sent > 0) {
+            alert(`✅ Se abrieron ${sent} ventana(s) de WhatsApp.`);
+        }
 
     } catch (e) {
         console.error('[SYD] Error WhatsApp:', e);
-        alert('Error al buscar clientes: ' + e.message);
+        alert('Error: ' + e.message);
+        btn.innerHTML = oldBtnText; btn.disabled = false;
     }
 }
+
+
+
 
 // Carga imagen como Base64 — con proxy CORS cuando es necesario
 function getBase64ImageSafe(url) {
