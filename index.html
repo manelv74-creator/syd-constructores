@@ -421,13 +421,17 @@
 
         /* ══ FOTOS ══ */
         .btn-upload-foto{
-            display:inline-flex;align-items:center;gap:5px;
-            background:rgba(59,130,246,0.12);border:1px dashed rgba(59,130,246,0.4);
-            color:#93c5fd;font-size:0.65rem;font-weight:700;
-            padding:5px 10px;border-radius:8px;cursor:pointer;
-            font-family:Inter,sans-serif;transition:all 0.2s;margin-top:8px;
+            background:transparent;border:1px dashed var(--accent);color:var(--accent);
+            font-size:0.75rem;padding:6px 12px;border-radius:8px;cursor:pointer;
+            transition:all 0.2s;font-family:'Inter',sans-serif;width:100%;margin-top:10px;
         }
         .btn-upload-foto:hover{background:rgba(59,130,246,0.22);border-color:#93c5fd}
+        .btn-prog{
+            background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);
+            color:#fff;font-weight:700;border-radius:8px;padding:8px 16px;
+            cursor:pointer;transition:all 0.15s;font-size:0.8rem;
+        }
+        .btn-prog:active{background:rgba(255,255,255,0.2);transform:scale(0.95)}
         .foto-gallery{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
         .foto-thumb{
             width:72px;height:72px;object-fit:cover;border-radius:8px;
@@ -633,7 +637,7 @@
                     <div style="font-size:1.1rem; font-weight:800; color:#fff; display:flex; align-items:center; gap:8px;">
                         <span>📋</span> Generador de Reporte Semanal
                     </div>
-                    <div style="font-size:0.75rem; color:rgba(255,255,255,0.6); margin-top:4px;">Semana ${currentWeek} · Acumula notas para el informe</div>
+                    <div style="font-size:0.75rem; color:rgba(255,255,255,0.6); margin-top:4px;"><span id="reportWeekLabel">Semana 1</span> · Acumula notas para el informe</div>
                 </div>
                 <div id="noteCounter" style="background:rgba(255,255,255,0.1); padding:4px 12px; border-radius:20px; font-size:0.7rem; font-weight:700;">0 notas</div>
             </div>
@@ -690,7 +694,7 @@
             </div>
             
             <div style="margin-top:20px; text-align:center; opacity:0.3; font-size:0.6rem; color:#fff;">
-                SYD v1.2.3 (UI-FIX) <br>
+                SYD v1.2.4 (AVANCE-BTNS) <br>
                 <span onclick="forceUpdateApp()" style="text-decoration:underline; cursor:pointer;">Forzar actualización de versión</span>
             </div>
         </div>
@@ -928,15 +932,23 @@ async function deleteSelectedLogs() {
 
 // ══ Log de cambios en avance (Punto 3) ══
 let _cambioTimer = null;
+let _originalValorAnterior = {};
+
 function updateProgress(zIdx, val) {
     if(session.role!=='master') return;
     val = parseFloat(val);
-    const valorAnterior = projectData[zIdx].progress[currentWeek-1];
+    
+    if (_originalValorAnterior[zIdx] === undefined) {
+        _originalValorAnterior[zIdx] = projectData[zIdx].progress[currentWeek-1];
+    }
+    
     projectData[zIdx].progress[currentWeek-1] = val;
-    // Debounce: guardar en Firebase 1.5s después de soltar el slider
+    // Debounce: guardar en Firebase 1.5s después de soltar el slider o dejar de pulsar botones
     clearTimeout(_cambioTimer);
     _cambioTimer = setTimeout(() => {
-        logCambio(zIdx, valorAnterior, val);
+        const initialVal = _originalValorAnterior[zIdx];
+        delete _originalValorAnterior[zIdx];
+        logCambio(zIdx, initialVal, val);
     }, 1500);
     // Update UI
     const cell = document.getElementById(`gc-${zIdx}-${currentWeek}`);
@@ -947,6 +959,14 @@ function updateProgress(zIdx, val) {
     const avgP = Math.round(zones.reduce((s,z)=>s+z.data.progress[currentWeek-1],0)/zones.length);
     const avgEl = document.querySelector('#statsGrid .stat-card:nth-child(2) .stat-value');
     if(avgEl) avgEl.textContent = avgP+'%';
+}
+
+function stepProgress(zIdx, delta) {
+    const currentProg = parseFloat(projectData[zIdx].progress[currentWeek-1]) || 0;
+    let newProg = currentProg + delta;
+    if (newProg < 0) newProg = 0;
+    if (newProg > 100) newProg = 100;
+    updateProgress(zIdx, newProg);
 }
 
 async function logCambio(zIdx, valorAnterior, valorNuevo) {
@@ -1459,6 +1479,8 @@ function updateDashboard() {
     currentWeek = parseInt(slider.value);
     slider.style.setProperty('--pct', ((currentWeek-1)/31*100)+'%');
     document.getElementById('weekBadge').textContent = `Sem ${currentWeek}`;
+    const reportWeekLabel = document.getElementById('reportWeekLabel');
+    if (reportWeekLabel) reportWeekLabel.textContent = `Semana ${currentWeek}`;
     updateWeekDots();
     updateGantt();
     if(currentTab==='tareas') renderTareas();
@@ -1537,7 +1559,13 @@ function renderTareas() {
         const prog  = row.progress[currentWeek-1];
         const color = ZONE_COLORS[idx];
         const sliderHtml = canEdit
-            ? `<div class="edit-slider-row"><label>Avance:</label><input type="range" min="0" max="100" step="5" value="${prog}" oninput="updateProgress(${idx},this.value)" style="flex:1"></div>`
+            ? `<div class="edit-slider-row" style="justify-content:space-between">
+                 <label>Modificar avance:</label>
+                 <div style="display:flex;gap:6px">
+                     <button class="btn-prog" onclick="stepProgress(${idx}, -5)">- 5%</button>
+                     <button class="btn-prog" onclick="stepProgress(${idx}, 5)">+ 5%</button>
+                 </div>
+               </div>`
             : ``;
         const uploadHtml = canEdit
             ? `<button class="btn-upload-foto" onclick="triggerFotoUpload(${idx})">📷 + Foto</button>
@@ -1575,7 +1603,13 @@ function renderDetalle() {
         const prog=row.progress[currentWeek-1];
         const color=ZONE_COLORS[idx];
         const sliderHtml = canEdit
-            ? `<div class="edit-slider-row"><label>Avance:</label><input type="range" min="0" max="100" step="5" value="${prog}" oninput="updateProgress(${idx},this.value)" style="flex:1"></div>`
+            ? `<div class="edit-slider-row" style="justify-content:space-between">
+                 <label>Modificar avance:</label>
+                 <div style="display:flex;gap:6px">
+                     <button class="btn-prog" onclick="stepProgress(${idx}, -5)">- 5%</button>
+                     <button class="btn-prog" onclick="stepProgress(${idx}, 5)">+ 5%</button>
+                 </div>
+               </div>`
             : ``;
         html+=`
         <div class="detail-card animate-in" style="animation-delay:${i*0.05}s;border-left:4px solid ${color}">
