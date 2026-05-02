@@ -686,6 +686,11 @@
                     🔬 Diagnóstico IA
                 </button>
             </div>
+            
+            <div style="margin-top:20px; text-align:center; opacity:0.3; font-size:0.6rem; color:#fff;">
+                SYD v1.2.0 (WA-FIX) <br>
+                <span onclick="forceUpdateApp()" style="text-decoration:underline; cursor:pointer;">Forzar actualización de versión</span>
+            </div>
         </div>
 
         <div id="zoneCards"></div>
@@ -2075,6 +2080,19 @@ Devuelve ÚNICAMENTE este JSON sin markdown:
 }
 
 // ══ Envio de Informe por WhatsApp ══
+function forceUpdateApp() {
+    if (confirm('¿Quieres forzar la descarga de la última versión?\nEsto limpiará el caché y reiniciará la app.')) {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for(let registration of registrations) { registration.unregister(); }
+                window.location.reload(true);
+            });
+        } else {
+            window.location.reload(true);
+        }
+    }
+}
+
 async function sendReportWhatsApp() {
     if (!db) { alert('Firebase no está conectado.'); return; }
     const obraId = session.obra;
@@ -2084,23 +2102,31 @@ async function sendReportWhatsApp() {
     const oldBtnText = btn.innerHTML;
 
     try {
+        console.log('[SYD] Iniciando envío WhatsApp...');
         btn.innerHTML = '⏳ Preparando...';
         btn.disabled = true;
 
-        // 1. Buscar clientes registrados directamente en la colección 'clientes' (más rápido)
-        const snap = await db.collection('clientes').where('obra', '==', obraId).get();
+        // 1. Buscar clientes (Usamos un timeout para que no se quede colgado)
+        const fetchPromise = db.collection('clientes').get();
+        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Tiempo de espera agotado')), 10000));
+        
+        const snap = await Promise.race([fetchPromise, timeoutPromise]);
         const clientMap = {};
+        
         snap.forEach(doc => {
             const d = doc.data();
-            if (d.telefono && d.nombre) {
+            // Filtramos manualmente por obraId para evitar problemas de índices en Firebase
+            if (d.obra === obraId && d.telefono && d.nombre) {
                 const phone = d.telefono.replace(/[^\d+]/g, '');
                 if (phone) clientMap[phone] = d.nombre;
             }
         });
 
         const clients = Object.entries(clientMap);
+        console.log('[SYD] Clientes encontrados:', clients.length);
+
         if (clients.length === 0) {
-            alert('⚠️ No se encontraron clientes registrados en esta obra.');
+            alert('⚠️ No se encontraron clientes registrados en esta obra.\n\nVe a la sección de "Registro de Accesos" para verificar.');
             btn.innerHTML = oldBtnText; btn.disabled = false;
             return;
         }
@@ -2126,8 +2152,7 @@ async function sendReportWhatsApp() {
         const semana = window._lastReportWeek || currentWeek;
         const fecha = new Date().toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' });
 
-        // 3. EN LUGAR DE window.confirm, USAMOS UN MODAL PROPIO
-        // Esto garantiza que el clic en "ENVIAR" sea un gesto fresco para el navegador móvil
+        // 3. MOSTRAR MODAL DE CONFIRMACIÓN
         const modalId = 'waConfirmModal';
         const oldModal = document.getElementById(modalId);
         if (oldModal) oldModal.remove();
@@ -2150,7 +2175,7 @@ async function sendReportWhatsApp() {
             <div style="font-size:1.2rem; font-weight:700; margin-bottom:15px; color:#25d366;">📱 Enviar Informe</div>
             <div style="font-size:0.9rem; color:#94a3b8; margin-bottom:20px;">
                 Se enviará a ${clients.length} cliente(s):<br>
-                <div style="margin-top:10px; background:rgba(255,255,255,0.05); padding:10px; border-radius:10px; text-align:left; font-size:0.8rem;">
+                <div style="margin-top:10px; background:rgba(255,255,255,0.05); padding:10px; border-radius:10px; text-align:left; font-size:0.8rem; max-height:120px; overflow-y:auto;">
                     ${clients.map(([p, n]) => `• <strong>${n}</strong> (${p})`).join('<br>')}
                 </div>
             </div>
@@ -2165,11 +2190,9 @@ async function sendReportWhatsApp() {
         modal.appendChild(card);
         document.body.appendChild(modal);
 
-        // RESETEAR BOTÓN PRINCIPAL
         btn.innerHTML = oldBtnText;
         btn.disabled = false;
 
-        // ACCIÓN REAL AL PULSAR EL BOTÓN DEL MODAL (Gesto fresco)
         document.getElementById('btnWAConfirmNow').onclick = function() {
             let sent = 0;
             for (const [phone, nombre] of clients) {
@@ -2201,12 +2224,11 @@ ${emojiPhone} 333 250 3313`;
             }
 
             document.getElementById(modalId).remove();
-            if (sent > 0) alert(`✅ Se abrieron ${sent} ventana(s) de WhatsApp.`);
         };
 
     } catch (e) {
         console.error('[SYD] Error WhatsApp:', e);
-        alert('Error: ' + e.message);
+        alert('Error: ' + e.message + '\n\nRevisa la conexión a internet.');
         btn.innerHTML = oldBtnText; btn.disabled = false;
     }
 }
