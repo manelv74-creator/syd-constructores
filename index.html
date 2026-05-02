@@ -689,7 +689,7 @@
             </div>
             
             <div style="margin-top:20px; text-align:center; opacity:0.3; font-size:0.6rem; color:#fff;">
-                SYD v1.2.9 (UI-FIX) <br>
+                SYD v1.3.0 (UX-REPORT) <br>
                 <span onclick="forceUpdateApp()" style="text-decoration:underline; cursor:pointer;">Forzar actualización de versión</span>
             </div>
         </div>
@@ -1883,7 +1883,12 @@ function showReportModal(html, fileName, numFotos) {
                 <svg viewBox="0 0 24 24" style="width:18px;height:18px;margin-right:4px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round"><path d="M15 18l-6-6 6-6"/></svg> Regresar
             </button>
         </div>
-        <div style="display:flex;gap:10px;">
+        <div style="display:flex; gap:10px;">
+            <button onclick="saveReportEdits(this)"
+                style="background:#f59e0b;color:#fff;border:none;padding:8px 14px;
+                border-radius:24px;font-weight:700;font-size:14px;cursor:pointer;display:flex;align-items:center;box-shadow:0 2px 4px rgba(245,158,11,0.2);">
+                💾 Guardar
+            </button>
             <button onclick="window.print()"
                 style="background:#fff;color:#2563eb;border:1px solid #bfdbfe;
                 padding:8px 14px;border-radius:24px;font-weight:600;font-size:14px;cursor:pointer;display:flex;align-items:center;box-shadow:0 2px 4px rgba(37,99,235,0.05);">
@@ -2044,7 +2049,7 @@ Devuelve ÚNICAMENTE este JSON sin markdown:
         const monday = new Date(today.setDate(diffToMonday));
         const saturday = new Date(today.setDate(diffToMonday + 5));
         const dateOptions = { day: '2-digit', month: 'long', timeZone: 'America/Mexico_City' };
-        const periodoStr = `Del Lunes ${monday.toLocaleDateString('es-MX', dateOptions)} al Sábado ${saturday.toLocaleDateString('es-MX', {day: '2-digit', month: 'long', year: 'numeric', timeZone: 'America/Mexico_City'})}`;
+        const dateOptsShort = { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'America/Mexico_City' }; const periodoStr = `Del ${monday.toLocaleDateString('es-MX', dateOptsShort)} al ${saturday.toLocaleDateString('es-MX', dateOptsShort)}`;
 
         html = html
             .replace('{{proyecto_nombre}}', obraName.toUpperCase())
@@ -2113,6 +2118,44 @@ function forceUpdateApp() {
     }
 }
 
+async function saveReportEdits(btnElement) {
+    if (!db || !window._lastReportDocId) {
+        alert('No se puede guardar porque el informe aún no se ha subido a la nube.');
+        return false;
+    }
+    const oldText = btnElement ? btnElement.innerHTML : '';
+    if (btnElement) {
+        btnElement.innerHTML = '⏳ Guardando...';
+        btnElement.disabled = true;
+    }
+    try {
+        const modalContentWrap = document.querySelector('#reportModal > div:nth-child(2)');
+        if (modalContentWrap) {
+            let cleanHtml = modalContentWrap.innerHTML;
+            cleanHtml = cleanHtml.replace(/contenteditable="true"/g, '');
+            cleanHtml = cleanHtml.replace(/style="outline:none;"/g, '');
+            
+            await db.collection('informes_compartidos').doc(window._lastReportDocId).update({
+                html: cleanHtml
+            });
+            console.log('[SYD] Ediciones guardadas manualmente.');
+            if (btnElement) {
+                btnElement.innerHTML = '✅ Guardado';
+                setTimeout(() => { btnElement.innerHTML = oldText; btnElement.disabled = false; }, 2000);
+            }
+            return true;
+        }
+    } catch(e) {
+        console.error('Error guardando ediciones:', e);
+        if (btnElement) {
+            btnElement.innerHTML = '❌ Error';
+            setTimeout(() => { btnElement.innerHTML = oldText; btnElement.disabled = false; }, 2000);
+        }
+        alert('Error al guardar: ' + e.message);
+    }
+    return false;
+}
+
 async function sendReportWhatsApp() {
     if (!db) { alert('Firebase no está conectado.'); return; }
     const obraId = session.obra;
@@ -2129,18 +2172,8 @@ async function sendReportWhatsApp() {
     try {
         console.log('[SYD] Iniciando envío WhatsApp...');
 
-        // 1. Guardar las ediciones en Firestore
-        const modalContentWrap = document.querySelector('#reportModal > div:nth-child(2)');
-        if (modalContentWrap && window._lastReportDocId) {
-            let cleanHtml = modalContentWrap.innerHTML;
-            cleanHtml = cleanHtml.replace(/contenteditable="true"/g, '');
-            cleanHtml = cleanHtml.replace(/style="outline:none;"/g, '');
-            
-            await db.collection('informes_compartidos').doc(window._lastReportDocId).update({
-                html: cleanHtml
-            });
-            console.log('[SYD] Ediciones guardadas exitosamente en Firestore.');
-        }
+        // 1. Guardar las ediciones en Firestore (ahora usa la función independiente)
+        await saveReportEdits();
 
         // 2. Buscar clientes (Usamos un timeout para que no se quede colgado)
         const fetchPromise = db.collection('clientes').get();
@@ -2610,5 +2643,6 @@ window.addEventListener('appinstalled', () => {
 </body>
 <script src="debug_gemini.js"></script>
 </html>
+
 
 

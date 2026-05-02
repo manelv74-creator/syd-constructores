@@ -56,8 +56,15 @@
                 const data = doc.data();
                 document.getElementById('mainContainer').innerHTML = `
                     <div class="action-bar">
-                        <div>📋 Informe SYD Constructores</div>
-                        <button class="btn-print" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
+                        <div style="font-weight:bold; display:flex; align-items:center;">📋 Informe SYD</div>
+                        <div style="display:flex; gap:8px;">
+                            <button onclick="window.print()" style="background:#10b981; color:white; border:none; padding:8px 14px; border-radius:20px; font-weight:bold; cursor:pointer; font-size:0.9rem; display:flex; align-items:center;">
+                                🖨️ Imprimir
+                            </button>
+                            <button onclick="window.close()" style="background:#ef4444; color:white; border:none; padding:8px 14px; border-radius:20px; font-weight:bold; cursor:pointer; font-size:0.9rem; display:flex; align-items:center;">
+                                ✕ Cerrar
+                            </button>
+                        </div>
                     </div>
                     <div style="padding: 0;">
                         ${data.html}
