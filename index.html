@@ -2393,43 +2393,6 @@ async function sendReportWhatsApp() {
         const semana = window._lastReportWeek || currentWeek;
         const fecha = new Date().toLocaleDateString('es-MX', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
-        // 3. MOSTRAR MODAL DE CONFIRMACIÓN
-        const modalId = 'waConfirmModal';
-        const oldModal = document.getElementById(modalId);
-        if (oldModal) oldModal.remove();
-
-        const modal = document.createElement('div');
-        modal.id = modalId;
-        modal.style.cssText = `
-            position:fixed; inset:0; z-index:100000;
-            background:rgba(0,0,0,0.85); display:flex; align-items:center; justify-content:center;
-            padding:20px; font-family:sans-serif;
-        `;
-
-        const card = document.createElement('div');
-        card.style.cssText = `
-            background:#1e293b; border-radius:20px; width:100%; max-width:340px;
-            padding:24px; color:#fff; text-align:center; box-shadow:0 10px 25px rgba(0,0,0,0.5);
-        `;
-
-        card.innerHTML = `
-            <div style="font-size:1.2rem; font-weight:700; margin-bottom:15px; color:#25d366;">📱 Enviar Informe</div>
-            <div style="font-size:0.9rem; color:#94a3b8; margin-bottom:20px;">
-                Se enviará a ${clients.length} cliente(s):<br>
-                <div style="margin-top:10px; background:rgba(255,255,255,0.05); padding:10px; border-radius:10px; text-align:left; font-size:0.8rem; max-height:120px; overflow-y:auto;">
-                    ${clients.map(([p, n]) => `• <strong>${n}</strong> (${p})`).join('<br>')}
-                </div>
-            </div>
-            <button id="btnWAConfirmNow" style="width:100%; background:#25d366; color:#fff; border:none; padding:15px; border-radius:12px; font-weight:700; font-size:1rem; cursor:pointer; margin-bottom:10px;">
-                CONFIRMAR Y ENVIAR
-            </button>
-            <button onclick="document.getElementById('${modalId}').remove()" style="width:100%; background:transparent; color:#94a3b8; border:none; padding:10px; font-size:0.85rem; cursor:pointer;">
-                Cancelar
-            </button>
-        `;
-
-        modal.appendChild(card);
-        document.body.appendChild(modal);
 
         btn.innerHTML = oldBtnText;
         btn.disabled = false;
