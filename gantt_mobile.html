@@ -242,6 +242,22 @@
         .progress-track{flex:1;height:8px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden}
         .progress-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width 0.4s cubic-bezier(.4,0,.2,1)}
         .progress-pct{font-size:0.75rem;font-weight:700;color:var(--accent2);width:34px;text-align:right}
+        #versionBadge {
+            position: fixed;
+            bottom: 8px;
+            right: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            color: rgba(255,255,255,0.3);
+            z-index: 10000;
+            pointer-events: none;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: rgba(0,0,0,0.4);
+            padding: 2px 6px;
+            border-radius: 4px;
+            backdrop-filter: blur(4px);
+        }
         .edit-slider-row{margin-top:10px;display:flex;align-items:center;gap:10px}
         .edit-slider-row label{font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;flex-shrink:0}
         .edit-slider-row input[type=range]{height:4px}
@@ -466,6 +482,7 @@
     </style>
 </head>
 <body>
+<div id="versionBadge">v1.4.3</div>
 
 <!-- ══════════════ LOGIN SCREEN ══════════════ -->
 <div id="loginScreen">
