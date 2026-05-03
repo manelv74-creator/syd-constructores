@@ -507,7 +507,7 @@
             <div id="fieldNombre" style="display:none">
                 <div class="field-label">Nombre completo</div>
                 <div class="field-wrap">
-                    <input type="text" id="loginName" placeholder="Tu nombre">
+                    <input type="text" id="loginName" placeholder="Tu nombre" enterkeyhint="next">
                 </div>
             </div>
 
@@ -515,7 +515,7 @@
             <div id="fieldTelefono" style="display:none">
                 <div class="field-label">WhatsApp (Teléfono)</div>
                 <div class="field-wrap">
-                    <input type="tel" id="loginPhone" placeholder="+52 1 33 ...">
+                    <input type="tel" id="loginPhone" placeholder="+52 1 33 ..." enterkeyhint="next">
                 </div>
             </div>
 
@@ -523,7 +523,7 @@
             <div>
                 <div class="field-label">Correo electrónico</div>
                 <div class="field-wrap">
-                    <input type="email" id="loginEmail" placeholder="tu@correo.com" autocomplete="email">
+                    <input type="email" id="loginEmail" placeholder="tu@correo.com" autocomplete="email" enterkeyhint="next">
                 </div>
             </div>
 
@@ -531,7 +531,7 @@
             <div id="fieldPassword">
                 <div class="field-label">Contraseña</div>
                 <div class="field-wrap">
-                    <input type="password" id="loginPassword" placeholder="••••••••">
+                    <input type="password" id="loginPassword" placeholder="••••••••" enterkeyhint="next">
                 </div>
             </div>
 
@@ -539,7 +539,7 @@
             <div id="dynamicField" style="display:none">
                 <div class="field-label" id="dynLabel">Código de Proyecto</div>
                 <div class="field-wrap">
-                    <input type="text" id="loginCode" placeholder="Ej: SAUCES">
+                    <input type="text" id="loginCode" placeholder="Ej: SAUCES" enterkeyhint="done">
                 </div>
             </div>
 
@@ -2098,8 +2098,41 @@ window.onload = async function() {
             }
         } catch(e) { localStorage.removeItem('sauces_session'); }
     }
+    setupLoginNavigation();
     document.getElementById('loginScreen').style.display='flex';
 };
+
+function setupLoginNavigation() {
+    const ids = ['loginName', 'loginPhone', 'loginEmail', 'loginPassword', 'loginCode'];
+    ids.forEach((id, idx) => {
+        const el = document.getElementById(id);
+        if(!el) return;
+        el.addEventListener('keydown', (e) => {
+            if(e.key === 'Enter') {
+                e.preventDefault();
+                let nextIdx = idx + 1;
+                while(nextIdx < ids.length) {
+                    const nextEl = document.getElementById(ids[nextIdx]);
+                    if(nextEl && isElementVisible(nextEl)) {
+                        nextEl.focus();
+                        return;
+                    }
+                    nextIdx++;
+                }
+                doAuthAction();
+            }
+        });
+    });
+}
+
+function isElementVisible(el) {
+    let curr = el;
+    while(curr && curr !== document.body) {
+        if(window.getComputedStyle(curr).display === 'none') return false;
+        curr = curr.parentElement;
+    }
+    return true;
+}
 </script>
 
 <!-- ══ LIGHTBOX ══ -->
