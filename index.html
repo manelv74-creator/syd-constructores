@@ -2434,16 +2434,17 @@ async function sendReportWhatsApp() {
         btn.innerHTML = oldBtnText;
         btn.disabled = false;
 
-        document.getElementById('btnWAConfirmNow').onclick = function() {
-            let sent = 0;
-            for (const [phone, nombre] of clients) {
-                const firstName = nombre.split(' ')[0].toUpperCase();
-                const emojiCalendar = '\uD83D\uDCC5';
-                const emojiDoc = '\uD83D\uDCC4';
-                const emojiEmail = '\uD83D\uDCE7';
-                const emojiPhone = '\uD83D\uDCDE';
+        document.getElementById('btnWAConfirmNow').remove();
+        
+        // Función para enviar a uno específico
+        window._sendToWA = function(phone, nombre, btnId) {
+            const firstName = nombre.split(' ')[0].toUpperCase();
+            const emojiCalendar = '\uD83D\uDCC5';
+            const emojiDoc = '\uD83D\uDCC4';
+            const emojiEmail = '\uD83D\uDCE7';
+            const emojiPhone = '\uD83D\uDCDE';
 
-                const mensaje = `${saludo}, ${firstName}.
+            const mensaje = `${saludo}, ${firstName}.
 
 Le enviamos el informe semanal correspondiente a los trabajos realizados en su obra *${obraName}*.
 
@@ -2455,17 +2456,47 @@ _SYD Constructores_
 ${emojiEmail} info@sydconstructores.com.mx
 ${emojiPhone} 333 250 3313`;
 
-                let tel = phone.replace(/[^\d]/g, '');
-                if (tel.length === 10) tel = '52' + tel;
-                else if (tel.startsWith('33') && tel.length === 10) tel = '52' + tel;
+            let tel = phone.replace(/[^\d]/g, '');
+            if (tel.length === 10) tel = '52' + tel;
 
-                const url = `https://wa.me/${tel}?text=${encodeURIComponent(mensaje)}`;
-                window.open(url, '_blank');
-                sent++;
+            const url = `https://wa.me/${tel}?text=${encodeURIComponent(mensaje)}`;
+            window.open(url, '_blank');
+            
+            const btn = document.getElementById(btnId);
+            if(btn) {
+                btn.innerHTML = '✅ Enviado';
+                btn.style.background = '#065f46';
             }
-
-            document.getElementById(modalId).remove();
         };
+
+        const clientListHtml = clients.map(([p, n], idx) => {
+            const btnId = `wa-client-btn-${idx}`;
+            return `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; background:rgba(255,255,255,0.05); padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,0.05);">
+                    <div style="text-align:left; flex:1; padding-right:10px;">
+                        <div style="font-weight:700; font-size:0.85rem; color:#fff;">${n}</div>
+                        <div style="font-size:0.7rem; color:#94a3b8;">${p}</div>
+                    </div>
+                    <button id="${btnId}" onclick="window._sendToWA('${p}', '${n.replace(/'/g,"\\'")}', '${btnId}')" 
+                        style="background:#25d366; color:#fff; border:none; padding:8px 14px; border-radius:10px; font-weight:700; font-size:0.75rem; cursor:pointer; transition:all 0.2s; white-space:nowrap;">
+                        Enviar WhatsApp
+                    </button>
+                </div>
+            `;
+        }).join('');
+
+        card.innerHTML = `
+            <div style="font-size:1.2rem; font-weight:700; margin-bottom:10px; color:#25d366;">📱 Enviar Informe</div>
+            <div style="font-size:0.8rem; color:#94a3b8; margin-bottom:20px;">Pulsa el botón de cada cliente para abrir su chat de WhatsApp.</div>
+            
+            <div style="margin-bottom:20px; max-height:300px; overflow-y:auto; padding-right:4px;">
+                ${clientListHtml}
+            </div>
+            
+            <button onclick="document.getElementById('${modalId}').remove()" style="width:100%; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.1); color:#fff; padding:12px; border-radius:12px; font-weight:700; font-size:0.9rem; cursor:pointer;">
+                Cerrar Ventana
+            </button>
+        `;
 
     } catch (e) {
         console.error('[SYD] Error WhatsApp:', e);
