@@ -556,9 +556,9 @@
 
             <!-- Dynamic field -->
             <div id="dynamicField" style="display:none">
-                <div class="field-label" id="dynLabel">Código de Proyecto</div>
+                <div class="field-label" id="dynLabel">Código de Obra</div>
                 <div class="field-wrap">
-                    <input type="text" id="loginCode" placeholder="Ej: SAUCES" enterkeyhint="done">
+                    <input type="text" id="loginCode" placeholder="Proporcionado por constructor" enterkeyhint="done">
                 </div>
             </div>
 
@@ -1199,8 +1199,8 @@ const HINTS = {
     observer: '<strong>Supervisor:</strong> Usa el código especial que te proporcionó el responsable de obra. Acceso de lectura a todas las obras.',
     master:   '<strong>Master:</strong> Acceso total con código de administrador. Puedes actualizar el avance de todas las zonas.'
 };
-const DYN_LABEL = {client:'Clave de acceso', observer:'Código de acceso', master:'Código maestro'};
-const DYN_PLACEHOLDER = {client:'Clave de tu obra', observer:'Código supervisor', master:'Código master'};
+const DYN_LABEL = {client:'Código de Obra', observer:'Código de acceso', master:'Código maestro'};
+const DYN_PLACEHOLDER = {client:'Proporcionado por constructor', observer:'Código supervisor', master:'Código master'};
 let authMode = 'login'; // 'login' | 'register'
 
 function setAuthMode(mode, btn) {
