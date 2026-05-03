@@ -8,307 +8,503 @@
       "zone": "Zona 1: Sótano",
       "emoji": "🏠",
       "tasks": [
-        "Preliminares Sótano",
         "Preliminares",
         "Preliminares",
         "Muros de Contención",
-        "Muros de Contención",
-        "Muros de Contención",
-        "Cimentación",
         "Cimentación",
         "Cimentación",
         "Albañilerías",
-        "Albañilerías",
-        "Albañilerías",
         "Losa",
         "Losa",
-        "Losa",
-        "Instalaciones Hidráulicas",
-        "Instalaciones Hidráulicas",
-        "Instalaciones Hidráulicas",
-        "Instalaciones Sanitarias",
-        "Instalaciones Sanitarias",
-        "Instalaciones Sanitarias",
-        "Instalaciones Pluviales",
-        "Instalaciones Pluviales",
-        "Instalaciones Pluviales",
-        "Instalaciones Eléctricas",
-        "Instalaciones Eléctricas",
-        "Instalaciones Eléctricas",
+        "Instalaciones H-S-P",
+        "Eléctrica/Solares",
+        "Eléctrica/Solares",
+        "Cisterna/Pozo",
         "Herrerías",
         "Herrerías",
-        "Herrerías",
+        "Limpieza",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
         "Accesorios Eléctricos",
         "Accesorios Eléctricos",
         "Accesorios Eléctricos",
-        "Accesorios Eléctricos",
-        "Accesorios Eléctricos",
-        "Recubrimientos y Pintura",
-        "Recubrimientos y Pintura",
-        "Recubrimientos y Pintura",
-        "Recubrimientos y Pintura",
-        "Recubrimientos y Pintura",
-        "Cancelería",
-        "Cancelería",
+        "Tableros/Interrup.",
+        "Tableros/Interrup.",
+        "Tableros/Interrup.",
+        "Recubrimientos/Pintura",
+        "Recubrimientos/Pintura",
         "Cancelería",
         "Cancelería",
         "Cancelería",
         "Carpintería",
         "Carpintería",
         "Carpintería",
-        "Carpintería",
-        "Carpintería",
         "Muebles Sanitarios",
         "Muebles Sanitarios",
-        "Muebles Sanitarios",
-        "Muebles Sanitarios",
-        "Muebles Sanitarios",
-        "Herrería Final",
-        "Herrería Final",
-        "Herrería Final",
-        "Herrería Final",
-        "Herrería Final"
+        "Herrería",
+        "Herrería",
+        "Herrería",
+        "Limpieza",
+        "Limpieza",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A"
       ],
       "details": [
         {
-          "title": "Preliminares Sótano",
-          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+          "title": "Obra Gris: Preliminares",
+          "desc": "Fase de obra gris y estructura en Zona 1: Sótano.",
+          "subtasks": [
+            "A0101 Preliminares",
+            "A0102 Muros de Contención"
+          ]
         },
         {
           "title": "Obra Gris: Preliminares",
-          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Preliminares",
-          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Muros de Contención",
-          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 1: Sótano.",
+          "subtasks": [
+            "A0101 Preliminares",
+            "A0102 Muros de Contención"
+          ]
         },
         {
           "title": "Obra Gris: Muros de Contención",
-          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Muros de Contención",
-          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Cimentación",
-          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 1: Sótano.",
+          "subtasks": [
+            "A0101 Preliminares",
+            "A0102 Muros de Contención",
+            "A0103 Cimentación"
+          ]
         },
         {
           "title": "Obra Gris: Cimentación",
-          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 1: Sótano.",
+          "subtasks": [
+            "A0102 Muros de Contención",
+            "A0103 Cimentación",
+            "A0104 Albañilerías"
+          ]
         },
         {
           "title": "Obra Gris: Cimentación",
-          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 1: Sótano.",
+          "subtasks": [
+            "A0102 Muros de Contención",
+            "A0103 Cimentación",
+            "A0104 Albañilerías"
+          ]
         },
         {
           "title": "Obra Gris: Albañilerías",
-          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Albañilerías",
-          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Albañilerías",
-          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 1: Sótano.",
+          "subtasks": [
+            "A0103 Cimentación",
+            "A0104 Albañilerías",
+            "A0105 Losa"
+          ]
         },
         {
           "title": "Obra Gris: Losa",
-          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 1: Sótano.",
+          "subtasks": [
+            "A0104 Albañilerías",
+            "A0105 Losa",
+            "A0106/7/8 Instalaciones H-S-P"
+          ]
         },
         {
           "title": "Obra Gris: Losa",
-          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 1: Sótano.",
+          "subtasks": [
+            "A0104 Albañilerías",
+            "A0105 Losa",
+            "A0106/7/8 Instalaciones H-S-P"
+          ]
         },
         {
-          "title": "Obra Gris: Losa",
-          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+          "title": "Obra Gris: Instalaciones H-S-P",
+          "desc": "Fase de obra gris y estructura en Zona 1: Sótano.",
+          "subtasks": [
+            "A0105 Losa",
+            "A0106/7/8 Instalaciones H-S-P",
+            "A0109/10 Eléctrica/Solares"
+          ]
         },
         {
-          "title": "Obra Gris: Instalaciones Hidráulicas",
-          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+          "title": "Obra Gris: Eléctrica/Solares",
+          "desc": "Fase de obra gris y estructura en Zona 1: Sótano.",
+          "subtasks": [
+            "A0106/7/8 Instalaciones H-S-P",
+            "A0109/10 Eléctrica/Solares",
+            "A0111/12 Cisterna/Pozo"
+          ]
         },
         {
-          "title": "Obra Gris: Instalaciones Hidráulicas",
-          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+          "title": "Obra Gris: Eléctrica/Solares",
+          "desc": "Fase de obra gris y estructura en Zona 1: Sótano.",
+          "subtasks": [
+            "A0106/7/8 Instalaciones H-S-P",
+            "A0109/10 Eléctrica/Solares",
+            "A0111/12 Cisterna/Pozo"
+          ]
         },
         {
-          "title": "Obra Gris: Instalaciones Hidráulicas",
-          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Instalaciones Sanitarias",
-          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Instalaciones Sanitarias",
-          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Instalaciones Sanitarias",
-          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Instalaciones Pluviales",
-          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Instalaciones Pluviales",
-          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Instalaciones Pluviales",
-          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Instalaciones Eléctricas",
-          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Instalaciones Eléctricas",
-          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Instalaciones Eléctricas",
-          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+          "title": "Obra Gris: Cisterna/Pozo",
+          "desc": "Fase de obra gris y estructura en Zona 1: Sótano.",
+          "subtasks": [
+            "A0109/10 Eléctrica/Solares",
+            "A0111/12 Cisterna/Pozo",
+            "A0113 Herrerías"
+          ]
         },
         {
           "title": "Obra Gris: Herrerías",
-          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 1: Sótano.",
+          "subtasks": [
+            "A0111/12 Cisterna/Pozo",
+            "A0113 Herrerías",
+            "A0114 Limpieza"
+          ]
         },
         {
           "title": "Obra Gris: Herrerías",
-          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 1: Sótano.",
+          "subtasks": [
+            "A0111/12 Cisterna/Pozo",
+            "A0113 Herrerías",
+            "A0114 Limpieza"
+          ]
         },
         {
-          "title": "Obra Gris: Herrerías",
-          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+          "title": "Obra Gris: Limpieza",
+          "desc": "Fase de obra gris y estructura en Zona 1: Sótano.",
+          "subtasks": [
+            "A0113 Herrerías",
+            "A0114 Limpieza"
+          ]
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
         },
         {
           "title": "Acabados: Accesorios Eléctricos",
-          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 1: Sótano.",
+          "subtasks": [
+            "B0101 Accesorios Eléctricos",
+            "B0102 Tableros/Interrup."
+          ]
         },
         {
           "title": "Acabados: Accesorios Eléctricos",
-          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 1: Sótano.",
+          "subtasks": [
+            "B0101 Accesorios Eléctricos",
+            "B0102 Tableros/Interrup."
+          ]
         },
         {
           "title": "Acabados: Accesorios Eléctricos",
-          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 1: Sótano.",
+          "subtasks": [
+            "B0101 Accesorios Eléctricos",
+            "B0102 Tableros/Interrup."
+          ]
         },
         {
-          "title": "Acabados: Accesorios Eléctricos",
-          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+          "title": "Acabados: Tableros/Interrup.",
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 1: Sótano.",
+          "subtasks": [
+            "B0101 Accesorios Eléctricos",
+            "B0102 Tableros/Interrup.",
+            "B0103 Recubrimientos/Pintura"
+          ]
         },
         {
-          "title": "Acabados: Accesorios Eléctricos",
-          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+          "title": "Acabados: Tableros/Interrup.",
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 1: Sótano.",
+          "subtasks": [
+            "B0101 Accesorios Eléctricos",
+            "B0102 Tableros/Interrup.",
+            "B0103 Recubrimientos/Pintura"
+          ]
         },
         {
-          "title": "Acabados: Recubrimientos y Pintura",
-          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+          "title": "Acabados: Tableros/Interrup.",
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 1: Sótano.",
+          "subtasks": [
+            "B0101 Accesorios Eléctricos",
+            "B0102 Tableros/Interrup.",
+            "B0103 Recubrimientos/Pintura"
+          ]
         },
         {
-          "title": "Acabados: Recubrimientos y Pintura",
-          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+          "title": "Acabados: Recubrimientos/Pintura",
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 1: Sótano.",
+          "subtasks": [
+            "B0102 Tableros/Interrup.",
+            "B0103 Recubrimientos/Pintura",
+            "B0104 Cancelería"
+          ]
         },
         {
-          "title": "Acabados: Recubrimientos y Pintura",
-          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
-        },
-        {
-          "title": "Acabados: Recubrimientos y Pintura",
-          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
-        },
-        {
-          "title": "Acabados: Recubrimientos y Pintura",
-          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+          "title": "Acabados: Recubrimientos/Pintura",
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 1: Sótano.",
+          "subtasks": [
+            "B0102 Tableros/Interrup.",
+            "B0103 Recubrimientos/Pintura",
+            "B0104 Cancelería"
+          ]
         },
         {
           "title": "Acabados: Cancelería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 1: Sótano.",
+          "subtasks": [
+            "B0103 Recubrimientos/Pintura",
+            "B0104 Cancelería",
+            "B0105 Carpintería"
+          ]
         },
         {
           "title": "Acabados: Cancelería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 1: Sótano.",
+          "subtasks": [
+            "B0103 Recubrimientos/Pintura",
+            "B0104 Cancelería",
+            "B0105 Carpintería"
+          ]
         },
         {
           "title": "Acabados: Cancelería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
-        },
-        {
-          "title": "Acabados: Cancelería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
-        },
-        {
-          "title": "Acabados: Cancelería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 1: Sótano.",
+          "subtasks": [
+            "B0103 Recubrimientos/Pintura",
+            "B0104 Cancelería",
+            "B0105 Carpintería"
+          ]
         },
         {
           "title": "Acabados: Carpintería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 1: Sótano.",
+          "subtasks": [
+            "B0104 Cancelería",
+            "B0105 Carpintería",
+            "B0106 Muebles Sanitarios"
+          ]
         },
         {
           "title": "Acabados: Carpintería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 1: Sótano.",
+          "subtasks": [
+            "B0104 Cancelería",
+            "B0105 Carpintería",
+            "B0106 Muebles Sanitarios"
+          ]
         },
         {
           "title": "Acabados: Carpintería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
-        },
-        {
-          "title": "Acabados: Carpintería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
-        },
-        {
-          "title": "Acabados: Carpintería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 1: Sótano.",
+          "subtasks": [
+            "B0104 Cancelería",
+            "B0105 Carpintería",
+            "B0106 Muebles Sanitarios"
+          ]
         },
         {
           "title": "Acabados: Muebles Sanitarios",
-          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 1: Sótano.",
+          "subtasks": [
+            "B0105 Carpintería",
+            "B0106 Muebles Sanitarios",
+            "B0107 Herrería"
+          ]
         },
         {
           "title": "Acabados: Muebles Sanitarios",
-          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 1: Sótano.",
+          "subtasks": [
+            "B0105 Carpintería",
+            "B0106 Muebles Sanitarios",
+            "B0107 Herrería"
+          ]
         },
         {
-          "title": "Acabados: Muebles Sanitarios",
-          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+          "title": "Acabados: Herrería",
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 1: Sótano.",
+          "subtasks": [
+            "B0106 Muebles Sanitarios",
+            "B0107 Herrería",
+            "B0108 Limpieza"
+          ]
         },
         {
-          "title": "Acabados: Muebles Sanitarios",
-          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+          "title": "Acabados: Herrería",
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 1: Sótano.",
+          "subtasks": [
+            "B0106 Muebles Sanitarios",
+            "B0107 Herrería",
+            "B0108 Limpieza"
+          ]
         },
         {
-          "title": "Acabados: Muebles Sanitarios",
-          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+          "title": "Acabados: Herrería",
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 1: Sótano.",
+          "subtasks": [
+            "B0106 Muebles Sanitarios",
+            "B0107 Herrería",
+            "B0108 Limpieza"
+          ]
         },
         {
-          "title": "Acabados: Herrería Final",
-          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+          "title": "Acabados: Limpieza",
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 1: Sótano.",
+          "subtasks": [
+            "B0107 Herrería",
+            "B0108 Limpieza"
+          ]
         },
         {
-          "title": "Acabados: Herrería Final",
-          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+          "title": "Acabados: Limpieza",
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 1: Sótano.",
+          "subtasks": [
+            "B0107 Herrería",
+            "B0108 Limpieza"
+          ]
         },
         {
-          "title": "Acabados: Herrería Final",
-          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
         },
         {
-          "title": "Acabados: Herrería Final",
-          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
         },
         {
-          "title": "Acabados: Herrería Final",
-          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
         }
       ],
       "progress": [
@@ -378,307 +574,483 @@
       "zone": "Zona 2: Planta Baja",
       "emoji": "🛋️",
       "tasks": [
-        "Preliminares Planta Baja",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
         "Preliminares",
         "Preliminares",
-        "Preliminares",
         "Cimentación",
         "Cimentación",
-        "Cimentación",
-        "Cimentación",
-        "Muros de Concreto",
-        "Muros de Concreto",
-        "Muros de Concreto",
-        "Muros de Concreto",
+        "Muros Concreto",
         "Albañilerías",
         "Albañilerías",
-        "Albañilerías",
-        "Estructura de Acero",
-        "Estructura de Acero",
-        "Estructura de Acero",
-        "Estructura de Acero",
+        "Estructura Acero",
+        "Estructura Acero",
         "Losa",
-        "Losa",
-        "Losa",
-        "Losa",
-        "Instalaciones Hidráulicas/Sanitarias/Pluviales/Eléctricas",
-        "Instalaciones Hidráulicas/Sanitarias/Pluviales/Eléctricas",
-        "Instalaciones Hidráulicas/Sanitarias/Pluviales/Eléctricas",
-        "Instalaciones Hidráulicas/Sanitarias/Pluviales/Eléctricas",
-        "Aire Acondicionado",
-        "Aire Acondicionado",
-        "Aire Acondicionado",
+        "Instalaciones H-S-P",
+        "Instalaciones H-S-P",
+        "Eléctrica/Aire Acond.",
+        "Eléctrica/Aire Acond.",
+        "Limpieza",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
         "Accesorios Eléctricos",
         "Accesorios Eléctricos",
         "Accesorios Eléctricos",
-        "Accesorios Eléctricos",
-        "Accesorios Eléctricos",
-        "Accesorios Eléctricos",
-        "Recubrimientos y Pintura",
-        "Recubrimientos y Pintura",
-        "Recubrimientos y Pintura",
-        "Recubrimientos y Pintura",
-        "Recubrimientos y Pintura",
-        "Recubrimientos y Pintura",
+        "Tablero/Interrup.",
+        "Tablero/Interrup.",
+        "Recubrimientos/Pintura",
+        "Recubrimientos/Pintura",
         "Cancelería",
         "Cancelería",
         "Cancelería",
-        "Cancelería",
-        "Cancelería",
-        "Cancelería",
-        "Carpintería",
-        "Carpintería",
-        "Carpintería",
-        "Carpintería",
         "Carpintería",
         "Carpintería",
         "Muebles Sanitarios",
         "Muebles Sanitarios",
-        "Muebles Sanitarios",
-        "Muebles Sanitarios",
-        "Muebles Sanitarios",
-        "Muebles Sanitarios"
+        "Limpieza",
+        "Limpieza",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A"
       ],
       "details": [
         {
-          "title": "Preliminares Planta Baja",
-          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
         },
         {
           "title": "Obra Gris: Preliminares",
-          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 2: Planta Baja.",
+          "subtasks": [
+            "A0201 Preliminares",
+            "A0202 Cimentación"
+          ]
         },
         {
           "title": "Obra Gris: Preliminares",
-          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Preliminares",
-          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Cimentación",
-          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 2: Planta Baja.",
+          "subtasks": [
+            "A0201 Preliminares",
+            "A0202 Cimentación"
+          ]
         },
         {
           "title": "Obra Gris: Cimentación",
-          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 2: Planta Baja.",
+          "subtasks": [
+            "A0201 Preliminares",
+            "A0202 Cimentación",
+            "A0203 Muros Concreto"
+          ]
         },
         {
           "title": "Obra Gris: Cimentación",
-          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 2: Planta Baja.",
+          "subtasks": [
+            "A0201 Preliminares",
+            "A0202 Cimentación",
+            "A0203 Muros Concreto"
+          ]
         },
         {
-          "title": "Obra Gris: Cimentación",
-          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Muros de Concreto",
-          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Muros de Concreto",
-          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Muros de Concreto",
-          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Muros de Concreto",
-          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+          "title": "Obra Gris: Muros Concreto",
+          "desc": "Fase de obra gris y estructura en Zona 2: Planta Baja.",
+          "subtasks": [
+            "A0202 Cimentación",
+            "A0203 Muros Concreto",
+            "A0204 Albañilerías"
+          ]
         },
         {
           "title": "Obra Gris: Albañilerías",
-          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 2: Planta Baja.",
+          "subtasks": [
+            "A0203 Muros Concreto",
+            "A0204 Albañilerías",
+            "A0205 Estructura Acero"
+          ]
         },
         {
           "title": "Obra Gris: Albañilerías",
-          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 2: Planta Baja.",
+          "subtasks": [
+            "A0203 Muros Concreto",
+            "A0204 Albañilerías",
+            "A0205 Estructura Acero"
+          ]
         },
         {
-          "title": "Obra Gris: Albañilerías",
-          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+          "title": "Obra Gris: Estructura Acero",
+          "desc": "Fase de obra gris y estructura en Zona 2: Planta Baja.",
+          "subtasks": [
+            "A0204 Albañilerías",
+            "A0205 Estructura Acero",
+            "A0206 Losa"
+          ]
         },
         {
-          "title": "Obra Gris: Estructura de Acero",
-          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Estructura de Acero",
-          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Estructura de Acero",
-          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Estructura de Acero",
-          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Losa",
-          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Losa",
-          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+          "title": "Obra Gris: Estructura Acero",
+          "desc": "Fase de obra gris y estructura en Zona 2: Planta Baja.",
+          "subtasks": [
+            "A0204 Albañilerías",
+            "A0205 Estructura Acero",
+            "A0206 Losa"
+          ]
         },
         {
           "title": "Obra Gris: Losa",
-          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 2: Planta Baja.",
+          "subtasks": [
+            "A0205 Estructura Acero",
+            "A0206 Losa",
+            "A0207/8/9 Instalaciones H-S-P"
+          ]
         },
         {
-          "title": "Obra Gris: Losa",
-          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+          "title": "Obra Gris: Instalaciones H-S-P",
+          "desc": "Fase de obra gris y estructura en Zona 2: Planta Baja.",
+          "subtasks": [
+            "A0206 Losa",
+            "A0207/8/9 Instalaciones H-S-P",
+            "A0210/11 Eléctrica/Aire Acond."
+          ]
         },
         {
-          "title": "Obra Gris: Instalaciones Hidráulicas/Sanitarias/Pluviales/Eléctricas",
-          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+          "title": "Obra Gris: Instalaciones H-S-P",
+          "desc": "Fase de obra gris y estructura en Zona 2: Planta Baja.",
+          "subtasks": [
+            "A0206 Losa",
+            "A0207/8/9 Instalaciones H-S-P",
+            "A0210/11 Eléctrica/Aire Acond."
+          ]
         },
         {
-          "title": "Obra Gris: Instalaciones Hidráulicas/Sanitarias/Pluviales/Eléctricas",
-          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+          "title": "Obra Gris: Eléctrica/Aire Acond.",
+          "desc": "Fase de obra gris y estructura en Zona 2: Planta Baja.",
+          "subtasks": [
+            "A0207/8/9 Instalaciones H-S-P",
+            "A0210/11 Eléctrica/Aire Acond.",
+            "A0213 Limpieza"
+          ]
         },
         {
-          "title": "Obra Gris: Instalaciones Hidráulicas/Sanitarias/Pluviales/Eléctricas",
-          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+          "title": "Obra Gris: Eléctrica/Aire Acond.",
+          "desc": "Fase de obra gris y estructura en Zona 2: Planta Baja.",
+          "subtasks": [
+            "A0207/8/9 Instalaciones H-S-P",
+            "A0210/11 Eléctrica/Aire Acond.",
+            "A0213 Limpieza"
+          ]
         },
         {
-          "title": "Obra Gris: Instalaciones Hidráulicas/Sanitarias/Pluviales/Eléctricas",
-          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+          "title": "Obra Gris: Limpieza",
+          "desc": "Fase de obra gris y estructura en Zona 2: Planta Baja.",
+          "subtasks": [
+            "A0210/11 Eléctrica/Aire Acond.",
+            "A0213 Limpieza"
+          ]
         },
         {
-          "title": "Obra Gris: Aire Acondicionado",
-          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
         },
         {
-          "title": "Obra Gris: Aire Acondicionado",
-          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
         },
         {
-          "title": "Obra Gris: Aire Acondicionado",
-          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
         },
         {
           "title": "Acabados: Accesorios Eléctricos",
-          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 2: Planta Baja.",
+          "subtasks": [
+            "B0201 Accesorios Eléctricos",
+            "B0202 Tablero/Interrup."
+          ]
         },
         {
           "title": "Acabados: Accesorios Eléctricos",
-          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 2: Planta Baja.",
+          "subtasks": [
+            "B0201 Accesorios Eléctricos",
+            "B0202 Tablero/Interrup."
+          ]
         },
         {
           "title": "Acabados: Accesorios Eléctricos",
-          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 2: Planta Baja.",
+          "subtasks": [
+            "B0201 Accesorios Eléctricos",
+            "B0202 Tablero/Interrup."
+          ]
         },
         {
-          "title": "Acabados: Accesorios Eléctricos",
-          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+          "title": "Acabados: Tablero/Interrup.",
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 2: Planta Baja.",
+          "subtasks": [
+            "B0201 Accesorios Eléctricos",
+            "B0202 Tablero/Interrup.",
+            "B0203 Recubrimientos/Pintura"
+          ]
         },
         {
-          "title": "Acabados: Accesorios Eléctricos",
-          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+          "title": "Acabados: Tablero/Interrup.",
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 2: Planta Baja.",
+          "subtasks": [
+            "B0201 Accesorios Eléctricos",
+            "B0202 Tablero/Interrup.",
+            "B0203 Recubrimientos/Pintura"
+          ]
         },
         {
-          "title": "Acabados: Accesorios Eléctricos",
-          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+          "title": "Acabados: Recubrimientos/Pintura",
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 2: Planta Baja.",
+          "subtasks": [
+            "B0202 Tablero/Interrup.",
+            "B0203 Recubrimientos/Pintura",
+            "B0204 Cancelería"
+          ]
         },
         {
-          "title": "Acabados: Recubrimientos y Pintura",
-          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
-        },
-        {
-          "title": "Acabados: Recubrimientos y Pintura",
-          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
-        },
-        {
-          "title": "Acabados: Recubrimientos y Pintura",
-          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
-        },
-        {
-          "title": "Acabados: Recubrimientos y Pintura",
-          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
-        },
-        {
-          "title": "Acabados: Recubrimientos y Pintura",
-          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
-        },
-        {
-          "title": "Acabados: Recubrimientos y Pintura",
-          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
-        },
-        {
-          "title": "Acabados: Cancelería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
-        },
-        {
-          "title": "Acabados: Cancelería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+          "title": "Acabados: Recubrimientos/Pintura",
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 2: Planta Baja.",
+          "subtasks": [
+            "B0202 Tablero/Interrup.",
+            "B0203 Recubrimientos/Pintura",
+            "B0204 Cancelería"
+          ]
         },
         {
           "title": "Acabados: Cancelería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 2: Planta Baja.",
+          "subtasks": [
+            "B0203 Recubrimientos/Pintura",
+            "B0204 Cancelería",
+            "B0205 Carpintería"
+          ]
         },
         {
           "title": "Acabados: Cancelería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 2: Planta Baja.",
+          "subtasks": [
+            "B0203 Recubrimientos/Pintura",
+            "B0204 Cancelería",
+            "B0205 Carpintería"
+          ]
         },
         {
           "title": "Acabados: Cancelería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
-        },
-        {
-          "title": "Acabados: Cancelería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
-        },
-        {
-          "title": "Acabados: Carpintería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 2: Planta Baja.",
+          "subtasks": [
+            "B0203 Recubrimientos/Pintura",
+            "B0204 Cancelería",
+            "B0205 Carpintería"
+          ]
         },
         {
           "title": "Acabados: Carpintería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 2: Planta Baja.",
+          "subtasks": [
+            "B0204 Cancelería",
+            "B0205 Carpintería",
+            "B0206 Muebles Sanitarios"
+          ]
         },
         {
           "title": "Acabados: Carpintería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
-        },
-        {
-          "title": "Acabados: Carpintería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
-        },
-        {
-          "title": "Acabados: Carpintería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
-        },
-        {
-          "title": "Acabados: Carpintería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 2: Planta Baja.",
+          "subtasks": [
+            "B0204 Cancelería",
+            "B0205 Carpintería",
+            "B0206 Muebles Sanitarios"
+          ]
         },
         {
           "title": "Acabados: Muebles Sanitarios",
-          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 2: Planta Baja.",
+          "subtasks": [
+            "B0205 Carpintería",
+            "B0206 Muebles Sanitarios",
+            "B0207 Limpieza"
+          ]
         },
         {
           "title": "Acabados: Muebles Sanitarios",
-          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 2: Planta Baja.",
+          "subtasks": [
+            "B0205 Carpintería",
+            "B0206 Muebles Sanitarios",
+            "B0207 Limpieza"
+          ]
         },
         {
-          "title": "Acabados: Muebles Sanitarios",
-          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+          "title": "Acabados: Limpieza",
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 2: Planta Baja.",
+          "subtasks": [
+            "B0206 Muebles Sanitarios",
+            "B0207 Limpieza"
+          ]
         },
         {
-          "title": "Acabados: Muebles Sanitarios",
-          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+          "title": "Acabados: Limpieza",
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 2: Planta Baja.",
+          "subtasks": [
+            "B0206 Muebles Sanitarios",
+            "B0207 Limpieza"
+          ]
         },
         {
-          "title": "Acabados: Muebles Sanitarios",
-          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
         },
         {
-          "title": "Acabados: Muebles Sanitarios",
-          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
         }
       ],
       "progress": [
@@ -748,307 +1120,481 @@
       "zone": "Zona 3: Planta Alta",
       "emoji": "🛏️",
       "tasks": [
-        "Preliminares Planta Alta",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
         "Preliminares",
         "Preliminares",
-        "Preliminares",
-        "Muros de Concreto",
-        "Muros de Concreto",
-        "Muros de Concreto",
-        "Muros de Concreto",
-        "Estructura de Acero",
-        "Estructura de Acero",
-        "Estructura de Acero",
-        "Estructura de Acero",
-        "Albañilerías",
-        "Albañilerías",
+        "Muros Concreto",
+        "Estructura Acero",
+        "Estructura Acero",
         "Albañilerías",
         "Albañilerías Azotea",
         "Albañilerías Azotea",
-        "Albañilerías Azotea",
-        "Albañilerías Azotea",
         "Losa",
-        "Losa",
-        "Losa",
-        "Losa",
-        "Instalaciones Hidráulicas/Sanitarias/Pluviales/Eléctricas",
-        "Instalaciones Hidráulicas/Sanitarias/Pluviales/Eléctricas",
-        "Instalaciones Hidráulicas/Sanitarias/Pluviales/Eléctricas",
-        "Instalaciones Hidráulicas/Sanitarias/Pluviales/Eléctricas",
-        "Aire Acondicionado",
-        "Aire Acondicionado",
-        "Aire Acondicionado",
+        "Instalaciones H-S-P",
+        "Instalaciones H-S-P",
+        "Eléctrica/Aire Acond.",
+        "Gas",
+        "Gas",
         "Accesorios Eléctricos",
         "Accesorios Eléctricos",
-        "Accesorios Eléctricos",
-        "Accesorios Eléctricos",
-        "Accesorios Eléctricos",
-        "Recubrimientos y Pintura",
-        "Recubrimientos y Pintura",
-        "Recubrimientos y Pintura",
-        "Recubrimientos y Pintura",
-        "Recubrimientos y Pintura",
-        "Cancelería",
-        "Cancelería",
-        "Cancelería",
+        "Interrup. Eléctricos",
+        "Interrup. Eléctricos",
+        "Recubrimientos/Pintura",
+        "Recubrimientos/Pintura",
         "Cancelería",
         "Cancelería",
         "Carpintería",
         "Carpintería",
-        "Carpintería",
-        "Carpintería",
-        "Carpintería",
-        "Muebles Sanitarios",
-        "Muebles Sanitarios",
-        "Muebles Sanitarios",
-        "Muebles Sanitarios",
-        "Muebles Sanitarios",
         "Herrería",
         "Herrería",
-        "Herrería",
-        "Herrería",
-        "Herrería"
+        "Muebles Sanitarios",
+        "Muebles Sanitarios",
+        "Limpieza",
+        "Limpieza"
       ],
       "details": [
         {
-          "title": "Preliminares Planta Alta",
-          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
         },
         {
           "title": "Obra Gris: Preliminares",
-          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 3: Planta Alta.",
+          "subtasks": [
+            "A0301 Preliminares",
+            "A0302 Muros Concreto"
+          ]
         },
         {
           "title": "Obra Gris: Preliminares",
-          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 3: Planta Alta.",
+          "subtasks": [
+            "A0301 Preliminares",
+            "A0302 Muros Concreto"
+          ]
         },
         {
-          "title": "Obra Gris: Preliminares",
-          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+          "title": "Obra Gris: Muros Concreto",
+          "desc": "Fase de obra gris y estructura en Zona 3: Planta Alta.",
+          "subtasks": [
+            "A0301 Preliminares",
+            "A0302 Muros Concreto",
+            "A0303 Estructura Acero"
+          ]
         },
         {
-          "title": "Obra Gris: Muros de Concreto",
-          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+          "title": "Obra Gris: Estructura Acero",
+          "desc": "Fase de obra gris y estructura en Zona 3: Planta Alta.",
+          "subtasks": [
+            "A0302 Muros Concreto",
+            "A0303 Estructura Acero",
+            "A0304 Albañilerías"
+          ]
         },
         {
-          "title": "Obra Gris: Muros de Concreto",
-          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Muros de Concreto",
-          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Muros de Concreto",
-          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Estructura de Acero",
-          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Estructura de Acero",
-          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Estructura de Acero",
-          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Estructura de Acero",
-          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+          "title": "Obra Gris: Estructura Acero",
+          "desc": "Fase de obra gris y estructura en Zona 3: Planta Alta.",
+          "subtasks": [
+            "A0302 Muros Concreto",
+            "A0303 Estructura Acero",
+            "A0304 Albañilerías"
+          ]
         },
         {
           "title": "Obra Gris: Albañilerías",
-          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Albañilerías",
-          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Albañilerías",
-          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 3: Planta Alta.",
+          "subtasks": [
+            "A0303 Estructura Acero",
+            "A0304 Albañilerías",
+            "A0305 Albañilerías Azotea"
+          ]
         },
         {
           "title": "Obra Gris: Albañilerías Azotea",
-          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 3: Planta Alta.",
+          "subtasks": [
+            "A0304 Albañilerías",
+            "A0305 Albañilerías Azotea",
+            "A0306 Losa"
+          ]
         },
         {
           "title": "Obra Gris: Albañilerías Azotea",
-          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Albañilerías Azotea",
-          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Albañilerías Azotea",
-          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 3: Planta Alta.",
+          "subtasks": [
+            "A0304 Albañilerías",
+            "A0305 Albañilerías Azotea",
+            "A0306 Losa"
+          ]
         },
         {
           "title": "Obra Gris: Losa",
-          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 3: Planta Alta.",
+          "subtasks": [
+            "A0305 Albañilerías Azotea",
+            "A0306 Losa",
+            "A0307/8/9 Instalaciones H-S-P"
+          ]
         },
         {
-          "title": "Obra Gris: Losa",
-          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+          "title": "Obra Gris: Instalaciones H-S-P",
+          "desc": "Fase de obra gris y estructura en Zona 3: Planta Alta.",
+          "subtasks": [
+            "A0306 Losa",
+            "A0307/8/9 Instalaciones H-S-P",
+            "A0310/11 Eléctrica/Aire Acond."
+          ]
         },
         {
-          "title": "Obra Gris: Losa",
-          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+          "title": "Obra Gris: Instalaciones H-S-P",
+          "desc": "Fase de obra gris y estructura en Zona 3: Planta Alta.",
+          "subtasks": [
+            "A0306 Losa",
+            "A0307/8/9 Instalaciones H-S-P",
+            "A0310/11 Eléctrica/Aire Acond."
+          ]
         },
         {
-          "title": "Obra Gris: Losa",
-          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+          "title": "Obra Gris: Eléctrica/Aire Acond.",
+          "desc": "Fase de obra gris y estructura en Zona 3: Planta Alta.",
+          "subtasks": [
+            "A0307/8/9 Instalaciones H-S-P",
+            "A0310/11 Eléctrica/Aire Acond.",
+            "A0314 Gas"
+          ]
         },
         {
-          "title": "Obra Gris: Instalaciones Hidráulicas/Sanitarias/Pluviales/Eléctricas",
-          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+          "title": "Obra Gris: Gas",
+          "desc": "Fase de obra gris y estructura en Zona 3: Planta Alta.",
+          "subtasks": [
+            "A0310/11 Eléctrica/Aire Acond.",
+            "A0314 Gas",
+            "A0315 Limpieza"
+          ]
         },
         {
-          "title": "Obra Gris: Instalaciones Hidráulicas/Sanitarias/Pluviales/Eléctricas",
-          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Instalaciones Hidráulicas/Sanitarias/Pluviales/Eléctricas",
-          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Instalaciones Hidráulicas/Sanitarias/Pluviales/Eléctricas",
-          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Aire Acondicionado",
-          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Aire Acondicionado",
-          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Aire Acondicionado",
-          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
-        },
-        {
-          "title": "Acabados: Accesorios Eléctricos",
-          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
-        },
-        {
-          "title": "Acabados: Accesorios Eléctricos",
-          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
-        },
-        {
-          "title": "Acabados: Accesorios Eléctricos",
-          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
-        },
-        {
-          "title": "Acabados: Accesorios Eléctricos",
-          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+          "title": "Obra Gris: Gas",
+          "desc": "Fase de obra gris y estructura en Zona 3: Planta Alta.",
+          "subtasks": [
+            "A0310/11 Eléctrica/Aire Acond.",
+            "A0314 Gas",
+            "A0315 Limpieza"
+          ]
         },
         {
           "title": "Acabados: Accesorios Eléctricos",
-          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 3: Planta Alta.",
+          "subtasks": [
+            "B0301 Accesorios Eléctricos",
+            "B0302 Interrup. Eléctricos"
+          ]
         },
         {
-          "title": "Acabados: Recubrimientos y Pintura",
-          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+          "title": "Acabados: Accesorios Eléctricos",
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 3: Planta Alta.",
+          "subtasks": [
+            "B0301 Accesorios Eléctricos",
+            "B0302 Interrup. Eléctricos"
+          ]
         },
         {
-          "title": "Acabados: Recubrimientos y Pintura",
-          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+          "title": "Acabados: Interrup. Eléctricos",
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 3: Planta Alta.",
+          "subtasks": [
+            "B0301 Accesorios Eléctricos",
+            "B0302 Interrup. Eléctricos",
+            "B0303 Recubrimientos/Pintura"
+          ]
         },
         {
-          "title": "Acabados: Recubrimientos y Pintura",
-          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+          "title": "Acabados: Interrup. Eléctricos",
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 3: Planta Alta.",
+          "subtasks": [
+            "B0301 Accesorios Eléctricos",
+            "B0302 Interrup. Eléctricos",
+            "B0303 Recubrimientos/Pintura"
+          ]
         },
         {
-          "title": "Acabados: Recubrimientos y Pintura",
-          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+          "title": "Acabados: Recubrimientos/Pintura",
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 3: Planta Alta.",
+          "subtasks": [
+            "B0302 Interrup. Eléctricos",
+            "B0303 Recubrimientos/Pintura",
+            "B0304 Cancelería"
+          ]
         },
         {
-          "title": "Acabados: Recubrimientos y Pintura",
-          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+          "title": "Acabados: Recubrimientos/Pintura",
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 3: Planta Alta.",
+          "subtasks": [
+            "B0302 Interrup. Eléctricos",
+            "B0303 Recubrimientos/Pintura",
+            "B0304 Cancelería"
+          ]
         },
         {
           "title": "Acabados: Cancelería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 3: Planta Alta.",
+          "subtasks": [
+            "B0303 Recubrimientos/Pintura",
+            "B0304 Cancelería",
+            "B0305 Carpintería"
+          ]
         },
         {
           "title": "Acabados: Cancelería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
-        },
-        {
-          "title": "Acabados: Cancelería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
-        },
-        {
-          "title": "Acabados: Cancelería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
-        },
-        {
-          "title": "Acabados: Cancelería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 3: Planta Alta.",
+          "subtasks": [
+            "B0303 Recubrimientos/Pintura",
+            "B0304 Cancelería",
+            "B0305 Carpintería"
+          ]
         },
         {
           "title": "Acabados: Carpintería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 3: Planta Alta.",
+          "subtasks": [
+            "B0304 Cancelería",
+            "B0305 Carpintería",
+            "B0306 Herrería"
+          ]
         },
         {
           "title": "Acabados: Carpintería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
-        },
-        {
-          "title": "Acabados: Carpintería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
-        },
-        {
-          "title": "Acabados: Carpintería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
-        },
-        {
-          "title": "Acabados: Carpintería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
-        },
-        {
-          "title": "Acabados: Muebles Sanitarios",
-          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
-        },
-        {
-          "title": "Acabados: Muebles Sanitarios",
-          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
-        },
-        {
-          "title": "Acabados: Muebles Sanitarios",
-          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
-        },
-        {
-          "title": "Acabados: Muebles Sanitarios",
-          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
-        },
-        {
-          "title": "Acabados: Muebles Sanitarios",
-          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 3: Planta Alta.",
+          "subtasks": [
+            "B0304 Cancelería",
+            "B0305 Carpintería",
+            "B0306 Herrería"
+          ]
         },
         {
           "title": "Acabados: Herrería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 3: Planta Alta.",
+          "subtasks": [
+            "B0305 Carpintería",
+            "B0306 Herrería",
+            "B0307 Muebles Sanitarios"
+          ]
         },
         {
           "title": "Acabados: Herrería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 3: Planta Alta.",
+          "subtasks": [
+            "B0305 Carpintería",
+            "B0306 Herrería",
+            "B0307 Muebles Sanitarios"
+          ]
         },
         {
-          "title": "Acabados: Herrería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+          "title": "Acabados: Muebles Sanitarios",
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 3: Planta Alta.",
+          "subtasks": [
+            "B0306 Herrería",
+            "B0307 Muebles Sanitarios",
+            "B0308 Limpieza"
+          ]
         },
         {
-          "title": "Acabados: Herrería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+          "title": "Acabados: Muebles Sanitarios",
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 3: Planta Alta.",
+          "subtasks": [
+            "B0306 Herrería",
+            "B0307 Muebles Sanitarios",
+            "B0308 Limpieza"
+          ]
         },
         {
-          "title": "Acabados: Herrería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+          "title": "Acabados: Limpieza",
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 3: Planta Alta.",
+          "subtasks": [
+            "B0307 Muebles Sanitarios",
+            "B0308 Limpieza"
+          ]
+        },
+        {
+          "title": "Acabados: Limpieza",
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 3: Planta Alta.",
+          "subtasks": [
+            "B0307 Muebles Sanitarios",
+            "B0308 Limpieza"
+          ]
         }
       ],
       "progress": [
@@ -1118,21 +1664,21 @@
       "zone": "Zona 4: Patio y Cochera",
       "emoji": "🚗",
       "tasks": [
-        "Preliminares Patio y Cochera",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
         "Preliminares",
         "Preliminares",
         "Preliminares",
         "Preliminares",
         "Preliminares",
         "Preliminares",
-        "Preliminares",
-        "Preliminares",
-        "Preliminares",
-        "Muro Perimetral",
-        "Muro Perimetral",
-        "Muro Perimetral",
-        "Muro Perimetral",
-        "Muro Perimetral",
         "Muro Perimetral",
         "Muro Perimetral",
         "Muro Perimetral",
@@ -1143,282 +1689,434 @@
         "Albañilerías",
         "Albañilerías",
         "Albañilerías",
-        "Albañilerías",
-        "Albañilerías",
-        "Albañilerías",
-        "Albañilerías",
-        "Albañilerías",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
+        "S/A",
         "Accesorios Eléctricos",
         "Accesorios Eléctricos",
         "Accesorios Eléctricos",
-        "Accesorios Eléctricos",
-        "Accesorios Eléctricos",
-        "Accesorios Eléctricos",
-        "Accesorios Eléctricos",
-        "Accesorios Eléctricos",
-        "Recubrimientos y Pintura",
-        "Recubrimientos y Pintura",
-        "Recubrimientos y Pintura",
-        "Recubrimientos y Pintura",
-        "Recubrimientos y Pintura",
-        "Recubrimientos y Pintura",
-        "Recubrimientos y Pintura",
+        "Recubrimientos/Pintura",
+        "Recubrimientos/Pintura",
+        "Recubrimientos/Pintura",
         "Jardinería",
         "Jardinería",
         "Jardinería",
-        "Jardinería",
-        "Jardinería",
-        "Jardinería",
-        "Jardinería",
-        "Jardinería",
-        "Limpieza Final",
-        "Limpieza Final",
-        "Limpieza Final",
-        "Limpieza Final",
-        "Limpieza Final",
-        "Limpieza Final",
-        "Limpieza Final"
+        "Limpieza",
+        "Limpieza"
       ],
       "details": [
         {
-          "title": "Preliminares Patio y Cochera",
-          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
         },
         {
           "title": "Obra Gris: Preliminares",
-          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 4: Patio y Cochera.",
+          "subtasks": [
+            "C0101 Preliminares",
+            "C0102 Muro Perimetral"
+          ]
         },
         {
           "title": "Obra Gris: Preliminares",
-          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 4: Patio y Cochera.",
+          "subtasks": [
+            "C0101 Preliminares",
+            "C0102 Muro Perimetral"
+          ]
         },
         {
           "title": "Obra Gris: Preliminares",
-          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 4: Patio y Cochera.",
+          "subtasks": [
+            "C0101 Preliminares",
+            "C0102 Muro Perimetral"
+          ]
         },
         {
           "title": "Obra Gris: Preliminares",
-          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 4: Patio y Cochera.",
+          "subtasks": [
+            "C0101 Preliminares",
+            "C0102 Muro Perimetral"
+          ]
         },
         {
           "title": "Obra Gris: Preliminares",
-          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 4: Patio y Cochera.",
+          "subtasks": [
+            "C0101 Preliminares",
+            "C0102 Muro Perimetral"
+          ]
         },
         {
           "title": "Obra Gris: Preliminares",
-          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Preliminares",
-          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Preliminares",
-          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Preliminares",
-          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 4: Patio y Cochera.",
+          "subtasks": [
+            "C0101 Preliminares",
+            "C0102 Muro Perimetral"
+          ]
         },
         {
           "title": "Obra Gris: Muro Perimetral",
-          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 4: Patio y Cochera.",
+          "subtasks": [
+            "C0101 Preliminares",
+            "C0102 Muro Perimetral",
+            "C0103 Albañilerías"
+          ]
         },
         {
           "title": "Obra Gris: Muro Perimetral",
-          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 4: Patio y Cochera.",
+          "subtasks": [
+            "C0101 Preliminares",
+            "C0102 Muro Perimetral",
+            "C0103 Albañilerías"
+          ]
         },
         {
           "title": "Obra Gris: Muro Perimetral",
-          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 4: Patio y Cochera.",
+          "subtasks": [
+            "C0101 Preliminares",
+            "C0102 Muro Perimetral",
+            "C0103 Albañilerías"
+          ]
         },
         {
           "title": "Obra Gris: Muro Perimetral",
-          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 4: Patio y Cochera.",
+          "subtasks": [
+            "C0101 Preliminares",
+            "C0102 Muro Perimetral",
+            "C0103 Albañilerías"
+          ]
         },
         {
           "title": "Obra Gris: Muro Perimetral",
-          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Muro Perimetral",
-          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Muro Perimetral",
-          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Muro Perimetral",
-          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Muro Perimetral",
-          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
-        },
-        {
-          "title": "Obra Gris: Muro Perimetral",
-          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 4: Patio y Cochera.",
+          "subtasks": [
+            "C0101 Preliminares",
+            "C0102 Muro Perimetral",
+            "C0103 Albañilerías"
+          ]
         },
         {
           "title": "Obra Gris: Albañilerías",
-          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 4: Patio y Cochera.",
+          "subtasks": [
+            "C0102 Muro Perimetral",
+            "C0103 Albañilerías"
+          ]
         },
         {
           "title": "Obra Gris: Albañilerías",
-          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 4: Patio y Cochera.",
+          "subtasks": [
+            "C0102 Muro Perimetral",
+            "C0103 Albañilerías"
+          ]
         },
         {
           "title": "Obra Gris: Albañilerías",
-          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 4: Patio y Cochera.",
+          "subtasks": [
+            "C0102 Muro Perimetral",
+            "C0103 Albañilerías"
+          ]
         },
         {
           "title": "Obra Gris: Albañilerías",
-          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 4: Patio y Cochera.",
+          "subtasks": [
+            "C0102 Muro Perimetral",
+            "C0103 Albañilerías"
+          ]
         },
         {
           "title": "Obra Gris: Albañilerías",
-          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+          "desc": "Fase de obra gris y estructura en Zona 4: Patio y Cochera.",
+          "subtasks": [
+            "C0102 Muro Perimetral",
+            "C0103 Albañilerías"
+          ]
         },
         {
-          "title": "Obra Gris: Albañilerías",
-          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
         },
         {
-          "title": "Obra Gris: Albañilerías",
-          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
         },
         {
-          "title": "Obra Gris: Albañilerías",
-          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
         },
         {
-          "title": "Obra Gris: Albañilerías",
-          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
         },
         {
-          "title": "Obra Gris: Albañilerías",
-          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
+        },
+        {
+          "title": "S/A",
+          "desc": "Sin actividad programada",
+          "subtasks": []
         },
         {
           "title": "Acabados: Accesorios Eléctricos",
-          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 4: Patio y Cochera.",
+          "subtasks": [
+            "C0201 Accesorios Eléctricos",
+            "C0203 Recubrimientos/Pintura"
+          ]
         },
         {
           "title": "Acabados: Accesorios Eléctricos",
-          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 4: Patio y Cochera.",
+          "subtasks": [
+            "C0201 Accesorios Eléctricos",
+            "C0203 Recubrimientos/Pintura"
+          ]
         },
         {
           "title": "Acabados: Accesorios Eléctricos",
-          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 4: Patio y Cochera.",
+          "subtasks": [
+            "C0201 Accesorios Eléctricos",
+            "C0203 Recubrimientos/Pintura"
+          ]
         },
         {
-          "title": "Acabados: Accesorios Eléctricos",
-          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+          "title": "Acabados: Recubrimientos/Pintura",
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 4: Patio y Cochera.",
+          "subtasks": [
+            "C0201 Accesorios Eléctricos",
+            "C0203 Recubrimientos/Pintura",
+            "C0204 Jardinería"
+          ]
         },
         {
-          "title": "Acabados: Accesorios Eléctricos",
-          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+          "title": "Acabados: Recubrimientos/Pintura",
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 4: Patio y Cochera.",
+          "subtasks": [
+            "C0201 Accesorios Eléctricos",
+            "C0203 Recubrimientos/Pintura",
+            "C0204 Jardinería"
+          ]
         },
         {
-          "title": "Acabados: Accesorios Eléctricos",
-          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
-        },
-        {
-          "title": "Acabados: Accesorios Eléctricos",
-          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
-        },
-        {
-          "title": "Acabados: Accesorios Eléctricos",
-          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
-        },
-        {
-          "title": "Acabados: Recubrimientos y Pintura",
-          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
-        },
-        {
-          "title": "Acabados: Recubrimientos y Pintura",
-          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
-        },
-        {
-          "title": "Acabados: Recubrimientos y Pintura",
-          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
-        },
-        {
-          "title": "Acabados: Recubrimientos y Pintura",
-          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
-        },
-        {
-          "title": "Acabados: Recubrimientos y Pintura",
-          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
-        },
-        {
-          "title": "Acabados: Recubrimientos y Pintura",
-          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
-        },
-        {
-          "title": "Acabados: Recubrimientos y Pintura",
-          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+          "title": "Acabados: Recubrimientos/Pintura",
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 4: Patio y Cochera.",
+          "subtasks": [
+            "C0201 Accesorios Eléctricos",
+            "C0203 Recubrimientos/Pintura",
+            "C0204 Jardinería"
+          ]
         },
         {
           "title": "Acabados: Jardinería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 4: Patio y Cochera.",
+          "subtasks": [
+            "C0203 Recubrimientos/Pintura",
+            "C0204 Jardinería",
+            "C0205 Limpieza"
+          ]
         },
         {
           "title": "Acabados: Jardinería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 4: Patio y Cochera.",
+          "subtasks": [
+            "C0203 Recubrimientos/Pintura",
+            "C0204 Jardinería",
+            "C0205 Limpieza"
+          ]
         },
         {
           "title": "Acabados: Jardinería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 4: Patio y Cochera.",
+          "subtasks": [
+            "C0203 Recubrimientos/Pintura",
+            "C0204 Jardinería",
+            "C0205 Limpieza"
+          ]
         },
         {
-          "title": "Acabados: Jardinería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+          "title": "Acabados: Limpieza",
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 4: Patio y Cochera.",
+          "subtasks": [
+            "C0204 Jardinería",
+            "C0205 Limpieza"
+          ]
         },
         {
-          "title": "Acabados: Jardinería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
-        },
-        {
-          "title": "Acabados: Jardinería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
-        },
-        {
-          "title": "Acabados: Jardinería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
-        },
-        {
-          "title": "Acabados: Jardinería",
-          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
-        },
-        {
-          "title": "Acabados: Limpieza Final",
-          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
-        },
-        {
-          "title": "Acabados: Limpieza Final",
-          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
-        },
-        {
-          "title": "Acabados: Limpieza Final",
-          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
-        },
-        {
-          "title": "Acabados: Limpieza Final",
-          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
-        },
-        {
-          "title": "Acabados: Limpieza Final",
-          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
-        },
-        {
-          "title": "Acabados: Limpieza Final",
-          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
-        },
-        {
-          "title": "Acabados: Limpieza Final",
-          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+          "title": "Acabados: Limpieza",
+          "desc": "Fase de acabados, instalaciones finales y detalles en Zona 4: Patio y Cochera.",
+          "subtasks": [
+            "C0204 Jardinería",
+            "C0205 Limpieza"
+          ]
         }
       ],
       "progress": [

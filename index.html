@@ -481,6 +481,25 @@
             margin-top:12px;font-size:0.75rem;color:rgba(255,255,255,0.6);
             text-align:center;max-width:360px;line-height:1.5;
         }
+        /* Checklist items */
+        .subtask-item.checked {
+            background: rgba(16, 185, 129, 0.1) !important;
+            border-color: rgba(16, 185, 129, 0.3) !important;
+        }
+        .subtask-item.checked .subtask-check {
+            border-color: #10b981 !important;
+            background: #10b981 !important;
+        }
+        .subtask-item.checked .subtask-check-inner {
+            opacity: 1 !important;
+            transform: scale(1) !important;
+            background: #fff !important;
+        }
+        .subtask-item.checked span {
+            text-decoration: line-through;
+            color: #10b981 !important;
+            opacity: 0.7;
+        }
     </style>
 </head>
 <body>
@@ -1509,7 +1528,7 @@ function buildGanttTable() {
 // ══════════════════════════════════════
 function updateDashboard() {
     const slider = document.getElementById('weekSlider');
-    slider.style.setProperty('--pct', ((currentWeek-1)/31*100)+'%');
+    slider.style.setProperty('--pct', ((currentWeek-1)/(TOTAL_WEEKS-1)*100)+'%');
     document.getElementById('weekBadge').textContent = `Sem ${currentWeek}`;
     const reportWeekLabel = document.getElementById('reportWeekLabel');
     if (reportWeekLabel) reportWeekLabel.textContent = `Semana ${currentWeek}`;
@@ -1643,16 +1662,38 @@ function renderDetalle() {
                  </div>
                </div>`
             : ``;
+        const weekDetail = row.details[currentWeek-1] || {};
+        const subtasksHtml = (weekDetail.subtasks || []).map(st => `
+            <div class="subtask-item" onclick="this.classList.toggle('checked')" style="display:flex; align-items:center; gap:10px; margin-top:8px; padding:8px 12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:10px; cursor:pointer; transition:all 0.2s;">
+                <div class="subtask-check" style="width:18px; height:18px; border:2px solid ${color}; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                    <div class="subtask-check-inner" style="width:10px; height:10px; background:${color}; border-radius:50%; opacity:0; transform:scale(0.5); transition:all 0.2s;"></div>
+                </div>
+                <span style="font-size:0.8rem; color:#cbd5e1;">${st}</span>
+            </div>
+        `).join('');
+
         html+=`
-        <div class="detail-card animate-in" style="animation-delay:${i*0.05}s;border-left:4px solid ${color}">
+        <div class="detail-card animate-in" style="animation-delay:${i*0.05}s;border-left:4px solid ${color}; padding-bottom:20px;">
             <div class="detail-card-zone">${row.zone}</div>
             <div class="detail-card-title">📌 ${taskName}</div>
-            <div class="progress-bar-wrap">
-                <div class="progress-track"><div class="progress-fill" id="dpf-${idx}" style="width:${prog}%;background:linear-gradient(90deg,${color},${color}88)"></div></div>
-                <div class="progress-pct" style="color:${color}" id="dpv-${idx}">${prog}%</div>
+            <div style="font-size:0.75rem; color:var(--muted); margin-bottom:12px; line-height:1.4;">${weekDetail.desc || ''}</div>
+            
+            <div style="margin-bottom:15px;">
+                <div style="font-size:0.6rem; color:var(--muted); text-transform:uppercase; font-weight:800; letter-spacing:0.05em; margin-bottom:8px; opacity:0.6;">Avance de la zona:</div>
+                <div class="progress-bar-wrap" style="margin-top:0;">
+                    <div class="progress-track"><div class="progress-fill" id="dpf-${idx}" style="width:${prog}%;background:linear-gradient(90deg,${color},${color}88)"></div></div>
+                    <div class="progress-pct" style="color:${color}" id="dpv-${idx}">${prog}%</div>
+                </div>
             </div>
+
             ${sliderHtml}
-            <div id="dgallery-${idx}"></div>
+
+            <div style="margin-top:15px; border-top:1px solid rgba(255,255,255,0.05); padding-top:15px;">
+                <div style="font-size:0.6rem; color:var(--muted); text-transform:uppercase; font-weight:800; letter-spacing:0.05em; margin-bottom:10px; opacity:0.6;">Lista de conceptos (Checklist):</div>
+                ${subtasksHtml || '<div style="font-size:0.7rem; color:var(--muted); font-style:italic;">No hay conceptos desglosados para esta semana</div>'}
+            </div>
+
+            <div id="dgallery-${idx}" style="margin-top:15px;"></div>
         </div>`;
     });
     document.getElementById('detailCards').innerHTML=html;
