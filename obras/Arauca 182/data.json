@@ -8,7 +8,7 @@
       "zone": "Zona 1: Sótano",
       "emoji": "🏠",
       "tasks": [
-        "Preliminares",
+        "Preliminares Sótano",
         "Preliminares",
         "Preliminares",
         "Muros de Contención",
@@ -71,7 +71,7 @@
       ],
       "details": [
         {
-          "title": "Obra Gris: Preliminares",
+          "title": "Preliminares Sótano",
           "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
         },
         {
@@ -378,7 +378,7 @@
       "zone": "Zona 2: Planta Baja",
       "emoji": "🛋️",
       "tasks": [
-        "Preliminares",
+        "Preliminares Planta Baja",
         "Preliminares",
         "Preliminares",
         "Preliminares",
@@ -441,7 +441,7 @@
       ],
       "details": [
         {
-          "title": "Obra Gris: Preliminares",
+          "title": "Preliminares Planta Baja",
           "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
         },
         {
@@ -748,7 +748,7 @@
       "zone": "Zona 3: Planta Alta",
       "emoji": "🛏️",
       "tasks": [
-        "Preliminares",
+        "Preliminares Planta Alta",
         "Preliminares",
         "Preliminares",
         "Preliminares",
@@ -811,7 +811,7 @@
       ],
       "details": [
         {
-          "title": "Obra Gris: Preliminares",
+          "title": "Preliminares Planta Alta",
           "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
         },
         {
@@ -1118,7 +1118,7 @@
       "zone": "Zona 4: Patio y Cochera",
       "emoji": "🚗",
       "tasks": [
-        "Preliminares",
+        "Preliminares Patio y Cochera",
         "Preliminares",
         "Preliminares",
         "Preliminares",
@@ -1181,7 +1181,7 @@
       ],
       "details": [
         {
-          "title": "Obra Gris: Preliminares",
+          "title": "Preliminares Patio y Cochera",
           "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
         },
         {
