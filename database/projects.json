@@ -7,5 +7,15 @@
     "status": "activa",
     "dataFile": "obras/sauces/data.json",
     "totalSemanas": 32
+  },
+  {
+    "id": "arauca182",
+    "name": "ARAUCA182",
+    "location": "Zapopan, Jalisco",
+    "img": "obras/Arauca 182/Render Fachada.jpeg",
+    "status": "activa",
+    "dataFile": "obras/Arauca 182/data.json",
+    "totalSemanas": 60,
+    "clientCode": "ARAUCA182"
   }
 ]

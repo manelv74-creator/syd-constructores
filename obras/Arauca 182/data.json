@@ -1,0 +1,1488 @@
+{
+  "obra_id": "arauca182",
+  "obra_name": "ARAUCA182",
+  "obra_sub": "Residencial ARAUCA182",
+  "hero_img": "obras/Arauca 182/Render Fachada.jpeg",
+  "zones": [
+    {
+      "zone": "Zona 1: Sótano",
+      "emoji": "🏠",
+      "tasks": [
+        "Preliminares",
+        "Preliminares",
+        "Preliminares",
+        "Muros de Contención",
+        "Muros de Contención",
+        "Muros de Contención",
+        "Cimentación",
+        "Cimentación",
+        "Cimentación",
+        "Albañilerías",
+        "Albañilerías",
+        "Albañilerías",
+        "Losa",
+        "Losa",
+        "Losa",
+        "Instalaciones Hidráulicas",
+        "Instalaciones Hidráulicas",
+        "Instalaciones Hidráulicas",
+        "Instalaciones Sanitarias",
+        "Instalaciones Sanitarias",
+        "Instalaciones Sanitarias",
+        "Instalaciones Pluviales",
+        "Instalaciones Pluviales",
+        "Instalaciones Pluviales",
+        "Instalaciones Eléctricas",
+        "Instalaciones Eléctricas",
+        "Instalaciones Eléctricas",
+        "Herrerías",
+        "Herrerías",
+        "Herrerías",
+        "Accesorios Eléctricos",
+        "Accesorios Eléctricos",
+        "Accesorios Eléctricos",
+        "Accesorios Eléctricos",
+        "Accesorios Eléctricos",
+        "Recubrimientos y Pintura",
+        "Recubrimientos y Pintura",
+        "Recubrimientos y Pintura",
+        "Recubrimientos y Pintura",
+        "Recubrimientos y Pintura",
+        "Cancelería",
+        "Cancelería",
+        "Cancelería",
+        "Cancelería",
+        "Cancelería",
+        "Carpintería",
+        "Carpintería",
+        "Carpintería",
+        "Carpintería",
+        "Carpintería",
+        "Muebles Sanitarios",
+        "Muebles Sanitarios",
+        "Muebles Sanitarios",
+        "Muebles Sanitarios",
+        "Muebles Sanitarios",
+        "Herrería Final",
+        "Herrería Final",
+        "Herrería Final",
+        "Herrería Final",
+        "Herrería Final"
+      ],
+      "details": [
+        {
+          "title": "Obra Gris: Preliminares",
+          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Preliminares",
+          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Preliminares",
+          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Muros de Contención",
+          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Muros de Contención",
+          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Muros de Contención",
+          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Cimentación",
+          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Cimentación",
+          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Cimentación",
+          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Albañilerías",
+          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Albañilerías",
+          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Albañilerías",
+          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Losa",
+          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Losa",
+          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Losa",
+          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Instalaciones Hidráulicas",
+          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Instalaciones Hidráulicas",
+          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Instalaciones Hidráulicas",
+          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Instalaciones Sanitarias",
+          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Instalaciones Sanitarias",
+          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Instalaciones Sanitarias",
+          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Instalaciones Pluviales",
+          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Instalaciones Pluviales",
+          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Instalaciones Pluviales",
+          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Instalaciones Eléctricas",
+          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Instalaciones Eléctricas",
+          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Instalaciones Eléctricas",
+          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Herrerías",
+          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Herrerías",
+          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Herrerías",
+          "desc": "Ejecución de trabajos de obra gris en Zona 1: Sótano según presupuesto."
+        },
+        {
+          "title": "Acabados: Accesorios Eléctricos",
+          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+        },
+        {
+          "title": "Acabados: Accesorios Eléctricos",
+          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+        },
+        {
+          "title": "Acabados: Accesorios Eléctricos",
+          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+        },
+        {
+          "title": "Acabados: Accesorios Eléctricos",
+          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+        },
+        {
+          "title": "Acabados: Accesorios Eléctricos",
+          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+        },
+        {
+          "title": "Acabados: Recubrimientos y Pintura",
+          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+        },
+        {
+          "title": "Acabados: Recubrimientos y Pintura",
+          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+        },
+        {
+          "title": "Acabados: Recubrimientos y Pintura",
+          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+        },
+        {
+          "title": "Acabados: Recubrimientos y Pintura",
+          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+        },
+        {
+          "title": "Acabados: Recubrimientos y Pintura",
+          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+        },
+        {
+          "title": "Acabados: Cancelería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+        },
+        {
+          "title": "Acabados: Cancelería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+        },
+        {
+          "title": "Acabados: Cancelería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+        },
+        {
+          "title": "Acabados: Cancelería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+        },
+        {
+          "title": "Acabados: Cancelería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+        },
+        {
+          "title": "Acabados: Carpintería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+        },
+        {
+          "title": "Acabados: Carpintería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+        },
+        {
+          "title": "Acabados: Carpintería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+        },
+        {
+          "title": "Acabados: Carpintería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+        },
+        {
+          "title": "Acabados: Carpintería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+        },
+        {
+          "title": "Acabados: Muebles Sanitarios",
+          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+        },
+        {
+          "title": "Acabados: Muebles Sanitarios",
+          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+        },
+        {
+          "title": "Acabados: Muebles Sanitarios",
+          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+        },
+        {
+          "title": "Acabados: Muebles Sanitarios",
+          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+        },
+        {
+          "title": "Acabados: Muebles Sanitarios",
+          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+        },
+        {
+          "title": "Acabados: Herrería Final",
+          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+        },
+        {
+          "title": "Acabados: Herrería Final",
+          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+        },
+        {
+          "title": "Acabados: Herrería Final",
+          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+        },
+        {
+          "title": "Acabados: Herrería Final",
+          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+        },
+        {
+          "title": "Acabados: Herrería Final",
+          "desc": "Ejecución de acabados y detalles finales en Zona 1: Sótano."
+        }
+      ],
+      "progress": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "zone": "Zona 2: Planta Baja",
+      "emoji": "🛋️",
+      "tasks": [
+        "Preliminares",
+        "Preliminares",
+        "Preliminares",
+        "Preliminares",
+        "Cimentación",
+        "Cimentación",
+        "Cimentación",
+        "Cimentación",
+        "Muros de Concreto",
+        "Muros de Concreto",
+        "Muros de Concreto",
+        "Muros de Concreto",
+        "Albañilerías",
+        "Albañilerías",
+        "Albañilerías",
+        "Estructura de Acero",
+        "Estructura de Acero",
+        "Estructura de Acero",
+        "Estructura de Acero",
+        "Losa",
+        "Losa",
+        "Losa",
+        "Losa",
+        "Instalaciones Hidráulicas/Sanitarias/Pluviales/Eléctricas",
+        "Instalaciones Hidráulicas/Sanitarias/Pluviales/Eléctricas",
+        "Instalaciones Hidráulicas/Sanitarias/Pluviales/Eléctricas",
+        "Instalaciones Hidráulicas/Sanitarias/Pluviales/Eléctricas",
+        "Aire Acondicionado",
+        "Aire Acondicionado",
+        "Aire Acondicionado",
+        "Accesorios Eléctricos",
+        "Accesorios Eléctricos",
+        "Accesorios Eléctricos",
+        "Accesorios Eléctricos",
+        "Accesorios Eléctricos",
+        "Accesorios Eléctricos",
+        "Recubrimientos y Pintura",
+        "Recubrimientos y Pintura",
+        "Recubrimientos y Pintura",
+        "Recubrimientos y Pintura",
+        "Recubrimientos y Pintura",
+        "Recubrimientos y Pintura",
+        "Cancelería",
+        "Cancelería",
+        "Cancelería",
+        "Cancelería",
+        "Cancelería",
+        "Cancelería",
+        "Carpintería",
+        "Carpintería",
+        "Carpintería",
+        "Carpintería",
+        "Carpintería",
+        "Carpintería",
+        "Muebles Sanitarios",
+        "Muebles Sanitarios",
+        "Muebles Sanitarios",
+        "Muebles Sanitarios",
+        "Muebles Sanitarios",
+        "Muebles Sanitarios"
+      ],
+      "details": [
+        {
+          "title": "Obra Gris: Preliminares",
+          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Preliminares",
+          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Preliminares",
+          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Preliminares",
+          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Cimentación",
+          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Cimentación",
+          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Cimentación",
+          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Cimentación",
+          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Muros de Concreto",
+          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Muros de Concreto",
+          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Muros de Concreto",
+          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Muros de Concreto",
+          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Albañilerías",
+          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Albañilerías",
+          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Albañilerías",
+          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Estructura de Acero",
+          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Estructura de Acero",
+          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Estructura de Acero",
+          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Estructura de Acero",
+          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Losa",
+          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Losa",
+          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Losa",
+          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Losa",
+          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Instalaciones Hidráulicas/Sanitarias/Pluviales/Eléctricas",
+          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Instalaciones Hidráulicas/Sanitarias/Pluviales/Eléctricas",
+          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Instalaciones Hidráulicas/Sanitarias/Pluviales/Eléctricas",
+          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Instalaciones Hidráulicas/Sanitarias/Pluviales/Eléctricas",
+          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Aire Acondicionado",
+          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Aire Acondicionado",
+          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Aire Acondicionado",
+          "desc": "Ejecución de trabajos de obra gris en Zona 2: Planta Baja según presupuesto."
+        },
+        {
+          "title": "Acabados: Accesorios Eléctricos",
+          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+        },
+        {
+          "title": "Acabados: Accesorios Eléctricos",
+          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+        },
+        {
+          "title": "Acabados: Accesorios Eléctricos",
+          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+        },
+        {
+          "title": "Acabados: Accesorios Eléctricos",
+          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+        },
+        {
+          "title": "Acabados: Accesorios Eléctricos",
+          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+        },
+        {
+          "title": "Acabados: Accesorios Eléctricos",
+          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+        },
+        {
+          "title": "Acabados: Recubrimientos y Pintura",
+          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+        },
+        {
+          "title": "Acabados: Recubrimientos y Pintura",
+          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+        },
+        {
+          "title": "Acabados: Recubrimientos y Pintura",
+          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+        },
+        {
+          "title": "Acabados: Recubrimientos y Pintura",
+          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+        },
+        {
+          "title": "Acabados: Recubrimientos y Pintura",
+          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+        },
+        {
+          "title": "Acabados: Recubrimientos y Pintura",
+          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+        },
+        {
+          "title": "Acabados: Cancelería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+        },
+        {
+          "title": "Acabados: Cancelería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+        },
+        {
+          "title": "Acabados: Cancelería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+        },
+        {
+          "title": "Acabados: Cancelería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+        },
+        {
+          "title": "Acabados: Cancelería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+        },
+        {
+          "title": "Acabados: Cancelería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+        },
+        {
+          "title": "Acabados: Carpintería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+        },
+        {
+          "title": "Acabados: Carpintería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+        },
+        {
+          "title": "Acabados: Carpintería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+        },
+        {
+          "title": "Acabados: Carpintería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+        },
+        {
+          "title": "Acabados: Carpintería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+        },
+        {
+          "title": "Acabados: Carpintería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+        },
+        {
+          "title": "Acabados: Muebles Sanitarios",
+          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+        },
+        {
+          "title": "Acabados: Muebles Sanitarios",
+          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+        },
+        {
+          "title": "Acabados: Muebles Sanitarios",
+          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+        },
+        {
+          "title": "Acabados: Muebles Sanitarios",
+          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+        },
+        {
+          "title": "Acabados: Muebles Sanitarios",
+          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+        },
+        {
+          "title": "Acabados: Muebles Sanitarios",
+          "desc": "Ejecución de acabados y detalles finales en Zona 2: Planta Baja."
+        }
+      ],
+      "progress": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "zone": "Zona 3: Planta Alta",
+      "emoji": "🛏️",
+      "tasks": [
+        "Preliminares",
+        "Preliminares",
+        "Preliminares",
+        "Preliminares",
+        "Muros de Concreto",
+        "Muros de Concreto",
+        "Muros de Concreto",
+        "Muros de Concreto",
+        "Estructura de Acero",
+        "Estructura de Acero",
+        "Estructura de Acero",
+        "Estructura de Acero",
+        "Albañilerías",
+        "Albañilerías",
+        "Albañilerías",
+        "Albañilerías Azotea",
+        "Albañilerías Azotea",
+        "Albañilerías Azotea",
+        "Albañilerías Azotea",
+        "Losa",
+        "Losa",
+        "Losa",
+        "Losa",
+        "Instalaciones Hidráulicas/Sanitarias/Pluviales/Eléctricas",
+        "Instalaciones Hidráulicas/Sanitarias/Pluviales/Eléctricas",
+        "Instalaciones Hidráulicas/Sanitarias/Pluviales/Eléctricas",
+        "Instalaciones Hidráulicas/Sanitarias/Pluviales/Eléctricas",
+        "Aire Acondicionado",
+        "Aire Acondicionado",
+        "Aire Acondicionado",
+        "Accesorios Eléctricos",
+        "Accesorios Eléctricos",
+        "Accesorios Eléctricos",
+        "Accesorios Eléctricos",
+        "Accesorios Eléctricos",
+        "Recubrimientos y Pintura",
+        "Recubrimientos y Pintura",
+        "Recubrimientos y Pintura",
+        "Recubrimientos y Pintura",
+        "Recubrimientos y Pintura",
+        "Cancelería",
+        "Cancelería",
+        "Cancelería",
+        "Cancelería",
+        "Cancelería",
+        "Carpintería",
+        "Carpintería",
+        "Carpintería",
+        "Carpintería",
+        "Carpintería",
+        "Muebles Sanitarios",
+        "Muebles Sanitarios",
+        "Muebles Sanitarios",
+        "Muebles Sanitarios",
+        "Muebles Sanitarios",
+        "Herrería",
+        "Herrería",
+        "Herrería",
+        "Herrería",
+        "Herrería"
+      ],
+      "details": [
+        {
+          "title": "Obra Gris: Preliminares",
+          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Preliminares",
+          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Preliminares",
+          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Preliminares",
+          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Muros de Concreto",
+          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Muros de Concreto",
+          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Muros de Concreto",
+          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Muros de Concreto",
+          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Estructura de Acero",
+          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Estructura de Acero",
+          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Estructura de Acero",
+          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Estructura de Acero",
+          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Albañilerías",
+          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Albañilerías",
+          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Albañilerías",
+          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Albañilerías Azotea",
+          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Albañilerías Azotea",
+          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Albañilerías Azotea",
+          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Albañilerías Azotea",
+          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Losa",
+          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Losa",
+          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Losa",
+          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Losa",
+          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Instalaciones Hidráulicas/Sanitarias/Pluviales/Eléctricas",
+          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Instalaciones Hidráulicas/Sanitarias/Pluviales/Eléctricas",
+          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Instalaciones Hidráulicas/Sanitarias/Pluviales/Eléctricas",
+          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Instalaciones Hidráulicas/Sanitarias/Pluviales/Eléctricas",
+          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Aire Acondicionado",
+          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Aire Acondicionado",
+          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Aire Acondicionado",
+          "desc": "Ejecución de trabajos de obra gris en Zona 3: Planta Alta según presupuesto."
+        },
+        {
+          "title": "Acabados: Accesorios Eléctricos",
+          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+        },
+        {
+          "title": "Acabados: Accesorios Eléctricos",
+          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+        },
+        {
+          "title": "Acabados: Accesorios Eléctricos",
+          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+        },
+        {
+          "title": "Acabados: Accesorios Eléctricos",
+          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+        },
+        {
+          "title": "Acabados: Accesorios Eléctricos",
+          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+        },
+        {
+          "title": "Acabados: Recubrimientos y Pintura",
+          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+        },
+        {
+          "title": "Acabados: Recubrimientos y Pintura",
+          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+        },
+        {
+          "title": "Acabados: Recubrimientos y Pintura",
+          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+        },
+        {
+          "title": "Acabados: Recubrimientos y Pintura",
+          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+        },
+        {
+          "title": "Acabados: Recubrimientos y Pintura",
+          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+        },
+        {
+          "title": "Acabados: Cancelería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+        },
+        {
+          "title": "Acabados: Cancelería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+        },
+        {
+          "title": "Acabados: Cancelería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+        },
+        {
+          "title": "Acabados: Cancelería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+        },
+        {
+          "title": "Acabados: Cancelería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+        },
+        {
+          "title": "Acabados: Carpintería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+        },
+        {
+          "title": "Acabados: Carpintería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+        },
+        {
+          "title": "Acabados: Carpintería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+        },
+        {
+          "title": "Acabados: Carpintería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+        },
+        {
+          "title": "Acabados: Carpintería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+        },
+        {
+          "title": "Acabados: Muebles Sanitarios",
+          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+        },
+        {
+          "title": "Acabados: Muebles Sanitarios",
+          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+        },
+        {
+          "title": "Acabados: Muebles Sanitarios",
+          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+        },
+        {
+          "title": "Acabados: Muebles Sanitarios",
+          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+        },
+        {
+          "title": "Acabados: Muebles Sanitarios",
+          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+        },
+        {
+          "title": "Acabados: Herrería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+        },
+        {
+          "title": "Acabados: Herrería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+        },
+        {
+          "title": "Acabados: Herrería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+        },
+        {
+          "title": "Acabados: Herrería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+        },
+        {
+          "title": "Acabados: Herrería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 3: Planta Alta."
+        }
+      ],
+      "progress": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "zone": "Zona 4: Patio y Cochera",
+      "emoji": "🚗",
+      "tasks": [
+        "Preliminares",
+        "Preliminares",
+        "Preliminares",
+        "Preliminares",
+        "Preliminares",
+        "Preliminares",
+        "Preliminares",
+        "Preliminares",
+        "Preliminares",
+        "Preliminares",
+        "Muro Perimetral",
+        "Muro Perimetral",
+        "Muro Perimetral",
+        "Muro Perimetral",
+        "Muro Perimetral",
+        "Muro Perimetral",
+        "Muro Perimetral",
+        "Muro Perimetral",
+        "Muro Perimetral",
+        "Muro Perimetral",
+        "Albañilerías",
+        "Albañilerías",
+        "Albañilerías",
+        "Albañilerías",
+        "Albañilerías",
+        "Albañilerías",
+        "Albañilerías",
+        "Albañilerías",
+        "Albañilerías",
+        "Albañilerías",
+        "Accesorios Eléctricos",
+        "Accesorios Eléctricos",
+        "Accesorios Eléctricos",
+        "Accesorios Eléctricos",
+        "Accesorios Eléctricos",
+        "Accesorios Eléctricos",
+        "Accesorios Eléctricos",
+        "Accesorios Eléctricos",
+        "Recubrimientos y Pintura",
+        "Recubrimientos y Pintura",
+        "Recubrimientos y Pintura",
+        "Recubrimientos y Pintura",
+        "Recubrimientos y Pintura",
+        "Recubrimientos y Pintura",
+        "Recubrimientos y Pintura",
+        "Jardinería",
+        "Jardinería",
+        "Jardinería",
+        "Jardinería",
+        "Jardinería",
+        "Jardinería",
+        "Jardinería",
+        "Jardinería",
+        "Limpieza Final",
+        "Limpieza Final",
+        "Limpieza Final",
+        "Limpieza Final",
+        "Limpieza Final",
+        "Limpieza Final",
+        "Limpieza Final"
+      ],
+      "details": [
+        {
+          "title": "Obra Gris: Preliminares",
+          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Preliminares",
+          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Preliminares",
+          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Preliminares",
+          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Preliminares",
+          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Preliminares",
+          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Preliminares",
+          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Preliminares",
+          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Preliminares",
+          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Preliminares",
+          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Muro Perimetral",
+          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Muro Perimetral",
+          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Muro Perimetral",
+          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Muro Perimetral",
+          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Muro Perimetral",
+          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Muro Perimetral",
+          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Muro Perimetral",
+          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Muro Perimetral",
+          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Muro Perimetral",
+          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Muro Perimetral",
+          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Albañilerías",
+          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Albañilerías",
+          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Albañilerías",
+          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Albañilerías",
+          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Albañilerías",
+          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Albañilerías",
+          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Albañilerías",
+          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Albañilerías",
+          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Albañilerías",
+          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+        },
+        {
+          "title": "Obra Gris: Albañilerías",
+          "desc": "Ejecución de trabajos de obra gris en Zona 4: Patio y Cochera según presupuesto."
+        },
+        {
+          "title": "Acabados: Accesorios Eléctricos",
+          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+        },
+        {
+          "title": "Acabados: Accesorios Eléctricos",
+          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+        },
+        {
+          "title": "Acabados: Accesorios Eléctricos",
+          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+        },
+        {
+          "title": "Acabados: Accesorios Eléctricos",
+          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+        },
+        {
+          "title": "Acabados: Accesorios Eléctricos",
+          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+        },
+        {
+          "title": "Acabados: Accesorios Eléctricos",
+          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+        },
+        {
+          "title": "Acabados: Accesorios Eléctricos",
+          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+        },
+        {
+          "title": "Acabados: Accesorios Eléctricos",
+          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+        },
+        {
+          "title": "Acabados: Recubrimientos y Pintura",
+          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+        },
+        {
+          "title": "Acabados: Recubrimientos y Pintura",
+          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+        },
+        {
+          "title": "Acabados: Recubrimientos y Pintura",
+          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+        },
+        {
+          "title": "Acabados: Recubrimientos y Pintura",
+          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+        },
+        {
+          "title": "Acabados: Recubrimientos y Pintura",
+          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+        },
+        {
+          "title": "Acabados: Recubrimientos y Pintura",
+          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+        },
+        {
+          "title": "Acabados: Recubrimientos y Pintura",
+          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+        },
+        {
+          "title": "Acabados: Jardinería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+        },
+        {
+          "title": "Acabados: Jardinería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+        },
+        {
+          "title": "Acabados: Jardinería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+        },
+        {
+          "title": "Acabados: Jardinería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+        },
+        {
+          "title": "Acabados: Jardinería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+        },
+        {
+          "title": "Acabados: Jardinería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+        },
+        {
+          "title": "Acabados: Jardinería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+        },
+        {
+          "title": "Acabados: Jardinería",
+          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+        },
+        {
+          "title": "Acabados: Limpieza Final",
+          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+        },
+        {
+          "title": "Acabados: Limpieza Final",
+          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+        },
+        {
+          "title": "Acabados: Limpieza Final",
+          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+        },
+        {
+          "title": "Acabados: Limpieza Final",
+          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+        },
+        {
+          "title": "Acabados: Limpieza Final",
+          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+        },
+        {
+          "title": "Acabados: Limpieza Final",
+          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+        },
+        {
+          "title": "Acabados: Limpieza Final",
+          "desc": "Ejecución de acabados y detalles finales en Zona 4: Patio y Cochera."
+        }
+      ],
+      "progress": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}
