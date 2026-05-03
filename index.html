@@ -484,7 +484,7 @@
     </style>
 </head>
 <body>
-<div id="versionBadge">v1.4.5</div>
+<div id="versionBadge">v1.4.6</div>
 
 <!-- ══════════════ LOGIN SCREEN ══════════════ -->
 <div id="loginScreen">
@@ -569,8 +569,14 @@
             <div class="login-error" id="loginError">Datos incorrectos. Verifica tu correo y código.</div>
 
             <button class="btn-login" id="btnLoginAction" onclick="doAuthAction()">Acceder al sistema →</button>
+            
+            <div id="installButtonContainer" style="margin-top:20px; border-top:1px solid rgba(255,255,255,0.05); padding-top:20px;">
+                <button onclick="showInstallInstructions()" style="width:100%; background:rgba(37,99,235,0.1); color:#60a5fa; border:1px solid rgba(37,99,235,0.2); padding:12px; border-radius:12px; font-weight:700; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
+                    <span style="font-size:1.2rem;">📲</span> Instalar como aplicación (Recomendado)
+                </button>
+            </div>
         </div>
-        <div class="login-footer">v1.4.5 · © 2025 SYD Constructores · Todos los derechos reservados</div>
+        <div class="login-footer">v1.4.6 · © 2025 SYD Constructores · Todos los derechos reservados</div>
     </div>
 </div>
 
@@ -581,7 +587,7 @@
             <img src="assets/logo_syd.png" class="selector-logo-small" alt="SYD">
             <div>
                 <div class="selector-title">SYD Constructores</div>
-                <div class="selector-subtitle">Selecciona una obra · v1.4.5</div>
+                <div class="selector-subtitle">Selecciona una obra · v1.4.6</div>
             </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px">
@@ -602,7 +608,7 @@
     <div class="header-row">
         <div>
             <div class="app-title">🏗 SYD Constructores</div>
-            <div class="app-subtitle" id="appSubtitle">Sistema de Gestión de Obras v1.4.5</div>
+            <div class="app-subtitle" id="appSubtitle">Sistema de Gestión de Obras v1.4.6</div>
         </div>
         <div class="header-right" style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
             <div style="display:flex; align-items:center; gap:6px;">
@@ -711,7 +717,7 @@
             </div>
             
             <div style="margin-top:20px; text-align:center; opacity:0.3; font-size:0.6rem; color:#fff;">
-                SYD v1.4.5 (FIX-LOGIN-SCROLL) <br>
+                SYD v1.4.6 (FIX-LOGIN-SCROLL) <br>
                 <span onclick="forceUpdateApp()" style="text-decoration:underline; cursor:pointer;">Forzar actualización de versión</span>
             </div>
         </div>
@@ -1433,7 +1439,7 @@ function launchApp() {
     if(tabAcc) tabAcc.style.display = session.role==='master' ? '' : 'none';
 
     // Subtitle with real obra name + Version
-    const version = 'v1.4.5';
+    const version = 'v1.4.6';
     document.getElementById('appSubtitle').textContent = (currentObra.name || 'Proyecto') + (currentObra.location ? ' · ' + currentObra.location : '') + ' (' + version + ')';
 
     // Generador de reporte visibility
@@ -1692,6 +1698,105 @@ function switchTab(tabId, btn) {
     else if(tabId==='detalle') renderDetalle();
     else if(tabId==='avance') renderAvance();
     else if(tabId==='accesos') renderAccesos();
+}
+
+// ══════════════════════════════════════
+// ASISTENTE DE INSTALACIÓN (PWA)
+// ══════════════════════════════════════
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    console.log('[SYD] Evento beforeinstallprompt capturado');
+});
+
+function showInstallInstructions() {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const isAndroid = /Android/.test(navigator.userAgent);
+    const isPWA = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
+    if (isPWA) {
+        alert('✅ Ya estás usando la aplicación instalada.');
+        return;
+    }
+
+    const modalId = 'installModal';
+    const oldModal = document.getElementById(modalId);
+    if (oldModal) oldModal.remove();
+
+    const modal = document.createElement('div');
+    modal.id = modalId;
+    modal.style.cssText = `
+        position:fixed; inset:0; z-index:1000000;
+        background:rgba(0,0,0,0.85); display:flex; align-items:center; justify-content:center;
+        padding:20px; font-family:sans-serif; backdrop-filter:blur(8px);
+    `;
+
+    const card = document.createElement('div');
+    card.style.cssText = `
+        background:#fff; border-radius:28px; width:100%; max-width:360px;
+        padding:32px 24px; color:#1e293b; text-align:center; position:relative;
+        box-shadow:0 20px 60px rgba(0,0,0,0.5);
+    `;
+
+    let content = '';
+    if (isIOS) {
+        content = `
+            <div style="font-size:3rem; margin-bottom:15px;">🍏</div>
+            <h3 style="margin:0 0 10px; font-size:1.3rem;">Instalar en iPhone</h3>
+            <p style="font-size:0.9rem; color:#64748b; margin-bottom:24px;">Sigue estos 3 pasos para tener SYD en tu pantalla de inicio:</p>
+            
+            <div style="text-align:left; display:flex; flex-direction:column; gap:16px; margin-bottom:24px;">
+                <div style="display:flex; align-items:center; gap:15px;">
+                    <div style="background:#f1f5f9; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; flex-shrink:0;">1</div>
+                    <div style="font-size:0.9rem;">Pulsa el botón <strong>Compartir</strong> <img src="https://img.icons8.com/ios/50/000000/share-rounded.png" style="width:18px; vertical-align:middle;"> (en la barra inferior).</div>
+                </div>
+                <div style="display:flex; align-items:center; gap:15px;">
+                    <div style="background:#f1f5f9; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; flex-shrink:0;">2</div>
+                    <div style="font-size:0.9rem;">Desliza hacia abajo y busca <strong>"Añadir a pantalla de inicio"</strong>.</div>
+                </div>
+                <div style="display:flex; align-items:center; gap:15px;">
+                    <div style="background:#f1f5f9; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; flex-shrink:0;">3</div>
+                    <div style="font-size:0.9rem;">Pulsa <strong>"Añadir"</strong> en la esquina superior derecha.</div>
+                </div>
+            </div>
+        `;
+    } else if (deferredPrompt) {
+        content = `
+            <div style="font-size:3rem; margin-bottom:15px;">🤖</div>
+            <h3 style="margin:0 0 10px; font-size:1.3rem;">Instalar App</h3>
+            <p style="font-size:0.9rem; color:#64748b; margin-bottom:24px;">Pulsa el botón de abajo para instalar SYD en tu Android.</p>
+            <button id="nativeInstallBtn" style="width:100%; background:#3b82f6; color:#fff; border:none; padding:15px; border-radius:14px; font-weight:700; font-size:1rem; cursor:pointer; margin-bottom:15px;">
+                INSTALAR AHORA
+            </button>
+        `;
+    } else {
+        content = `
+            <div style="font-size:3rem; margin-bottom:15px;">🌐</div>
+            <h3 style="margin:0 0 10px; font-size:1.3rem;">Añadir a Pantalla</h3>
+            <p style="font-size:0.9rem; color:#64748b; margin-bottom:24px;">Pulsa en los 3 puntos (Menú) de tu navegador y busca <strong>"Añadir a pantalla de inicio"</strong> o <strong>"Instalar aplicación"</strong>.</p>
+        `;
+    }
+
+    card.innerHTML = content + `
+        <button onclick="document.getElementById('${modalId}').remove()" style="width:100%; background:#f1f5f9; color:#64748b; border:none; padding:12px; border-radius:14px; font-weight:600; font-size:0.9rem; cursor:pointer;">
+            Entendido, cerrar
+        </button>
+    `;
+
+    modal.appendChild(card);
+    document.body.appendChild(modal);
+
+    const nativeBtn = document.getElementById('nativeInstallBtn');
+    if (nativeBtn && deferredPrompt) {
+        nativeBtn.onclick = async () => {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`[SYD] Usuario eligió instalar: ${outcome}`);
+            deferredPrompt = null;
+            document.getElementById(modalId).remove();
+        };
+    }
 }
 
 
