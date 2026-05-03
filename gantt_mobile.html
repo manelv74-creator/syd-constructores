@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -51,7 +51,8 @@
         #loginScreen{
             position:fixed;inset:0;z-index:1000;
             background:linear-gradient(135deg,#0a0e1a 0%,#0f2040 50%,#0a0e1a 100%);
-            display:flex;align-items:center;justify-content:center;padding:24px;
+            display:flex;align-items:flex-start;justify-content:center;padding:24px;
+            overflow-y:auto;
         }
         .login-card{
             width:100%;max-width:400px;
@@ -60,6 +61,7 @@
             border-radius:24px;padding:36px 28px;
             backdrop-filter:blur(20px);
             box-shadow:0 25px 50px rgba(0,0,0,0.6);
+            margin:auto;
         }
         .login-logo{text-align:center;margin-bottom:28px}
         .login-logo-icon{
@@ -549,7 +551,7 @@
 
             <button class="btn-login" id="btnLoginAction" onclick="doAuthAction()">Acceder al sistema →</button>
         </div>
-        <div class="login-footer">© 2025 SYD Constructores · Todos los derechos reservados</div>
+        <div class="login-footer">v1.4.3 · © 2025 SYD Constructores · Todos los derechos reservados</div>
     </div>
 </div>
 
@@ -560,7 +562,7 @@
             <img src="assets/logo_syd.png" class="selector-logo-small" alt="SYD">
             <div>
                 <div class="selector-title">SYD Constructores</div>
-                <div class="selector-subtitle">Selecciona una obra</div>
+                <div class="selector-subtitle">Selecciona una obra · v1.4.3</div>
             </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px">
@@ -581,7 +583,7 @@
     <div class="header-row">
         <div>
             <div class="app-title">🏗 SYD Constructores</div>
-            <div class="app-subtitle" id="appSubtitle">Sistema de Gestión de Obras</div>
+            <div class="app-subtitle" id="appSubtitle">Sistema de Gestión de Obras v1.4.3</div>
         </div>
         <div class="header-right">
             <span class="role-badge" id="clientEmailBadge" style="display:none;background:rgba(255,255,255,0.1);color:#cbd5e1;font-weight:normal;text-transform:lowercase;"></span>
@@ -1376,7 +1378,7 @@ function updateProgress(zIdx, val) {
     const cell = document.getElementById(`gc-${zIdx}-${currentWeek}`);
     if(cell) cell.style.background = `linear-gradient(90deg,rgba(245,158,11,0.5) ${val}%,rgba(245,158,11,0.08) ${val}%)`;
     ['pf-','dpf-'].forEach(pre => { const el=document.getElementById(pre+zIdx); if(el) el.style.width=val+'%'; });
-    ['pv-','dpv-'].forEach(pre => { const el=document.getElementById(pre+zIdx); if(el) el.textContent=val+'%'; });
+    ['pv-','dpv-','pct-'].forEach(pre => { const el=document.getElementById(pre+zIdx); if(el) el.textContent=val+'%'; });
     const zones = getVisibleZones();
     const avgP = Math.round(zones.reduce((s,z)=>s+z.data.progress[currentWeek-1],0)/zones.length);
     const avgEl = document.querySelector('#statsGrid .stat-card:nth-child(2) .stat-value');
@@ -1827,8 +1829,9 @@ function launchApp() {
     const tabAcc = document.getElementById('tabAccesos');
     if(tabAcc) tabAcc.style.display = session.role==='master' ? '' : 'none';
 
-    // Subtitle with real obra name
-    document.getElementById('appSubtitle').textContent = (currentObra.name || 'Proyecto') + (currentObra.location ? ' \u00b7 ' + currentObra.location : '');
+    // Subtitle with real obra name + Version
+    const version = 'v1.4.3';
+    document.getElementById('appSubtitle').textContent = (currentObra.name || 'Proyecto') + (currentObra.location ? ' \u00b7 ' + currentObra.location : '') + ' (' + version + ')';
 
     // Hero image (foto de la obra en la cabecera del tab Tareas)
     const heroWrap  = document.getElementById('obraHeroWrap');
@@ -1977,7 +1980,7 @@ function renderTareas() {
             <span class="task-chip">${taskName}</span>
             <div class="progress-bar-wrap">
                 <div class="progress-track"><div class="progress-fill" id="pf-${idx}" style="width:${prog}%;background:linear-gradient(90deg,${color},${color}88)"></div></div>
-                <div class="progress-pct" style="color:${color}">${prog}%</div>
+                <div class="progress-pct" style="color:${color}" id="pct-${idx}">${prog}%</div>
             </div>
             ${sliderHtml}
             ${uploadHtml}
