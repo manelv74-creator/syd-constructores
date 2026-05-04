@@ -504,7 +504,7 @@
     </style>
 </head>
 <body>
-<div id="versionBadge">v1.8.0</div>
+<div id="versionBadge">v1.8.1</div>
 
 <!-- ══════════════ LOGIN SCREEN ══════════════ -->
 <div id="loginScreen">
@@ -600,7 +600,7 @@
                 </button>
             </div>
         </div>
-        <div class="login-footer">v1.8.0 · © 2025 SYD Constructores · Todos los derechos reservados</div>
+        <div class="login-footer">v1.8.1 · © 2025 SYD Constructores · Todos los derechos reservados</div>
     </div>
 </div>
 
@@ -611,7 +611,7 @@
             <img src="assets/logo_syd.png" class="selector-logo-small" alt="SYD">
             <div>
                 <div class="selector-title">SYD Constructores</div>
-                <div class="selector-subtitle">Selecciona una obra · v1.8.0</div>
+                <div class="selector-subtitle">Selecciona una obra · v1.8.1</div>
             </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px">
@@ -632,7 +632,7 @@
     <div class="header-row">
         <div>
             <div class="app-title">🏗 SYD Constructores</div>
-            <div class="app-subtitle" id="appSubtitle">Sistema de Gestión de Obras v1.8.0</div>
+            <div class="app-subtitle" id="appSubtitle">Sistema de Gestión de Obras v1.8.1</div>
         </div>
         <div class="header-right" style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
             <div style="display:flex; align-items:center; gap:6px;">
@@ -744,7 +744,7 @@
             </div>
             
             <div style="margin-top:20px; text-align:center; opacity:0.3; font-size:0.6rem; color:#fff;">
-                SYD v1.8.0 (SECURITY-BIO-FIX) <br>
+                SYD v1.8.1 (LOCK-SCREEN) <br>
                 <span onclick="forceUpdateApp()" style="text-decoration:underline; cursor:pointer;">Forzar actualización de versión</span>
             </div>
         </div>
@@ -1445,41 +1445,55 @@ async function doBiometricLogin() {
     const email = localStorage.getItem('syd_biometric_email');
     if (!email) { showPasswordForm(); return; }
 
-    try {
-        const challenge = new Uint8Array(32);
-        window.crypto.getRandomValues(challenge);
+    // Check if Firebase still has an active session (it does after doLogout lock)
+    const firebaseUser = firebase.auth().currentUser;
 
-        const assertion = await navigator.credentials.get({
-            publicKey: {
-                challenge,
-                rpId: window.location.hostname,
-                userVerification: "required",
-                timeout: 60000
-            }
-        });
-
-        if (assertion) {
-            // Biometric verified — restore session from localStorage
-            const saved = localStorage.getItem('sauces_session');
-            if (saved) {
-                session = JSON.parse(saved);
-                if (session.obra) {
-                    if (await loadProjectData(session.obra)) { launchApp(); return; }
-                } else {
-                    showObraSelector(); return;
+    if (firebaseUser) {
+        // Firebase session is alive — just verify biometric presence and restore
+        try {
+            const challenge = new Uint8Array(32);
+            window.crypto.getRandomValues(challenge);
+            const assertion = await navigator.credentials.get({
+                publicKey: {
+                    challenge,
+                    rpId: window.location.hostname,
+                    userVerification: 'required',
+                    timeout: 60000
                 }
+            });
+            if (assertion) {
+                await restoreFirebaseSession(firebaseUser);
             }
-            // Session expired — need full re-login
-            clearBiometricData();
-            showPasswordForm();
+        } catch (e) {
+            // Passkey failed — try restoring session anyway since Firebase is active
+            console.warn('Passkey check failed, restoring Firebase session:', e.message);
+            await restoreFirebaseSession(firebaseUser);
         }
-    } catch (e) {
-        console.warn("Biometric login failed:", e.message);
-        // No passkey found or user cancelled — clear bad enrollment and show password form
+    } else {
+        // Firebase session expired — need full re-login, clear biometric
         clearBiometricData();
         showPasswordForm();
     }
 }
+
+async function restoreFirebaseSession(firebaseUser) {
+    try {
+        const userDoc = await db.collection('users').doc(firebaseUser.uid).get();
+        session = userDoc.exists
+            ? { ...userDoc.data(), uid: firebaseUser.uid }
+            : { role: 'client', email: firebaseUser.email, uid: firebaseUser.uid, obra: 'ARAUCA182' };
+        localStorage.setItem('sauces_session', JSON.stringify(session));
+        if (session.obra) {
+            if (await loadProjectData(session.obra)) { launchApp(); return; }
+        }
+        showObraSelector();
+    } catch(e) {
+        console.error('Session restore error:', e);
+        clearBiometricData();
+        showPasswordForm();
+    }
+}
+
 
 function clearBiometricData() {
     localStorage.removeItem('syd_biometric_email');
@@ -1548,15 +1562,45 @@ async function doLogin() {
 }
 
 function doLogout() {
+    // LOCK the app — keeps Firebase session alive for biometric re-entry
     if(session) logAccess(session.email, session.role, 'logout');
     localStorage.removeItem('sauces_session');
     session = null; currentObra = null;
-    document.getElementById('loginScreen').style.display = 'flex';
-    document.getElementById('obraSelector').style.display = 'none';
+
+    // Hide app screens
     document.getElementById('appShell').style.display = 'none';
+    document.getElementById('obraSelector').style.display = 'none';
+
+    // Show login screen
+    document.getElementById('loginScreen').style.display = 'flex';
+
+    // If biometric is enrolled, show fingerprint screen
+    const bioEmail = localStorage.getItem('syd_biometric_email');
+    if (bioEmail) {
+        showBiometricScreen(bioEmail);
+    } else {
+        // No biometric — show password form
+        document.getElementById('loginEmail').value = '';
+        document.getElementById('loginCode').value = '';
+        showPasswordForm();
+    }
+}
+
+function doFullLogout() {
+    // FULL sign-out — clears everything including Firebase session
+    if (!confirm('¿Cerrar sesión completamente? Tendrás que volver a introducir tu contraseña.')) return;
+    clearBiometricData();
+    localStorage.removeItem('sauces_session');
+    session = null; currentObra = null;
+    firebase.auth().signOut().catch(() => {});
+    document.getElementById('appShell').style.display = 'none';
+    document.getElementById('obraSelector').style.display = 'none';
+    document.getElementById('loginScreen').style.display = 'flex';
     document.getElementById('loginEmail').value = '';
     document.getElementById('loginCode').value = '';
+    showPasswordForm();
 }
+
 
 // ══════════════════════════════════════
 // APP LAUNCH
@@ -1598,7 +1642,7 @@ function launchApp() {
     if(btnBack) btnBack.style.display = session.role==='client' ? 'none' : 'block';
 
     // Subtitle with real obra name + Version
-    const version = 'v1.8.0';
+    const version = 'v1.8.1';
     document.getElementById('appSubtitle').textContent = (currentObra.name || 'Proyecto') + (currentObra.location ? ' · ' + currentObra.location : '') + ' (' + version + ')';
 
     // Generador de reporte visibility
