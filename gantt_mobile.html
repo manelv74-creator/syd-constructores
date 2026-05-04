@@ -502,7 +502,7 @@
     </style>
 </head>
 <body>
-<div id="versionBadge">v1.8.0</div>
+<div id="versionBadge">v1.8.2</div>
 
 <!-- ══════════════ LOGIN SCREEN ══════════════ -->
 <div id="loginScreen">
@@ -598,7 +598,7 @@
                 </button>
             </div>
         </div>
-        <div class="login-footer">v1.8.0 · © 2025 SYD Constructores · Todos los derechos reservados</div>
+        <div class="login-footer">v1.8.2 · © 2025 SYD Constructores · Todos los derechos reservados</div>
     </div>
 </div>
 
@@ -609,7 +609,7 @@
             <img src="assets/logo_syd.png" class="selector-logo-small" alt="SYD">
             <div>
                 <div class="selector-title">SYD Constructores</div>
-                <div class="selector-subtitle">Selecciona una obra · v1.8.0</div>
+                <div class="selector-subtitle">Selecciona una obra · v1.8.2</div>
             </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px">
@@ -630,7 +630,7 @@
     <div class="header-row">
         <div>
             <div class="app-title">🏗 SYD Constructores</div>
-            <div class="app-subtitle" id="appSubtitle">Sistema de Gestión de Obras v1.8.0</div>
+            <div class="app-subtitle" id="appSubtitle">Sistema de Gestión de Obras v1.8.2</div>
         </div>
         <div class="header-right">
             <span class="role-badge" id="clientEmailBadge" style="display:none;background:rgba(255,255,255,0.1);color:#cbd5e1;font-weight:normal;text-transform:lowercase;"></span>
@@ -1617,6 +1617,7 @@ async function showAccesosTab(tab) {
 let projectData = [];
 let OBRAS_CATALOG = [];
 let currentObra = null;
+const TOTAL_WEEKS = 32;
 
 async function loadGlobalData() {
     try {
@@ -1626,7 +1627,7 @@ async function loadGlobalData() {
     } catch(e) {
         console.error('[SYD] Error cargando proyectos:', e);
         // Fallback minimo
-        OBRAS_CATALOG = [{id:'sauces', nombre:'Sauces', status:'activa'}];
+        OBRAS_CATALOG = [{id:'sauces', name:'Sauces', status:'activa'}];
     }
 }
 
@@ -1919,21 +1920,6 @@ function updateBiometricButtonVisibility() {
     if (btn) btn.style.display = (window.PublicKeyCredential && localStorage.getItem('syd_biometric_email')) ? 'flex' : 'none';
 }
 
-    localStorage.setItem('sauces_session', JSON.stringify(session));
-    logAccess(email, session.role, 'login');
-    
-    // Routing: master/observer → obra selector; client → direct to app
-    if(session.role === 'client') {
-        if(await loadProjectData(session.obra)) {
-            launchApp();
-        } else {
-            err.textContent='Error cargando datos de la obra.'; err.classList.add('show');
-        }
-    } else {
-        showObraSelector();
-    }
-}
-
 function doLogout() {
     if(session) logAccess(session.email, session.role, 'logout');
     localStorage.removeItem('sauces_session');
@@ -1985,7 +1971,7 @@ function launchApp() {
     if(btnBack) btnBack.style.display = session.role==='client' ? 'none' : 'block';
 
     // Subtitle with real obra name + Version
-    const version = 'v1.8.0';
+    const version = 'v1.8.2';
     document.getElementById('appSubtitle').textContent = (currentObra.name || 'Proyecto') + (currentObra.location ? ' \u00b7 ' + currentObra.location : '') + ' (' + version + ')';
 
     // Hero image (foto de la obra en la cabecera del tab Tareas)

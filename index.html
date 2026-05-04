@@ -504,7 +504,7 @@
     </style>
 </head>
 <body>
-<div id="versionBadge">v1.8.1</div>
+<div id="versionBadge">v1.8.2</div>
 
 <!-- ══════════════ LOGIN SCREEN ══════════════ -->
 <div id="loginScreen">
@@ -600,7 +600,7 @@
                 </button>
             </div>
         </div>
-        <div class="login-footer">v1.8.1 · © 2025 SYD Constructores · Todos los derechos reservados</div>
+        <div class="login-footer">v1.8.2 · © 2025 SYD Constructores · Todos los derechos reservados</div>
     </div>
 </div>
 
@@ -611,7 +611,7 @@
             <img src="assets/logo_syd.png" class="selector-logo-small" alt="SYD">
             <div>
                 <div class="selector-title">SYD Constructores</div>
-                <div class="selector-subtitle">Selecciona una obra · v1.8.1</div>
+                <div class="selector-subtitle">Selecciona una obra · v1.8.2</div>
             </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px">
@@ -632,7 +632,7 @@
     <div class="header-row">
         <div>
             <div class="app-title">🏗 SYD Constructores</div>
-            <div class="app-subtitle" id="appSubtitle">Sistema de Gestión de Obras v1.8.1</div>
+            <div class="app-subtitle" id="appSubtitle">Sistema de Gestión de Obras v1.8.2</div>
         </div>
         <div class="header-right" style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
             <div style="display:flex; align-items:center; gap:6px;">
@@ -744,7 +744,7 @@
             </div>
             
             <div style="margin-top:20px; text-align:center; opacity:0.3; font-size:0.6rem; color:#fff;">
-                SYD v1.8.1 (LOCK-SCREEN) <br>
+                SYD v1.8.2 (REAL-BIO-VALIDATION) <br>
                 <span onclick="forceUpdateApp()" style="text-decoration:underline; cursor:pointer;">Forzar actualización de versión</span>
             </div>
         </div>
@@ -1445,32 +1445,30 @@ async function doBiometricLogin() {
     const email = localStorage.getItem('syd_biometric_email');
     if (!email) { showPasswordForm(); return; }
 
-    // Check if Firebase still has an active session (it does after doLogout lock)
     const firebaseUser = firebase.auth().currentUser;
 
-    if (firebaseUser) {
-        // Firebase session is alive — just verify biometric presence and restore
-        try {
-            const challenge = new Uint8Array(32);
-            window.crypto.getRandomValues(challenge);
-            const assertion = await navigator.credentials.get({
-                publicKey: {
-                    challenge,
-                    rpId: window.location.hostname,
-                    userVerification: 'required',
-                    timeout: 60000
-                }
-            });
-            if (assertion) {
-                await restoreFirebaseSession(firebaseUser);
+    try {
+        const challenge = new Uint8Array(32);
+        window.crypto.getRandomValues(challenge);
+        const assertion = await navigator.credentials.get({
+            publicKey: {
+                challenge,
+                rpId: window.location.hostname,
+                userVerification: 'required',
+                timeout: 60000
             }
-        } catch (e) {
-            // Passkey failed — try restoring session anyway since Firebase is active
-            console.warn('Passkey check failed, restoring Firebase session:', e.message);
+        });
+
+        if (assertion && firebaseUser) {
+            // VALIDACIÓN EXITOSA
             await restoreFirebaseSession(firebaseUser);
+        } else {
+            throw new Error('Validación incompleta');
         }
-    } else {
-        // Firebase session expired — need full re-login, clear biometric
+    } catch (e) {
+        console.warn('Fallo de biometría:', e.message);
+        // Si falla la huella, NO entramos. Limpiamos y pedimos contraseña.
+        alert("No se pudo validar la identidad biométrica. Por favor, usa tu contraseña.");
         clearBiometricData();
         showPasswordForm();
     }
@@ -1642,7 +1640,7 @@ function launchApp() {
     if(btnBack) btnBack.style.display = session.role==='client' ? 'none' : 'block';
 
     // Subtitle with real obra name + Version
-    const version = 'v1.8.1';
+    const version = 'v1.8.2';
     document.getElementById('appSubtitle').textContent = (currentObra.name || 'Proyecto') + (currentObra.location ? ' · ' + currentObra.location : '') + ' (' + version + ')';
 
     // Generador de reporte visibility
