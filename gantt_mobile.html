@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SYD Constructores — Sistema de Gestión de Obras</title>
+    <title>SYD Constructores â€” Sistema de GestiÃ³n de Obras</title>
 
     <!-- PWA -->
     <link rel="manifest" href="manifest.json">
@@ -14,8 +14,8 @@
     <meta name="apple-mobile-web-app-title" content="SYD APP">
     <link rel="apple-touch-icon" href="assets/icon-solid-512.png">
     <!-- OpenGraph -->
-    <meta property="og:title" content="SYD Constructores — Tu obra en tiempo real">
-    <meta property="og:description" content="Seguimiento de tu proyecto de construcción en tiempo real.">
+    <meta property="og:title" content="SYD Constructores â€” Tu obra en tiempo real">
+    <meta property="og:description" content="Seguimiento de tu proyecto de construcciÃ³n en tiempo real.">
     <meta property="og:image" content="assets/logo_syd.png">
     <meta property="og:url" content="https://manelv74-creator.github.io/syd-constructores/">
 
@@ -25,7 +25,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
-    <!-- Librerías para PDF -->
+    <!-- LibrerÃ­as para PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
@@ -48,7 +48,7 @@
         *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
         body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 
-        /* ══ LOGIN SCREEN ══ */
+        /* â•â• LOGIN SCREEN â•â• */
         #loginScreen{
             position:fixed;inset:0;z-index:1000;
             background:linear-gradient(135deg,#0a0e1a 0%,#0f2040 50%,#0a0e1a 100%);
@@ -119,7 +119,7 @@
         .auth-toggle-btn { flex:1; padding:8px; border:none; background:transparent; color:var(--muted); font-size:0.8rem; font-weight:600; font-family:'Inter',sans-serif; cursor:pointer; border-radius:8px; transition:all 0.2s; }
         .auth-toggle-btn.active { background:rgba(59,130,246,0.2); color:#93c5fd; }
 
-        /* ══ SYD LOGO AREA ══ */
+        /* â•â• SYD LOGO AREA â•â• */
         .syd-logo-wrap{
             text-align:center;margin-bottom:24px;
             display:flex;flex-direction:column;align-items:center;gap:0;
@@ -160,7 +160,7 @@
             font-size:0.62rem;color:var(--muted);letter-spacing:0.04em;
         }
 
-        /* ══ APP SHELL ══ */
+        /* â•â• APP SHELL â•â• */
         #appShell{display:none}
         .top-header{
             background:linear-gradient(135deg,#1e293b,#2e4a7a);
@@ -301,7 +301,7 @@
         .client-zone-name{font-size:1rem;font-weight:700;color:var(--text)}
         .client-zone-sub{font-size:0.72rem;color:var(--muted);margin-top:2px}
 
-        /* ══ OBRA SELECTOR ══ */
+        /* â•â• OBRA SELECTOR â•â• */
         #obraSelector{
             display:none;min-height:100vh;
             background:var(--bg);
@@ -431,11 +431,11 @@
             gap: 6px;
         }
         .obra-hero-sub::before {
-            content: '📍';
+            content: 'ðŸ“';
             font-size: 0.8rem;
         }
 
-        /* ══ FOTOS ══ */
+        /* â•â• FOTOS â•â• */
         .btn-upload-foto{
             display:inline-flex;align-items:center;gap:5px;
             background:rgba(59,130,246,0.12);border:1px dashed rgba(59,130,246,0.4);
@@ -502,9 +502,9 @@
     </style>
 </head>
 <body>
-<div id="versionBadge">v1.7.9</div>
+<div id="versionBadge">v1.8.0</div>
 
-<!-- ══════════════ LOGIN SCREEN ══════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â• LOGIN SCREEN â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div id="loginScreen">
     <div class="login-card">
         <!-- SYD Constructores branding -->
@@ -513,7 +513,7 @@
                  onerror="this.style.display='none';document.getElementById('sydLogoFallback').style.display='flex'">
             <div class="syd-logo-placeholder" id="sydLogoFallback" style="display:none">SYD</div>
             <div class="syd-company-name">SYD Constructores</div>
-            <div class="syd-company-sub">Sistema de Gestión de Obras</div>
+            <div class="syd-company-sub">Sistema de GestiÃ³n de Obras</div>
             <div class="syd-divider"></div>
         </div>
 
@@ -523,20 +523,20 @@
                 <div class="field-label">Tipo de acceso</div>
                 <div class="role-tabs">
                     <button class="role-tab selected" onclick="selectRole('client',this)" id="roleClient">
-                        <span class="role-icon">🏠</span>Cliente
+                        <span class="role-icon">ðŸ </span>Cliente
                     </button>
                     <button class="role-tab" onclick="selectRole('observer',this)" id="roleObserver">
-                        <span class="role-icon">👁</span>Supervisor
+                        <span class="role-icon">ðŸ‘</span>Supervisor
                     </button>
                     <button class="role-tab" onclick="selectRole('master',this)" id="roleMaster">
-                        <span class="role-icon">⚡</span>Master
+                        <span class="role-icon">âš¡</span>Master
                     </button>
                 </div>
             </div>
 
             <!-- Auth Toggle (Client Only) -->
             <div class="auth-toggle-wrap" id="clientAuthToggle">
-                <button class="auth-toggle-btn active" onclick="setAuthMode('login',this)">Iniciar Sesión</button>
+                <button class="auth-toggle-btn active" onclick="setAuthMode('login',this)">Iniciar SesiÃ³n</button>
                 <button class="auth-toggle-btn" onclick="setAuthMode('register',this)">Crear Cuenta</button>
             </div>
 
@@ -550,7 +550,7 @@
 
             <!-- Phone (Only Register) -->
             <div id="fieldTelefono" style="display:none">
-                <div class="field-label">WhatsApp (Teléfono)</div>
+                <div class="field-label">WhatsApp (TelÃ©fono)</div>
                 <div class="field-wrap">
                     <input type="tel" id="loginPhone" placeholder="+52 1 33 ..." enterkeyhint="next">
                 </div>
@@ -558,7 +558,7 @@
 
             <!-- Email -->
             <div>
-                <div class="field-label">Correo electrónico</div>
+                <div class="field-label">Correo electrÃ³nico</div>
                 <div class="field-wrap">
                     <input type="email" id="loginEmail" placeholder="tu@correo.com" autocomplete="email" enterkeyhint="next">
                 </div>
@@ -566,50 +566,50 @@
 
             <!-- Password (Client Only) -->
             <div id="fieldPassword">
-                <div class="field-label">Contraseña</div>
+                <div class="field-label">ContraseÃ±a</div>
                 <div class="field-wrap">
-                    <input type="password" id="loginPassword" placeholder="••••••••" enterkeyhint="next">
+                    <input type="password" id="loginPassword" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" enterkeyhint="next">
                 </div>
             </div>
 
             <!-- Dynamic field -->
             <div id="dynamicField" style="display:none">
-                <div class="field-label" id="dynLabel">Código de Obra</div>
+                <div class="field-label" id="dynLabel">CÃ³digo de Obra</div>
                 <div class="field-wrap">
                     <input type="text" id="loginCode" placeholder="Proporcionado por constructor" enterkeyhint="done">
                 </div>
             </div>
 
             <div class="login-hint" id="loginHint">
-                <strong>Cliente:</strong> Ingresa tu email y contraseña. Si no tienes cuenta, selecciona "Crear Cuenta".
+                <strong>Cliente:</strong> Ingresa tu email y contraseÃ±a. Si no tienes cuenta, selecciona "Crear Cuenta".
             </div>
 
-            <div class="login-error" id="loginError">Datos incorrectos. Verifica tu correo y código.</div>
+            <div class="login-error" id="loginError">Datos incorrectos. Verifica tu correo y cÃ³digo.</div>
 
-            <button class="btn-login" id="btnLoginAction" onclick="doAuthAction()">Acceder al sistema →</button>
+            <button class="btn-login" id="btnLoginAction" onclick="doAuthAction()">Acceder al sistema â†’</button>
 
             <button id="btnBiometric" onclick="doBiometricLogin()" style="display:none; width:100%; margin-top:12px; background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:none; padding:16px; border-radius:14px; font-weight:800; font-size:1rem; cursor:pointer; align-items:center; justify-content:center; gap:10px; box-shadow:0 4px 15px rgba(16,185,129,0.3);">
-                <span>☝️ Acceder con Huella</span>
+                <span>â˜ï¸ Acceder con Huella</span>
             </button>
 
             <div id="installButtonContainer" style="margin-top:20px; border-top:1px solid rgba(255,255,255,0.05); padding-top:20px;">
                 <button onclick="showInstallInstructions()" style="width:100%; background:rgba(37,99,235,0.1); color:#60a5fa; border:1px solid rgba(37,99,235,0.2); padding:12px; border-radius:12px; font-weight:700; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
-                    <span style="font-size:1.2rem;">📲</span> Instalar como aplicación (Recomendado)
+                    <span style="font-size:1.2rem;">ðŸ“²</span> Instalar como aplicaciÃ³n (Recomendado)
                 </button>
             </div>
         </div>
-        <div class="login-footer">v1.7.9 · © 2025 SYD Constructores · Todos los derechos reservados</div>
+        <div class="login-footer">v1.8.0 Â· Â© 2025 SYD Constructores Â· Todos los derechos reservados</div>
     </div>
 </div>
 
-<!-- ══════════════ OBRA SELECTOR ══════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â• OBRA SELECTOR â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div id="obraSelector">
     <div class="selector-header">
         <div class="selector-header-left">
             <img src="assets/logo_syd.png" class="selector-logo-small" alt="SYD">
             <div>
                 <div class="selector-title">SYD Constructores</div>
-                <div class="selector-subtitle">Selecciona una obra · v1.7.9</div>
+                <div class="selector-subtitle">Selecciona una obra Â· v1.8.0</div>
             </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px">
@@ -623,14 +623,14 @@
     </div>
 </div>
 
-<!-- ══════════════ APP SHELL ══════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â• APP SHELL â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div id="appShell">
 
 <header class="top-header">
     <div class="header-row">
         <div>
-            <div class="app-title">🏗 SYD Constructores</div>
-            <div class="app-subtitle" id="appSubtitle">Sistema de Gestión de Obras v1.7.9</div>
+            <div class="app-title">ðŸ— SYD Constructores</div>
+            <div class="app-subtitle" id="appSubtitle">Sistema de GestiÃ³n de Obras v1.8.0</div>
         </div>
         <div class="header-right">
             <span class="role-badge" id="clientEmailBadge" style="display:none;background:rgba(255,255,255,0.1);color:#cbd5e1;font-weight:normal;text-transform:lowercase;"></span>
@@ -643,12 +643,12 @@
         </div>
     </div>
     <div class="week-nav">
-        <button class="week-nav-btn" onclick="changeWeek(-1)">‹</button>
+        <button class="week-nav-btn" onclick="changeWeek(-1)">â€¹</button>
         <div class="week-slider-wrap">
             <input type="range" id="weekSlider" min="1" max="32" value="1" oninput="updateDashboard()" style="--pct:0%">
             <div class="week-dots" id="weekDots"></div>
         </div>
-        <button class="week-nav-btn" onclick="changeWeek(1)">›</button>
+        <button class="week-nav-btn" onclick="changeWeek(1)">â€º</button>
     </div>
 </header>
 
@@ -678,7 +678,7 @@
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
                 <div>
                     <div style="font-size:1.1rem; font-weight:800; color:#fff; display:flex; align-items:center; gap:8px;">
-                        <span>📋</span> Generador de Reporte
+                        <span>ðŸ“‹</span> Generador de Reporte
                     </div>
                     <div style="font-size:0.7rem; color:rgba(255,255,255,0.6); margin-top:4px;">Acumula notas para el informe semanal</div>
                 </div>
@@ -690,28 +690,28 @@
 
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
                 <button onclick="startDictation()" id="btnDictar" style="background:#3b82f6; color:#fff; border:none; padding:15px; border-radius:14px; font-weight:700; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;">
-                    <span id="dictarIcon">🎙️</span> <span id="dictarText">Dictar</span>
+                    <span id="dictarIcon">ðŸŽ™ï¸</span> <span id="dictarText">Dictar</span>
                 </button>
                 <button onclick="addManualNote()" style="background:rgba(255,255,255,0.05); color:#fff; border:1px solid rgba(255,255,255,0.1); padding:15px; border-radius:14px; font-weight:700; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
-                    ⌨️ Escribir
+                    âŒ¨ï¸ Escribir
                 </button>
             </div>
             
             <div style="display:grid; grid-template-columns:1fr 50px; gap:8px; margin-top:12px;">
                 <button onclick="generateReport()" id="btnReporte" style="background:#10b981; color:#fff; border:none; padding:15px; border-radius:14px; font-weight:700; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;">
-                    🚀 Generar PDF
+                    ðŸš€ Generar PDF
                 </button>
                 <button onclick="toggleGeminiConfig()" title="Configurar IA" style="background:rgba(255,255,255,0.1); color:#fff; border:none; border-radius:14px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1.2rem; width:50px;">
-                    ⚙️
+                    âš™ï¸
                 </button>
             </div>
 
             <div id="geminiConfigArea" style="display:none; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:12px; margin-top:12px;">
-                <div style="font-size:0.75rem; color:#fff; margin-bottom:8px; font-weight:700;">Configuración de IA (Gemini)</div>
-                <input type="password" id="geminiKeyInput" placeholder="Pega tu API Key aquí..." 
+                <div style="font-size:0.75rem; color:#fff; margin-bottom:8px; font-weight:700;">ConfiguraciÃ³n de IA (Gemini)</div>
+                <input type="password" id="geminiKeyInput" placeholder="Pega tu API Key aquÃ­..." 
                     style="width:100%; padding:10px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:10px; color:#fff; font-size:0.85rem; outline:none; margin-bottom:10px;">
                 <button onclick="saveGeminiKeyInline()" style="width:100%; background:#3b82f6; color:#fff; border:none; padding:10px; border-radius:10px; font-weight:700; font-size:0.8rem; cursor:pointer;">
-                    Guardar Configuración
+                    Guardar ConfiguraciÃ³n
                 </button>
             </div>
 
@@ -723,7 +723,7 @@
 
             <div id="whatsappSendBtn" style="display:none; margin-top:12px;">
                 <button onclick="sendReportWhatsApp()" style="width:100%; background:linear-gradient(135deg,#25d366,#128c7e); color:#fff; border:none; padding:13px; border-radius:14px; font-weight:700; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
-                    📱 Enviar por WhatsApp a Clientes
+                    ðŸ“± Enviar por WhatsApp a Clientes
                 </button>
             </div>
         </div>
@@ -756,14 +756,14 @@
 
 <script>
 
-// ══════════════════════════════════════
-// ══ FIREBASE CONFIG — PEGA TUS VALORES AQUÍ ══
-// ══════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// â•â• FIREBASE CONFIG â€” PEGA TUS VALORES AQUÃ â•â•
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // 1. Ve a: https://console.firebase.google.com
 // 2. Crea un proyecto llamado "syd-constructores"
 // 3. Crea una app Web (</>)
 // 4. Crea Firestore Database (modo de prueba)
-// 5. Copia la config y pega los valores aquí:
+// 5. Copia la config y pega los valores aquÃ­:
 const FIREBASE_CONFIG = {
     apiKey:            "AIzaSyBT6HgmdI2PQAKu7dlGzvNVFLSQnhNqLLc",
     authDomain:        "syd-constructores.firebaseapp.com",
@@ -773,7 +773,7 @@ const FIREBASE_CONFIG = {
     appId:             "1:496488157373:web:d2d13880031b05547c67d4"
 };
 
-// ══ Firebase init (graceful — la app funciona sin Firebase) ══
+// â•â• Firebase init (graceful â€” la app funciona sin Firebase) â•â•
 let db = null;
 try {
     if (!FIREBASE_CONFIG.apiKey.includes('PEGA_AQUI')) {
@@ -781,13 +781,13 @@ try {
         db = firebase.firestore();
         console.log('[SYD] Firebase conectado');
     } else {
-        console.log('[SYD] Firebase no configurado — modo local');
+        console.log('[SYD] Firebase no configurado â€” modo local');
     }
 } catch(e) { console.warn('[SYD] Firebase error:', e.message); }
 
-// ══════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // GENERADOR DE REPORTES (Voz a Texto + PDF + IA)
-// ══════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 let recognition = null;
 let weeklyNotes = [];
 let GEMINI_API_KEY = localStorage.getItem('syd_gemini_key') || '';
@@ -798,7 +798,7 @@ async function loadGeminiKeyFromFirebase() {
         if (doc.exists && doc.data().apiKey) {
             GEMINI_API_KEY = doc.data().apiKey;
             localStorage.setItem('syd_gemini_key', GEMINI_API_KEY);
-            console.log('[SYD] ✅ Gemini key cargada desde Firebase');
+            console.log('[SYD] âœ… Gemini key cargada desde Firebase');
         }
     } catch(e) { console.log('[SYD] Gemini key desde localStorage'); }
 }
@@ -813,14 +813,14 @@ function toggleGeminiConfig() {
 
 async function saveGeminiKeyInline() {
     const key = document.getElementById('geminiKeyInput').value.trim();
-    if (!key) { alert('⚠️ La clave no puede estar vacía.'); return; }
+    if (!key) { alert('âš ï¸ La clave no puede estar vacÃ­a.'); return; }
     GEMINI_API_KEY = key;
     localStorage.setItem('syd_gemini_key', GEMINI_API_KEY);
     try {
         await db.collection('config').doc('gemini').set({ apiKey: key, updatedAt: new Date().toISOString() });
-        alert('✅ Clave de IA guardada (Firebase + local). No se perderá al actualizar.');
+        alert('âœ… Clave de IA guardada (Firebase + local). No se perderÃ¡ al actualizar.');
     } catch(e) {
-        alert('✅ Clave guardada localmente.\n⚠️ Firebase: ' + e.message);
+        alert('âœ… Clave guardada localmente.\nâš ï¸ Firebase: ' + e.message);
     }
     document.getElementById('geminiConfigArea').style.display = 'none';
 }
@@ -841,7 +841,7 @@ function initSpeech() {
     recognition.interimResults = false;
 
     recognition.onstart = () => {
-        document.getElementById('dictarIcon').textContent = '🛑';
+        document.getElementById('dictarIcon').textContent = 'ðŸ›‘';
         document.getElementById('dictarText').textContent = 'Grabando...';
         document.getElementById('btnDictar').style.background = '#ef4444';
         document.getElementById('dictationStatus').style.display = 'block';
@@ -853,7 +853,7 @@ function initSpeech() {
     };
 
     recognition.onend = () => {
-        document.getElementById('dictarIcon').textContent = '🎙️';
+        document.getElementById('dictarIcon').textContent = 'ðŸŽ™ï¸';
         document.getElementById('dictarText').textContent = 'Dictar';
         document.getElementById('btnDictar').style.background = '#3b82f6';
         document.getElementById('dictationStatus').style.display = 'none';
@@ -868,7 +868,7 @@ function initSpeech() {
 function startDictation() {
     if (!recognition) initSpeech();
     if (!recognition) {
-        addManualNote('Tu navegador no soporta dictado. Escribe tu nota aquí:');
+        addManualNote('Tu navegador no soporta dictado. Escribe tu nota aquÃ­:');
         return;
     }
     try {
@@ -885,7 +885,7 @@ function addManualNote(msg = 'Escribe tu nota sobre el avance:') {
 
 async function saveWeeklyNote(text) {
     if (!db) { alert('Error: Base de datos no conectada'); return; }
-    if (!session || !session.obra) { alert('Error: No hay una obra seleccionada en la sesión'); return; }
+    if (!session || !session.obra) { alert('Error: No hay una obra seleccionada en la sesiÃ³n'); return; }
     
     try {
         console.log('[SYD] Guardando nota en:', session.obra, 'Semana:', currentWeek);
@@ -897,12 +897,12 @@ async function saveWeeklyNote(text) {
                 usuario: session.email || 'anonimo'
             });
         
-        console.log('[SYD] Nota guardada con éxito');
-        alert('✅ Nota guardada correctamente');
+        console.log('[SYD] Nota guardada con Ã©xito');
+        alert('âœ… Nota guardada correctamente');
         loadWeeklyNotes();
     } catch(e) { 
         console.error('Error saving note:', e); 
-        alert('❌ Error al guardar nota: ' + e.message);
+        alert('âŒ Error al guardar nota: ' + e.message);
     }
 }
 
@@ -932,8 +932,8 @@ async function loadWeeklyNotes() {
         notesData.forEach(data => {
             html += `
                 <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:8px; padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.05);">
-                    <div style="flex:1;">• ${data.texto}</div>
-                    <button onclick="deleteSingleNote('${data.id}')" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:0.9rem; padding:0 4px;">✕</button>
+                    <div style="flex:1;">â€¢ ${data.texto}</div>
+                    <button onclick="deleteSingleNote('${data.id}')" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:0.9rem; padding:0 4px;">âœ•</button>
                 </div>
             `;
         });
@@ -962,7 +962,7 @@ async function loadWeeklyNotes() {
     }
 }
 async function deleteSingleNote(docId) {
-    if(!confirm('¿Borrar esta nota?')) return;
+    if(!confirm('Â¿Borrar esta nota?')) return;
     try {
         await db.collection('obras').doc(session.obra)
             .collection('report_notes').doc(docId).delete();
@@ -971,7 +971,7 @@ async function deleteSingleNote(docId) {
 }
 
 async function clearWeeklyNotes() {
-    if(!confirm('¿Seguro que deseas borrar todas las notas de esta semana?')) return;
+    if(!confirm('Â¿Seguro que deseas borrar todas las notas de esta semana?')) return;
     try {
         const snap = await db.collection('obras').doc(session.obra).collection('report_notes').where('semana', '==', currentWeek).get();
         const batch = db.batch();
@@ -986,7 +986,7 @@ async function generateReport() {
     const btn = document.getElementById('btnReporte');
     const oldText = btn.innerHTML;
     btn.disabled = true;
-    btn.innerHTML = '⏳ Preparando...';
+    btn.innerHTML = 'â³ Preparando...';
 
     try {
         // 1. Buscar fotos de la obra (SIN filtro de semana para no perderse ninguna)
@@ -1003,31 +1003,31 @@ async function generateReport() {
             descripciones: fotoUrls.slice(0,4).map((_,i) => `Vista de avance ${i+1}`)
         };
         while (reportData.avances.length < 4) reportData.avances.push('Actividad de obra en proceso');
-        while (reportData.descripciones.length < 4) reportData.descripciones.push('Evidencia fotográfica del avance');
+        while (reportData.descripciones.length < 4) reportData.descripciones.push('Evidencia fotogrÃ¡fica del avance');
 
         // 3. Llamar a Gemini si hay API Key
         if (GEMINI_API_KEY) {
-            btn.innerHTML = '🤖 IA Analizando...';
+            btn.innerHTML = 'ðŸ¤– IA Analizando...';
             try {
                 const notasTexto = weeklyNotes.map((n, i) => `${i + 1}. ${n}`).join('\n');
-                const prompt = `Actúa como el Director de Obra de SYD Constructores redactando un AVANCE DE OBRA SEMANAL para el propietario. El tono debe ser profesional, impecable y ejecutivo, pero con un lenguaje natural que un cliente adulto entienda sin necesidad de ser ingeniero.
+                const prompt = `ActÃºa como el Director de Obra de SYD Constructores redactando un AVANCE DE OBRA SEMANAL para el propietario. El tono debe ser profesional, impecable y ejecutivo, pero con un lenguaje natural que un cliente adulto entienda sin necesidad de ser ingeniero.
 
 TAREA: Redacta un reporte basado en las notas de campo del residente.
 
 REGLAS DE VOCABULARIO Y ESTILO:
-1. PROHIBIDO usar lenguaje robótico o traducciones literales como: "envoltura exterior", "envolvente", "aparatos sanitarios", "módulos de baño", "habilitación de elementos".
-2. USA términos naturales de construcción en México: "Fachada", "Enjarres", "Firme de concreto", "Baños", "Instalación de muebles de baño", "Cancelería", "Carpintería", "Muros", "Pisos".
-3. Describe lo VISUAL: Explica qué se ve en las fotos de forma clara. Ejemplo: "Se concluyó el detallado de pintura en la fachada principal".
-4. Evita muletillas informales como: "todo listo", "ya quedó", "falta poco".
-5. Mantén la formalidad (tercera persona) pero con calidez humana.
+1. PROHIBIDO usar lenguaje robÃ³tico o traducciones literales como: "envoltura exterior", "envolvente", "aparatos sanitarios", "mÃ³dulos de baÃ±o", "habilitaciÃ³n de elementos".
+2. USA tÃ©rminos naturales de construcciÃ³n en MÃ©xico: "Fachada", "Enjarres", "Firme de concreto", "BaÃ±os", "InstalaciÃ³n de muebles de baÃ±o", "CancelerÃ­a", "CarpinterÃ­a", "Muros", "Pisos".
+3. Describe lo VISUAL: Explica quÃ© se ve en las fotos de forma clara. Ejemplo: "Se concluyÃ³ el detallado de pintura en la fachada principal".
+4. Evita muletillas informales como: "todo listo", "ya quedÃ³", "falta poco".
+5. MantÃ©n la formalidad (tercera persona) pero con calidez humana.
 
 NOTAS DE CAMPO (Material de referencia):
 ${notasTexto}
 
 CONTEXTO: Proyecto residencial de alta gama. Fase: ${currentObra?.name || 'Obra actual'}.
 
-Devuelve ÚNICAMENTE este JSON sin markdown:
-{"resumen":"[3 párrafos narrativos y profesionales]","avances":["[Lista de logros alcanzados]"],"descripciones":["[Exactamente ${fotoUrls.length} pies de foto descriptivos y claros]"]}`;
+Devuelve ÃšNICAMENTE este JSON sin markdown:
+{"resumen":"[3 pÃ¡rrafos narrativos y profesionales]","avances":["[Lista de logros alcanzados]"],"descripciones":["[Exactamente ${fotoUrls.length} pies de foto descriptivos y claros]"]}`;
 
                 const response = await fetch(
                     `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
@@ -1051,10 +1051,10 @@ Devuelve ÚNICAMENTE este JSON sin markdown:
                             reportData.avances = aiJson.avances.slice(0, 4);
                         if (Array.isArray(aiJson.descripciones) && aiJson.descripciones.length > 0)
                             reportData.descripciones = aiJson.descripciones.slice(0, 4);
-                        console.log('[SYD] ✅ IA generó el informe correctamente');
+                        console.log('[SYD] âœ… IA generÃ³ el informe correctamente');
                     }
                 } else if (data.error) {
-                    alert(`⚠️ Gemini: ${data.error.message}`);
+                    alert(`âš ï¸ Gemini: ${data.error.message}`);
                 }
             } catch (aiErr) {
                 console.error('[SYD] Error Gemini:', aiErr);
@@ -1062,7 +1062,7 @@ Devuelve ÚNICAMENTE este JSON sin markdown:
         }
 
         // 4. Cargar plantilla HTML
-        btn.innerHTML = '📄 Generando PDF...';
+        btn.innerHTML = 'ðŸ“„ Generando PDF...';
         const templateResponse = await fetch('plantilla_syd.html');
         if (!templateResponse.ok) throw new Error('No se pudo cargar plantilla_syd.html');
         let html = await templateResponse.text();
@@ -1116,14 +1116,14 @@ Devuelve ÚNICAMENTE este JSON sin markdown:
                 background:#1e3a8a; color:#fff; padding:12px 20px;
                 display:flex; align-items:center; justify-content:space-between;
                 font-family:Arial,sans-serif; font-size:14px; box-shadow:0 2px 10px rgba(0,0,0,0.3);">
-                <span>📋 <strong>${fileName}</strong> — Listo para imprimir</span>
+                <span>ðŸ“‹ <strong>${fileName}</strong> â€” Listo para imprimir</span>
                 <div style="display:flex; gap:10px;">
                     <button onclick="window.print()" style="background:#10b981; color:#fff; border:none;
                         padding:8px 18px; border-radius:6px; font-size:14px; font-weight:700; cursor:pointer;">
-                        🖨️ Imprimir / Guardar PDF
+                        ðŸ–¨ï¸ Imprimir / Guardar PDF
                     </button>
                     <button onclick="window.close()" style="background:rgba(255,255,255,0.2); color:#fff; border:none;
-                        padding:8px 14px; border-radius:6px; font-size:13px; cursor:pointer;">✕ Cerrar</button>
+                        padding:8px 14px; border-radius:6px; font-size:13px; cursor:pointer;">âœ• Cerrar</button>
                 </div>
             </div>
             <div style="height:50px;"></div>
@@ -1132,16 +1132,16 @@ Devuelve ÚNICAMENTE este JSON sin markdown:
 
         const win = window.open('', '_blank');
         if (!win) {
-            alert('⚠️ Permite ventanas emergentes para generar el informe.');
+            alert('âš ï¸ Permite ventanas emergentes para generar el informe.');
             return;
         }
         win.document.write(printBtn + html);
         win.document.close();
         setTimeout(() => win.print(), 1500);
 
-        alert(`✅ Informe listo.\n📷 Fotos: ${Math.min(fotoUrls.length, 4)} de ${fotoUrls.length}\nUsa 🖨️ Imprimir / Guardar PDF en la nueva ventana.`);
+        alert(`âœ… Informe listo.\nðŸ“· Fotos: ${Math.min(fotoUrls.length, 4)} de ${fotoUrls.length}\nUsa ðŸ–¨ï¸ Imprimir / Guardar PDF en la nueva ventana.`);
 
-        // Mostrar botón de WhatsApp
+        // Mostrar botÃ³n de WhatsApp
         document.getElementById('whatsappSendBtn').style.display = 'block';
         window._lastReportName = fileName;
         window._lastReportWeek = currentWeek;
@@ -1154,9 +1154,9 @@ Devuelve ÚNICAMENTE este JSON sin markdown:
     }
 }
 
-// ══ Envio de Informe por WhatsApp ══
+// â•â• Envio de Informe por WhatsApp â•â•
 async function sendReportWhatsApp() {
-    if (!db) { alert('Firebase no está conectado.'); return; }
+    if (!db) { alert('Firebase no estÃ¡ conectado.'); return; }
     const obraId = session.obra;
     if (!obraId) { alert('No hay obra seleccionada.'); return; }
 
@@ -1179,17 +1179,17 @@ async function sendReportWhatsApp() {
         const clients = Object.entries(clientMap);
 
         if (clients.length === 0) {
-            alert('⚠️ No se encontraron clientes con teléfono registrado en esta obra.');
+            alert('âš ï¸ No se encontraron clientes con telÃ©fono registrado en esta obra.');
             return;
         }
 
         const hour = new Date().getHours();
-        const saludo = hour < 12 ? 'Buenos días' : 'Buenas tardes';
+        const saludo = hour < 12 ? 'Buenos dÃ­as' : 'Buenas tardes';
         const obraName = currentObra?.name || obraId;
         const semana = window._lastReportWeek || currentWeek;
         const fecha = new Date().toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' });
 
-        // 3. INICIAR FLUJO SECUENCIAL (Opción C)
+        // 3. INICIAR FLUJO SECUENCIAL (OpciÃ³n C)
         window._waQueue = clients;
         window._waIndex = 0;
         window._waActive = true;
@@ -1223,8 +1223,8 @@ async function sendReportWhatsApp() {
             
             if (idx >= total) {
                 card.innerHTML = `
-                    <div style="font-size:3rem; margin-bottom:15px;">✅</div>
-                    <div style="font-size:1.4rem; font-weight:800; margin-bottom:10px;">¡Todo enviado!</div>
+                    <div style="font-size:3rem; margin-bottom:15px;">âœ…</div>
+                    <div style="font-size:1.4rem; font-weight:800; margin-bottom:10px;">Â¡Todo enviado!</div>
                     <div style="font-size:0.9rem; color:#94a3b8; margin-bottom:24px;">Se han procesado los ${total} clientes.</div>
                     <button onclick="window._waActive=false; document.getElementById('${modalId}').remove()" style="width:100%; background:#3b82f6; color:#fff; border:none; padding:15px; border-radius:14px; font-weight:700; font-size:1rem; cursor:pointer;">
                         Finalizar
@@ -1238,7 +1238,7 @@ async function sendReportWhatsApp() {
             
             card.innerHTML = `
                 <div style="font-size:0.75rem; color:#f59e0b; font-weight:800; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px;">
-                    Envío Progresivo (${idx + 1} de ${total})
+                    EnvÃ­o Progresivo (${idx + 1} de ${total})
                 </div>
                 <div style="height:6px; background:rgba(255,255,255,0.1); border-radius:3px; margin-bottom:24px; overflow:hidden;">
                     <div style="width:${pct}%; height:100%; background:#f59e0b; transition:width 0.3s;"></div>
@@ -1251,7 +1251,7 @@ async function sendReportWhatsApp() {
                 </div>
 
                 <button onclick="window._sendCurrentWA_Gantt()" style="width:100%; background:#25d366; color:#fff; border:none; padding:18px; border-radius:16px; font-weight:800; font-size:1.1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:16px;">
-                    <span>📱 ENVIAR</span>
+                    <span>ðŸ“± ENVIAR</span>
                 </button>
 
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
@@ -1272,9 +1272,9 @@ async function sendReportWhatsApp() {
 
 Le enviamos el informe semanal correspondiente a los trabajos realizados en su obra *${obraName}*.
 
-📅 Semana ${semana} — ${fecha}
+ðŸ“… Semana ${semana} â€” ${fecha}
 
-Cualquier duda estamos a sus órdenes.
+Cualquier duda estamos a sus Ã³rdenes.
 
 _SYD Constructores_`;
 
@@ -1327,7 +1327,7 @@ function getBase64ImageSafe(url) {
     });
 }
 
-// ══ Log de acceso a Firestore ══
+// â•â• Log de acceso a Firestore â•â•
 async function logAccess(email, role, action='login', extra={}) {
     if (!db) return;
     try {
@@ -1342,7 +1342,7 @@ async function logAccess(email, role, action='login', extra={}) {
     } catch(e) { console.warn('Log error:', e.message); }
 }
 
-// ══ Render panel REGISTROS FULL (NUEVO) ══
+// â•â• Render panel REGISTROS FULL (NUEVO) â•â•
 async function renderRegistrosCompletos(el) {
     if (!el) el = document.getElementById('accesosContent');
     if (!el) return;
@@ -1350,20 +1350,20 @@ async function renderRegistrosCompletos(el) {
     el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted)">Cargando...</div>';
     try {
         const snap = await db.collection('access_logs').orderBy('timestamp','desc').limit(50).get();
-        if (snap.empty) { el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted)">Sin registros aún</div>'; return; }
-        const roleIcon = {master:'⚡',observer:'👁',client:'🏠'};
+        if (snap.empty) { el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted)">Sin registros aÃºn</div>'; return; }
+        const roleIcon = {master:'âš¡',observer:'ðŸ‘',client:'ðŸ '};
         const actionColor = {login:'#10b981', logout:'#64748b', registro:'#8b5cf6', registro_y_login:'#8b5cf6'};
-        const actionLabel = {login:'Entró', logout:'Salió', registro:'Nuevo Registro', registro_y_login:'Nuevo Registro'};
+        const actionLabel = {login:'EntrÃ³', logout:'SaliÃ³', registro:'Nuevo Registro', registro_y_login:'Nuevo Registro'};
         
         let html = `
             <div style="margin-bottom:12px; display:flex; flex-wrap:wrap; gap:10px; justify-content:space-between; align-items:center;">
                 <div style="display:flex; align-items:center; gap:12px;">
-                    <div style="font-size:0.7rem;color:var(--muted);">${snap.size} registro(s) · últimos 50</div>
+                    <div style="font-size:0.7rem;color:var(--muted);">${snap.size} registro(s) Â· Ãºltimos 50</div>
                     <button id="btnDeleteLogs" onclick="deleteSelectedLogs()" style="display:none; padding:5px 12px; background:#ef4444; color:#fff; border:none; border-radius:6px; font-size:0.7rem; font-weight:700; cursor:pointer;">
-                        🗑️ Eliminar seleccionados
+                        ðŸ—‘ï¸ Eliminar seleccionados
                     </button>
                 </div>
-                <input type="text" id="filterRegistros" placeholder="Búsqueda global..." 
+                <input type="text" id="filterRegistros" placeholder="BÃºsqueda global..." 
                        style="padding:6px 12px; border-radius:6px; border:1px solid var(--border); background:rgba(0,0,0,0.2); color:#fff; width: 220px; font-size:0.8rem; font-family:Inter,sans-serif;" 
                        onkeyup="filterRegistrosTable()">
             </div>
@@ -1374,11 +1374,11 @@ async function renderRegistrosCompletos(el) {
                             <th style="padding:10px 12px; width:30px;"><input type="checkbox" id="selectAllLogs" onclick="toggleSelectAllLogs(this)"></th>
                             <th style="padding:10px 12px; color:var(--muted); font-weight:600; vertical-align:top;">Fecha</th>
                             <th style="padding:10px 12px; color:var(--muted); font-weight:600; vertical-align:top;">
-                                Acción<br>
+                                AcciÃ³n<br>
                                 <select id="filterAccion" onchange="filterRegistrosTable()" style="background:var(--surface); color:#cbd5e1; border:1px solid var(--border); border-radius:4px; font-size:0.65rem; margin-top:6px; padding:3px; outline:none;">
                                     <option value="">Todas</option>
-                                    <option value="entró">Entró</option>
-                                    <option value="salió">Salió</option>
+                                    <option value="entrÃ³">EntrÃ³</option>
+                                    <option value="saliÃ³">SaliÃ³</option>
                                     <option value="nuevo registro">Nuevo Registro</option>
                                 </select>
                             </th>
@@ -1413,11 +1413,11 @@ async function renderRegistrosCompletos(el) {
                             <td class="col-accion" style="padding:10px 12px;">
                                 <span style="font-size:0.65rem;background:${color}22;color:${color};padding:2px 8px;border-radius:20px">${label}</span>
                             </td>
-                            <td class="col-usuario" style="padding:10px 12px; font-weight:600;">${d.email||'—'}</td>
-                            <td class="col-rol" style="padding:10px 12px;">${roleIcon[d.role]||''} ${d.role||'—'}</td>
-                            <td class="col-obra" style="padding:10px 12px; color:#a78bfa;">${d.obra || '—'}</td>
+                            <td class="col-usuario" style="padding:10px 12px; font-weight:600;">${d.email||'â€”'}</td>
+                            <td class="col-rol" style="padding:10px 12px;">${roleIcon[d.role]||''} ${d.role||'â€”'}</td>
+                            <td class="col-obra" style="padding:10px 12px; color:#a78bfa;">${d.obra || 'â€”'}</td>
                             <td class="col-detalles" style="padding:10px 12px; color:#a78bfa;">
-                                ${hasDetails ? `Nombre: ${d.nombre} | Clave: ${d.password} | WhatsApp: ${d.telefono||'—'}` : '—'}
+                                ${hasDetails ? `Nombre: ${d.nombre} | Clave: ${d.password} | WhatsApp: ${d.telefono||'â€”'}` : 'â€”'}
                             </td>
                         </tr>
             `;
@@ -1464,11 +1464,11 @@ function updateLogDeleteButton() {
 }
 
 async function deleteSelectedLogs() {
-    if (!confirm('¿Seguro que deseas eliminar los registros seleccionados?')) return;
+    if (!confirm('Â¿Seguro que deseas eliminar los registros seleccionados?')) return;
     const ids = Array.from(document.querySelectorAll('.log-check:checked')).map(c => c.value);
     const btn = document.getElementById('btnDeleteLogs');
     btn.disabled = true;
-    btn.textContent = '⏳ Eliminando...';
+    btn.textContent = 'â³ Eliminando...';
     
     try {
         const batch = db.batch();
@@ -1480,18 +1480,18 @@ async function deleteSelectedLogs() {
     } catch(e) {
         alert('Error al eliminar: ' + e.message);
         btn.disabled = false;
-        btn.textContent = '🗑️ Eliminar seleccionados';
+        btn.textContent = 'ðŸ—‘ï¸ Eliminar seleccionados';
     }
 }
 
-// ══ Log de cambios en avance (Punto 3) ══
+// â•â• Log de cambios en avance (Punto 3) â•â•
 let _cambioTimer = null;
 function updateProgress(zIdx, val) {
     if(session.role!=='master') return;
     val = parseFloat(val);
     const valorAnterior = projectData[zIdx].progress[currentWeek-1];
     projectData[zIdx].progress[currentWeek-1] = val;
-    // Debounce: guardar en Firebase 1.5s después de soltar el slider
+    // Debounce: guardar en Firebase 1.5s despuÃ©s de soltar el slider
     clearTimeout(_cambioTimer);
     _cambioTimer = setTimeout(() => {
         logCambio(zIdx, valorAnterior, val);
@@ -1529,7 +1529,7 @@ async function logCambio(zIdx, valorAnterior, valorNuevo) {
     } catch(e) { console.warn('logCambio error:', e.message); }
 }
 
-// ══ Render historial de cambios ══
+// â•â• Render historial de cambios â•â•
 async function renderHistorial(el) {
     if(!db) { el.innerHTML = '<div style="color:var(--muted);text-align:center;padding:20px">Firebase no conectado</div>'; return; }
     el.innerHTML = '<div style="text-align:center;padding:16px;color:var(--muted)">Cargando historial...</div>';
@@ -1537,14 +1537,14 @@ async function renderHistorial(el) {
         const snap = await db.collection('obras').doc('SAUCES')
             .collection('cambios_avance')
             .orderBy('timestamp','desc').limit(60).get();
-        if(snap.empty) { el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted)">Sin cambios registrados aún</div>'; return; }
+        if(snap.empty) { el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted)">Sin cambios registrados aÃºn</div>'; return; }
         const ZONE_C = ['#3b82f6','#8b5cf6','#10b981','#f59e0b','#ef4444'];
-        let html = `<div style="font-size:0.7rem;color:var(--muted);margin-bottom:10px">${snap.size} cambio(s) · últimos 60</div>`;
+        let html = `<div style="font-size:0.7rem;color:var(--muted);margin-bottom:10px">${snap.size} cambio(s) Â· Ãºltimos 60</div>`;
         snap.forEach(doc => {
             const d = doc.data();
             const zc = ZONE_C[d.zona_idx] || '#64748b';
             const diff = d.valor_nuevo - d.valor_anterior;
-            const arrow = diff >= 0 ? '↑' : '↓';
+            const arrow = diff >= 0 ? 'â†‘' : 'â†“';
             const dc = diff >= 0 ? '#10b981' : '#ef4444';
             html += `
             <div style="background:var(--surface);border:1px solid var(--border);
@@ -1553,14 +1553,14 @@ async function renderHistorial(el) {
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
                     <span style="font-weight:700;font-size:0.8rem;color:${zc}">${d.zona||''}</span>
                     <span style="font-size:0.75rem;font-weight:800;color:${dc}">
-                        ${arrow} ${d.valor_anterior}% → ${d.valor_nuevo}%
+                        ${arrow} ${d.valor_anterior}% â†’ ${d.valor_nuevo}%
                     </span>
                 </div>
                 <div style="font-size:0.72rem;color:var(--soft);margin-bottom:3px">
-                    Sem ${d.semana} · ${d.tarea||''}
+                    Sem ${d.semana} Â· ${d.tarea||''}
                 </div>
                 <div style="font-size:0.68rem;color:var(--muted)">
-                    ${d.fecha||''} · ${d.hora||''} · ${d.usuario||''}
+                    ${d.fecha||''} Â· ${d.hora||''} Â· ${d.usuario||''}
                 </div>
             </div>`;
         });
@@ -1568,7 +1568,7 @@ async function renderHistorial(el) {
     } catch(e) { el.innerHTML = `<div style="color:#f87171;padding:16px">Error: ${e.message}</div>`; }
 }
 
-// ══ Panel de accesos MEJORADO (con tabs Accesos / Historial) ══
+// â•â• Panel de accesos MEJORADO (con tabs Accesos / Historial) â•â•
 async function renderAccesos() {
     const container = document.getElementById('accesosContent');
     container.innerHTML = `
@@ -1578,14 +1578,14 @@ async function renderAccesos() {
                        border-radius:10px;background:rgba(59,130,246,0.15);
                        color:#93c5fd;font-size:0.75rem;font-weight:700;
                        font-family:Inter,sans-serif;cursor:pointer">
-                📲 Accesos (${db?'activo':'sin conex.'})
+                ðŸ“² Accesos (${db?'activo':'sin conex.'})
             </button>
             <button onclick="showAccesosTab('historial')" id="btnTabHistorial"
                 style="flex:1;padding:9px;border:1px solid rgba(255,255,255,0.08);
                        border-radius:10px;background:transparent;
                        color:var(--muted);font-size:0.75rem;font-weight:700;
                        font-family:Inter,sans-serif;cursor:pointer">
-                📄 Historial cambios
+                ðŸ“„ Historial cambios
             </button>
         </div>
         <div id="accesosSubLog"></div>
@@ -1613,7 +1613,7 @@ async function showAccesosTab(tab) {
 }
 
 
-// ══════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 let projectData = [];
 let OBRAS_CATALOG = [];
 let currentObra = null;
@@ -1645,9 +1645,9 @@ async function loadProjectData(obraId) {
     }
 }
 
-// ══════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // OBRA SELECTOR
-// ══════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 function showObraSelector() {
     document.getElementById('loginScreen').style.display    = 'none';
@@ -1655,7 +1655,7 @@ function showObraSelector() {
     document.getElementById('appShell').style.display      = 'none';
     // Role badge
     const rb = document.getElementById('selectorRoleBadge');
-    const labels = { master:'⚡ Master', observer:'👁 Supervisor' };
+    const labels = { master:'âš¡ Master', observer:'ðŸ‘ Supervisor' };
     rb.textContent = labels[session.role] || session.role;
     rb.className = 'selector-role-badge ' + session.role;
     // Build grid
@@ -1668,7 +1668,7 @@ function buildObrasGrid() {
         <div class="obra-card" onclick="selectObra('${obra.id}')">
             <img class="obra-card-img" src="${obra.img || ''}" alt="${obra.name}"
                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-            <div class="obra-card-img-fallback" style="display:none">${obra.emoji || '🏗️'}</div>
+            <div class="obra-card-img-fallback" style="display:none">${obra.emoji || 'ðŸ—ï¸'}</div>
             <span class="obra-card-status ${obra.status}">${obra.status}</span>
             <div class="obra-card-body">
                 <div class="obra-card-name">${obra.name}</div>
@@ -1688,9 +1688,9 @@ async function selectObra(obraId) {
     }
 }
 
-// ══════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // STATE
-// ══════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 let session = null;   // { role, email }
 let currentWeek = 1;
 let currentTab = 'tareas';
@@ -1704,23 +1704,23 @@ const AUTH = {
     client:   { code: 'SAUCES' }
 };
 
-// ══════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // LOGIN UI
-// ══════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 const HINTS = {
-    client:   '<strong>Cliente:</strong> Ingresa tu correo y la clave de acceso que te proporcionó SYD Constructores. Acceso en modo lectura a tu obra.',
-    observer: '<strong>Supervisor:</strong> Usa el código especial que te proporcionó el responsable de obra. Acceso de lectura a todas las obras.',
-    master:   '<strong>Master:</strong> Acceso total con código de administrador. Puedes actualizar el avance de todas las zonas.'
+    client:   '<strong>Cliente:</strong> Ingresa tu correo y la clave de acceso que te proporcionÃ³ SYD Constructores. Acceso en modo lectura a tu obra.',
+    observer: '<strong>Supervisor:</strong> Usa el cÃ³digo especial que te proporcionÃ³ el responsable de obra. Acceso de lectura a todas las obras.',
+    master:   '<strong>Master:</strong> Acceso total con cÃ³digo de administrador. Puedes actualizar el avance de todas las zonas.'
 };
-const DYN_LABEL = {client:'Código de Obra', observer:'Código de acceso', master:'Código maestro'};
-const DYN_PLACEHOLDER = {client:'Proporcionado por constructor', observer:'Código supervisor', master:'Código master'};
+const DYN_LABEL = {client:'CÃ³digo de Obra', observer:'CÃ³digo de acceso', master:'CÃ³digo maestro'};
+const DYN_PLACEHOLDER = {client:'Proporcionado por constructor', observer:'CÃ³digo supervisor', master:'CÃ³digo master'};
 let authMode = 'login'; // 'login' | 'register'
 
 function setAuthMode(mode, btn) {
     authMode = mode;
     document.querySelectorAll('.auth-toggle-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    // Mostrar generador de reportes solo a Master (si ya hay sesión)
+    // Mostrar generador de reportes solo a Master (si ya hay sesiÃ³n)
     const repCard = document.getElementById('reportGeneratorCard');
     if (repCard) {
         const isMaster = session && session.role === 'master';
@@ -1730,7 +1730,7 @@ function setAuthMode(mode, btn) {
     document.getElementById('fieldNombre').style.display = mode === 'register' ? 'block' : 'none';
     document.getElementById('fieldTelefono').style.display = mode === 'register' ? 'block' : 'none';
     document.getElementById('dynamicField').style.display = mode === 'register' ? 'block' : 'none'; // Only ask project code on register for client
-    document.getElementById('btnLoginAction').textContent = mode === 'register' ? 'Crear mi cuenta →' : 'Acceder al sistema →';
+    document.getElementById('btnLoginAction').textContent = mode === 'register' ? 'Crear mi cuenta â†’' : 'Acceder al sistema â†’';
     document.getElementById('loginError').classList.remove('show');
 }
 
@@ -1761,7 +1761,7 @@ function selectRole(role, btn) {
         document.getElementById('fieldNombre').style.display = 'none';
         document.getElementById('fieldTelefono').style.display = 'none';
         document.getElementById('dynamicField').style.display = 'block';
-        document.getElementById('btnLoginAction').textContent = 'Acceder al sistema →';
+        document.getElementById('btnLoginAction').textContent = 'Acceder al sistema â†’';
     }
 }
 
@@ -1783,13 +1783,13 @@ async function doRegister() {
     err.classList.remove('show');
 
     if(!name) { err.textContent='Ingresa tu nombre completo.'; err.classList.add('show'); return; }
-    if(!phone) { err.textContent='Ingresa tu número de WhatsApp.'; err.classList.add('show'); return; }
-    if(!email || !email.includes('@')) { err.textContent='Ingresa un correo válido.'; err.classList.add('show'); return; }
-    if(pass.length < 6) { err.textContent='La contraseña debe tener al menos 6 caracteres.'; err.classList.add('show'); return; }
+    if(!phone) { err.textContent='Ingresa tu nÃºmero de WhatsApp.'; err.classList.add('show'); return; }
+    if(!email || !email.includes('@')) { err.textContent='Ingresa un correo vÃ¡lido.'; err.classList.add('show'); return; }
+    if(pass.length < 6) { err.textContent='La contraseÃ±a debe tener al menos 6 caracteres.'; err.classList.add('show'); return; }
     if(!code) { err.textContent='Ingresa la clave de proyecto que te proporcionaron.'; err.classList.add('show'); return; }
 
     const foundObra = OBRAS_CATALOG.find(o => o.clientCode === code.toUpperCase());
-    if(!foundObra) { err.textContent='Clave de proyecto no válida.'; err.classList.add('show'); return; }
+    if(!foundObra) { err.textContent='Clave de proyecto no vÃ¡lida.'; err.classList.add('show'); return; }
 
     const btn = document.getElementById('btnLoginAction');
     const oldText = btn.textContent;
@@ -1821,7 +1821,7 @@ async function doRegister() {
         
         if(await loadProjectData(foundObra.id)) launchApp();
     } catch(e) {
-        err.textContent = 'Error: ' + (e.code === 'auth/email-already-in-use' ? 'Este correo ya está registrado.' : e.message);
+        err.textContent = 'Error: ' + (e.code === 'auth/email-already-in-use' ? 'Este correo ya estÃ¡ registrado.' : e.message);
         err.classList.add('show');
     } finally {
         btn.textContent = oldText; btn.disabled = false;
@@ -1835,7 +1835,7 @@ async function doLogin() {
     const btn   = document.getElementById('btnLoginAction');
     err.classList.remove('show');
 
-    if(!email || !pass) { err.textContent='Ingresa correo y contraseña.'; err.classList.add('show'); return; }
+    if(!email || !pass) { err.textContent='Ingresa correo y contraseÃ±a.'; err.classList.add('show'); return; }
 
     const oldText = btn.textContent;
     btn.textContent = 'Verificando...';
@@ -1873,11 +1873,11 @@ async function doLogin() {
     }
 }
 
-// ══════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // BIOMETRICS (WebAuthn)
-// ══════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 async function offerBiometricEnrollment() {
-    if (!confirm("¿Quieres activar el acceso con huella dactilar para entrar más rápido?")) return;
+    if (!confirm("Â¿Quieres activar el acceso con huella dactilar para entrar mÃ¡s rÃ¡pido?")) return;
     try {
         const challenge = new Uint8Array(32);
         window.crypto.getRandomValues(challenge);
@@ -1894,7 +1894,7 @@ async function offerBiometricEnrollment() {
         if (credential) {
             localStorage.setItem('syd_biometric_enrolled_' + user.uid, 'true');
             localStorage.setItem('syd_biometric_email', user.email);
-            alert("✅ Huella activada.");
+            alert("âœ… Huella activada.");
             updateBiometricButtonVisibility();
         }
     } catch (e) { console.error("Enrollment error:", e); }
@@ -1922,7 +1922,7 @@ function updateBiometricButtonVisibility() {
     localStorage.setItem('sauces_session', JSON.stringify(session));
     logAccess(email, session.role, 'login');
     
-    // Routing: master/observer → obra selector; client → direct to app
+    // Routing: master/observer â†’ obra selector; client â†’ direct to app
     if(session.role === 'client') {
         if(await loadProjectData(session.obra)) {
             launchApp();
@@ -1945,11 +1945,11 @@ function doLogout() {
     document.getElementById('loginCode').value = '';
 }
 
-// ══════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // APP LAUNCH
-// ══════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function launchApp() {
-    // master/observer without currentObra → go to selector
+    // master/observer without currentObra â†’ go to selector
     if((session.role==='master' || session.role==='observer') && !currentObra) {
         if(session.obra) {
             currentObra = OBRAS_CATALOG.find(o => o.id===session.obra) || OBRAS_CATALOG[0];
@@ -1985,7 +1985,7 @@ function launchApp() {
     if(btnBack) btnBack.style.display = session.role==='client' ? 'none' : 'block';
 
     // Subtitle with real obra name + Version
-    const version = 'v1.7.9';
+    const version = 'v1.8.0';
     document.getElementById('appSubtitle').textContent = (currentObra.name || 'Proyecto') + (currentObra.location ? ' \u00b7 ' + currentObra.location : '') + ' (' + version + ')';
 
     // Hero image (foto de la obra en la cabecera del tab Tareas)
@@ -2010,9 +2010,9 @@ function launchApp() {
     if(firstTab) { firstTab.classList.add('active'); }
 }
 
-// ══════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // BUILD
-// ══════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function buildWeekDots() {
     const c = document.getElementById('weekDots');
     c.innerHTML = '';
@@ -2036,9 +2036,9 @@ function buildGanttTable() {
     t.innerHTML=html;
 }
 
-// ══════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // MAIN UPDATE
-// ══════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function updateDashboard() {
     const slider = document.getElementById('weekSlider');
     currentWeek = parseInt(slider.value);
@@ -2081,9 +2081,9 @@ function updateGantt() {
     });
 }
 
-// ══════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // RENDER VIEWS
-// ══════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function getVisibleZones() {
     return projectData.map((d,i)=>({data:d,idx:i}));
 }
@@ -2112,7 +2112,7 @@ function renderTareas() {
             ? `<div class="edit-slider-row"><label>Avance:</label><input type="range" min="0" max="100" step="5" value="${prog}" oninput="updateProgress(${idx},this.value)" style="flex:1"></div>`
             : ``;
         const uploadHtml = canEdit
-            ? `<button class="btn-upload-foto" onclick="triggerFotoUpload(${idx})">📷 + Foto</button>
+            ? `<button class="btn-upload-foto" onclick="triggerFotoUpload(${idx})">ðŸ“· + Foto</button>
                <div class="upload-progress" id="up-prog-${idx}"></div>`
             : '';
         html+=`
@@ -2138,7 +2138,7 @@ function renderTareas() {
 }
 
 function renderDetalle() {
-    document.getElementById('detailTitle').textContent=`Órdenes de trabajo · Semana ${currentWeek}`;
+    document.getElementById('detailTitle').textContent=`Ã“rdenes de trabajo Â· Semana ${currentWeek}`;
     const zones = getVisibleZones();
     const canEdit = session.role==='master';
     let html='';
@@ -2162,7 +2162,7 @@ function renderDetalle() {
         html+=`
         <div class="detail-card animate-in" style="animation-delay:${i*0.05}s;border-left:4px solid ${color}; padding-bottom:20px;">
             <div class="detail-card-zone">${row.zone}</div>
-            <div class="detail-card-title">📌 ${taskName}</div>
+            <div class="detail-card-title">ðŸ“Œ ${taskName}</div>
             <div style="font-size:0.75rem; color:var(--muted); margin-bottom:12px; line-height:1.4;">${weekDetail.desc || ''}</div>
             
             <div style="margin-bottom:15px;">
@@ -2211,9 +2211,9 @@ function renderAvance() {
     document.getElementById('avanceContent').innerHTML=html;
 }
 
-// ══════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // ACTIONS
-// ══════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // (updateProgress moved above with logCambio)
 
 
@@ -2236,9 +2236,9 @@ function switchTab(tabId, btn) {
     else if(tabId==='accesos') renderAccesos();
 }
 
-// ══════════════════════════════════════
-// ASISTENTE DE INSTALACIÓN (PWA)
-// ══════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ASISTENTE DE INSTALACIÃ“N (PWA)
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 let deferredPrompt;
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
@@ -2250,7 +2250,7 @@ function showInstallInstructions() {
     const isPWA = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
 
     if (isPWA) {
-        alert('✅ Ya estás usando la aplicación instalada.');
+        alert('âœ… Ya estÃ¡s usando la aplicaciÃ³n instalada.');
         return;
     }
 
@@ -2276,35 +2276,35 @@ function showInstallInstructions() {
     let content = '';
     if (isIOS) {
         content = `
-            <div style="font-size:3rem; margin-bottom:15px;">🍏</div>
+            <div style="font-size:3rem; margin-bottom:15px;">ðŸ</div>
             <h3 style="margin:0 0 10px; font-size:1.3rem;">Instalar en iPhone</h3>
             <p style="font-size:0.9rem; color:#64748b; margin-bottom:24px;">Sigue estos pasos para tener SYD en tu pantalla de inicio:</p>
             
             <div style="text-align:left; display:flex; flex-direction:column; gap:16px; margin-bottom:24px;">
                 <div style="display:flex; align-items:center; gap:15px;">
                     <div style="background:#f1f5f9; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; flex-shrink:0;">1</div>
-                    <div style="font-size:0.9rem;">Pulsa el botón <strong>Compartir</strong> <img src="https://img.icons8.com/ios/50/000000/share-rounded.png" style="width:18px; vertical-align:middle;">.</div>
+                    <div style="font-size:0.9rem;">Pulsa el botÃ³n <strong>Compartir</strong> <img src="https://img.icons8.com/ios/50/000000/share-rounded.png" style="width:18px; vertical-align:middle;">.</div>
                 </div>
                 <div style="display:flex; align-items:center; gap:15px;">
                     <div style="background:#f1f5f9; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; flex-shrink:0;">2</div>
-                    <div style="font-size:0.9rem;">Busca y pulsa <strong>"Añadir a pantalla de inicio"</strong>.</div>
+                    <div style="font-size:0.9rem;">Busca y pulsa <strong>"AÃ±adir a pantalla de inicio"</strong>.</div>
                 </div>
             </div>
         `;
     } else if (deferredPrompt) {
         content = `
-            <div style="font-size:3rem; margin-bottom:15px;">🤖</div>
+            <div style="font-size:3rem; margin-bottom:15px;">ðŸ¤–</div>
             <h3 style="margin:0 0 10px; font-size:1.3rem;">Instalar App</h3>
-            <p style="font-size:0.9rem; color:#64748b; margin-bottom:24px;">Pulsa el botón para instalar SYD en tu dispositivo.</p>
+            <p style="font-size:0.9rem; color:#64748b; margin-bottom:24px;">Pulsa el botÃ³n para instalar SYD en tu dispositivo.</p>
             <button id="nativeInstallBtn" style="width:100%; background:#3b82f6; color:#fff; border:none; padding:15px; border-radius:14px; font-weight:700; font-size:1rem; cursor:pointer; margin-bottom:15px;">
                 INSTALAR AHORA
             </button>
         `;
     } else {
         content = `
-            <div style="font-size:3rem; margin-bottom:15px;">🌐</div>
-            <h3 style="margin:0 0 10px; font-size:1.3rem;">Añadir a Pantalla</h3>
-            <p style="font-size:0.9rem; color:#64748b; margin-bottom:24px;">Pulsa en el Menú de tu navegador y busca <strong>"Añadir a pantalla de inicio"</strong>.</p>
+            <div style="font-size:3rem; margin-bottom:15px;">ðŸŒ</div>
+            <h3 style="margin:0 0 10px; font-size:1.3rem;">AÃ±adir a Pantalla</h3>
+            <p style="font-size:0.9rem; color:#64748b; margin-bottom:24px;">Pulsa en el MenÃº de tu navegador y busca <strong>"AÃ±adir a pantalla de inicio"</strong>.</p>
         `;
     }
 
@@ -2336,11 +2336,11 @@ document.addEventListener('touchend',e=>{
     if(Math.abs(dx)>60&&e.target.closest('.view')) changeWeek(dx>0?1:-1);
 },{passive:true});
 
-// ══════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // BOOT
-// ══════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 window.onload = async function() {
-    await loadGlobalData(); // Cargar catálogo de obras
+    await loadGlobalData(); // Cargar catÃ¡logo de obras
 
     const saved = localStorage.getItem('sauces_session');
     if(saved) {
@@ -2394,9 +2394,9 @@ function isElementVisible(el) {
 }
 </script>
 
-<!-- ══ LIGHTBOX ══ -->
+<!-- â•â• LIGHTBOX â•â• -->
 <div id="lightbox" onclick="closeLightbox()">
-    <button id="lightboxClose" onclick="closeLightbox()">×</button>
+    <button id="lightboxClose" onclick="closeLightbox()">Ã—</button>
     <img id="lightboxImg" src="" alt="">
     <div id="lightboxCaption"></div>
 </div>
@@ -2404,9 +2404,9 @@ function isElementVisible(el) {
 <input type="file" id="fotoInput" accept="image/*" capture="environment" style="display:none" onchange="handleFotoSelected(event)">
 
 <script>
-// ══════════════════════════════════════
-// IMGBB — FOTOS (Punto 4, sin tarjeta)
-// ══════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// IMGBB â€” FOTOS (Punto 4, sin tarjeta)
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 const IMGBB_API_KEY = 'ef497f7df24480c5df8656ba07fea071';
 
 let _uploadContext = null;
@@ -2430,12 +2430,12 @@ async function handleFotoSelected(e) {
 
     const ctx = _uploadContext;
     const progEl = document.getElementById('up-prog-' + ctx.zIdx);
-    if(progEl) { progEl.style.display='block'; progEl.textContent='⏳ Procesando imagen...'; }
+    if(progEl) { progEl.style.display='block'; progEl.textContent='â³ Procesando imagen...'; }
 
     try {
-        // Compresión optimizada para PDF (800px, 0.6 quality)
+        // CompresiÃ³n optimizada para PDF (800px, 0.6 quality)
         const base64 = await imageToBase64(file, 800, 0.6);
-        if(progEl) progEl.textContent = '⏳ Subiendo a ImgBB...';
+        if(progEl) progEl.textContent = 'â³ Subiendo a ImgBB...';
 
         const formData = new FormData();
         formData.append('key', IMGBB_API_KEY);
@@ -2468,19 +2468,19 @@ async function handleFotoSelected(e) {
                     hora:      new Date().toLocaleTimeString('es-MX')
                 });
         }
-        if(progEl) { progEl.textContent='✅ Foto subida'; setTimeout(()=>{ progEl.style.display='none'; },2500); }
+        if(progEl) { progEl.textContent='âœ… Foto subida'; setTimeout(()=>{ progEl.style.display='none'; },2500); }
         loadFotosGallery(ctx.zIdx, ctx.semana, 'gallery-' + ctx.zIdx);
         loadFotosGallery(ctx.zIdx, ctx.semana, 'dgallery-' + ctx.zIdx);
 
     } catch(err) {
-        if(progEl) { progEl.textContent='❌ Error: ' + err.message; }
+        if(progEl) { progEl.textContent='âŒ Error: ' + err.message; }
         console.error('ImgBB upload error:', err);
     }
 }
 
 let _fotoListeners = {};
 
-// — Cargar galería de fotos de una zona/semana (Tiempo Real)
+// â€” Cargar galerÃ­a de fotos de una zona/semana (Tiempo Real)
 function loadFotosGallery(zIdx, semana, containerId, filterByWeek = false) {
     const el = document.getElementById(containerId);
     if(!el) return;
@@ -2514,12 +2514,12 @@ function loadFotosGallery(zIdx, semana, containerId, filterByWeek = false) {
                 
                 docs = docs.slice(0, 10);
                 
-                let html = `<div class="foto-count-badge">📷 ${docs.length} foto(s) recientes de la zona</div>
+                let html = `<div class="foto-count-badge">ðŸ“· ${docs.length} foto(s) recientes de la zona</div>
                             <div class="foto-gallery">`;
                 docs.forEach(docData => {
                     const d = docData.data;
                     const thumbSrc = d.thumb || d.url;
-                    const caption = `${d.zona} · Sem ${d.semana} · ${d.tarea||''}`;
+                    const caption = `${d.zona} Â· Sem ${d.semana} Â· ${d.tarea||''}`;
                     html += `
                         <div style="position:relative; display:inline-block;">
                             <img class="foto-thumb" src="${thumbSrc}"
@@ -2531,7 +2531,7 @@ function loadFotosGallery(zIdx, semana, containerId, filterByWeek = false) {
                                             width:22px; height:22px; border-radius:50%; display:flex; align-items:center; 
                                             justify-content:center; font-size:0.7rem; cursor:pointer; border:2px solid var(--surface);
                                             box-shadow:0 2px 8px rgba(0,0,0,0.4);">
-                                    🗑️
+                                    ðŸ—‘ï¸
                                 </div>
                             ` : ''}
                         </div>`;
@@ -2549,7 +2549,7 @@ function loadFotosGallery(zIdx, semana, containerId, filterByWeek = false) {
 }
 async function deleteFoto(docId, event) {
     if (event) event.stopPropagation();
-    if (!confirm('¿Eliminar esta foto permanentemente?')) return;
+    if (!confirm('Â¿Eliminar esta foto permanentemente?')) return;
     try {
         await db.collection('obras').doc(session.obra || 'SAUCES')
             .collection('fotos').doc(docId).delete();
@@ -2559,7 +2559,7 @@ async function deleteFoto(docId, event) {
     }
 }
 
-// — Lightbox
+// â€” Lightbox
 function openLightbox(url, caption) {
     document.getElementById('lightboxImg').src = url;
     document.getElementById('lightboxCaption').textContent = caption;
@@ -2570,7 +2570,7 @@ function closeLightbox() {
     document.getElementById('lightboxImg').src = '';
 }
 
-// — Convertir imagen a base64 comprimida
+// â€” Convertir imagen a base64 comprimida
 function imageToBase64(file, maxWidth, quality) {
     return new Promise(resolve => {
         const reader = new FileReader();
@@ -2593,7 +2593,7 @@ function imageToBase64(file, maxWidth, quality) {
 }
 </script>
 
-<!-- ══ BANNER INSTALAR APP ══ -->
+<!-- â•â• BANNER INSTALAR APP â•â• -->
 <div id="installBanner" style="
     display:none;position:fixed;bottom:0;left:0;right:0;z-index:9000;
     background:linear-gradient(135deg,#1e293b,#0f172a);
@@ -2622,7 +2622,7 @@ function imageToBase64(file, maxWidth, quality) {
         </div>
     </div>
     <div class="install-btns">
-        <button class="btn-install" id="btnInstall">📲 Instalar gratis</button>
+        <button class="btn-install" id="btnInstall">ðŸ“² Instalar gratis</button>
         <button class="btn-dismiss" onclick="document.getElementById('installBanner').style.display='none'">Ahora no</button>
     </div>
 </div>
@@ -2633,20 +2633,20 @@ function imageToBase64(file, maxWidth, quality) {
         <div style="font-size:1.1rem; font-weight:800; color:#fff; margin-bottom:16px;">Instalar App en iPhone</div>
         <div style="display:flex; align-items:center; gap:12px; text-align:left; margin-bottom:16px; background:rgba(255,255,255,0.03); padding:12px; border-radius:12px;">
             <div style="width:28px; height:28px; border-radius:50%; background:#3b82f6; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; flex-shrink:0;">1</div>
-            <div style="font-size:0.82rem; color:#94a3b8;">Toca el botón <b>Compartir</b> (cuadrado con flecha arriba) en Safari.</div>
+            <div style="font-size:0.82rem; color:#94a3b8;">Toca el botÃ³n <b>Compartir</b> (cuadrado con flecha arriba) en Safari.</div>
         </div>
         <div style="display:flex; align-items:center; gap:12px; text-align:left; margin-bottom:16px; background:rgba(255,255,255,0.03); padding:12px; border-radius:12px;">
             <div style="width:28px; height:28px; border-radius:50%; background:#3b82f6; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; flex-shrink:0;">2</div>
-            <div style="font-size:0.82rem; color:#94a3b8;">Toca <b>"Añadir a pantalla de inicio"</b>.</div>
+            <div style="font-size:0.82rem; color:#94a3b8;">Toca <b>"AÃ±adir a pantalla de inicio"</b>.</div>
         </div>
         <button onclick="document.getElementById('iosModal').style.display='none'" style="padding:12px 24px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.1); color:#fff; border-radius:12px; font-weight:700; cursor:pointer; margin-top:10px;">Entendido</button>
     </div>
 </div>
 
 <script>
-// ══════════════════════════════════════
-// PWA — Service Worker + Install Banner
-// ══════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// PWA â€” Service Worker + Install Banner
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 let deferredPrompt = null;
 
 // Registrar Service Worker
@@ -2656,7 +2656,7 @@ if('serviceWorker' in navigator) {
         .catch(e => console.warn('[SYD] SW error:', e));
 }
 
-// Capturar evento de instalación (Android/Chrome)
+// Capturar evento de instalaciÃ³n (Android/Chrome)
 window.addEventListener('beforeinstallprompt', e => {
     e.preventDefault();
     deferredPrompt = e;
@@ -2695,7 +2695,7 @@ if(/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream && !window.n
 window.addEventListener('appinstalled', () => {
     localStorage.setItem('syd_installed','1');
     document.getElementById('installBanner').style.display = 'none';
-    console.log('[SYD] App instalada ✓');
+    console.log('[SYD] App instalada âœ“');
 });
 
 window.addEventListener('DOMContentLoaded', () => {
