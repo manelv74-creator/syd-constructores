@@ -1,13 +1,12 @@
-// SYD Constructores — Service Worker v1.4.2 (FIX-ZONAS)
-const CACHE_NAME = 'syd-app-v1.4.2';
+// SYD Constructores — Service Worker v1.7.0 (Security & Biometrics)
+const CACHE_NAME = 'syd-app-v1.7.0';
 
 const ASSETS = [
     '/syd-constructores/',
     '/syd-constructores/index.html',
+    '/syd-constructores/gantt_mobile.html',
     '/syd-constructores/assets/logo_syd.png',
-    '/syd-constructores/assets/obra_sauces.jpg',
     '/syd-constructores/database/projects.json',
-    '/syd-constructores/database/sauces.json',
     '/syd-constructores/manifest.json'
 ];
 
@@ -31,9 +30,15 @@ self.addEventListener('activate', e => {
 
 // Fetch: primero red, si falla usa caché
 self.addEventListener('fetch', e => {
+    // No cachear llamadas a APIs de Firebase o Google
+    if (e.request.url.includes('googleapis.com') || e.request.url.includes('firebase')) {
+        return;
+    }
+    
     e.respondWith(
         fetch(e.request)
             .then(resp => {
+                if (!resp || resp.status !== 200 || resp.type !== 'basic') return resp;
                 const clone = resp.clone();
                 caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
                 return resp;
