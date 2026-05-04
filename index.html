@@ -2159,31 +2159,24 @@ async function generateReport() {
             try {
                 // Prompt de texto — sin URLs (Gemini no puede descargarlas)
                 const notasTexto = weeklyNotes.map((n, i) => `${i + 1}. ${n}`).join('\n');
-                const prompt = `Eres un Ingeniero Civil Residente de Obra redactando un INFORME SEMANAL FORMAL para el cliente propietario de SYD Constructores.
+                const prompt = `Actúa como el Director de Obra de SYD Constructores redactando un AVANCE DE OBRA SEMANAL para el propietario. El tono debe ser profesional, impecable y ejecutivo, pero con un lenguaje natural que un cliente adulto entienda sin necesidad de ser ingeniero.
 
-TAREA: Reescribe las notas de campo como un documento técnico profesional de ingeniería civil.
+TAREA: Redacta un reporte basado en las notas de campo del residente.
 
-REGLAS ESTRICTAS — SI LAS INCUMPLES EL INFORME ES INVÁLIDO:
-1. NUNCA copies ni parafrasees las notas. Reescríbelas completamente con otro vocabulario.
-2. NUNCA uses lenguaje informal: "todo listo", "ya quedó", "el cliente", "nada más", "falta", "quedan listos", "listos para que".
-3. SIEMPRE escribe en tercera persona formal y voz pasiva técnica.
-4. USA OBLIGATORIAMENTE estos tipos de términos técnicos de construcción:
-   - "se ejecutó la instalación de [elemento]"
-   - "se completó la habilitación de los aparatos sanitarios"  
-   - "se verificó la hermeticidad del sistema hidráulico"
-   - "los muebles sanitarios fueron instalados y conectados a la red de suministro"
-   - "el firme de concreto se encuentra en condiciones óptimas para recibir el recubrimiento de piso"
-   - "se realizaron las pruebas hidráulicas reglamentarias"
-   - "los accesorios sanitarios presentan funcionamiento correcto"
-   - "se completó el proceso de acabados en los módulos de baño"
+REGLAS DE VOCABULARIO Y ESTILO:
+1. PROHIBIDO usar lenguaje robótico o traducciones literales como: "envoltura exterior", "envolvente", "aparatos sanitarios", "módulos de baño", "habilitación de elementos".
+2. USA términos naturales de construcción en México: "Fachada", "Enjarres", "Firme de concreto", "Baños", "Instalación de muebles de baño", "Cancelería", "Carpintería", "Muros", "Pisos".
+3. Describe lo VISUAL: Explica qué se ve en las fotos de forma clara. Ejemplo: "Se concluyó el detallado de pintura en la fachada principal".
+4. Evita muletillas informales como: "todo listo", "ya quedó", "falta poco".
+5. Mantén la formalidad (tercera persona) pero con calidez humana.
 
-NOTAS DEL RESIDENTE (material fuente — NO copiar):
+NOTAS DE CAMPO (Material de referencia):
 ${notasTexto}
 
-CONTEXTO: Proyecto de remodelación residencial. Fase actual: instalaciones hidráulico-sanitarias y acabados. ${fotoUrls.length} fotografías de avance disponibles.
+CONTEXTO: Proyecto residencial de alta gama. Fase: ${currentObra?.name || 'Obra actual'}.
 
 Devuelve ÚNICAMENTE este JSON sin markdown:
-{"resumen":"[3 párrafos técnicos]","avances":["[Lista de trabajos realizados - genera tantos como sea necesario]"],"descripciones":["[Genera exactamente ${fotoUrls.length} pies de foto técnicos, uno para cada imagen]"]}`;
+{"resumen":"[3 párrafos narrativos y profesionales]","avances":["[Lista de logros alcanzados]"],"descripciones":["[Exactamente ${fotoUrls.length} pies de foto descriptivos y claros]"]}`;
 
                 // Construir partes del mensaje: texto + imágenes en Base64
                 const parts = [{ text: prompt }];
