@@ -504,7 +504,7 @@
     </style>
 </head>
 <body>
-<div id="versionBadge">v1.7.7</div>
+<div id="versionBadge">v1.7.8</div>
 
 <!-- ══════════════ LOGIN SCREEN ══════════════ -->
 <div id="loginScreen">
@@ -600,7 +600,7 @@
                 </button>
             </div>
         </div>
-        <div class="login-footer">v1.7.7 · © 2025 SYD Constructores · Todos los derechos reservados</div>
+        <div class="login-footer">v1.7.8 · © 2025 SYD Constructores · Todos los derechos reservados</div>
     </div>
 </div>
 
@@ -1983,9 +1983,49 @@ window.onload = async function() {
             }
         } catch(e) { localStorage.removeItem('sauces_session'); }
     }
+
+    // No valid session — show login. Check for biometric first.
     setupLoginNavigation();
-    document.getElementById('loginScreen').style.display='flex';
+    document.getElementById('loginScreen').style.display = 'flex';
+
+    const biometricEmail = localStorage.getItem('syd_biometric_email');
+    const hasAuthenticator = window.PublicKeyCredential &&
+        await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable().catch(() => false);
+
+    if (biometricEmail && hasAuthenticator) {
+        showBiometricScreen(biometricEmail);
+    }
 };
+
+function showBiometricScreen(email) {
+    const loginForm = document.querySelector('.login-form');
+    const loginCard = document.querySelector('.login-card');
+    if (!loginForm || !loginCard) return;
+
+    loginForm.style.display = 'none';
+
+    // Remove existing if any
+    const existing = document.getElementById('biometricScreen');
+    if (existing) existing.remove();
+
+    const bioScreen = document.createElement('div');
+    bioScreen.id = 'biometricScreen';
+    bioScreen.innerHTML = `
+        <div style="text-align:center; padding:20px 0 30px;">
+            <div style="font-size:4rem; margin-bottom:16px;">☝️</div>
+            <div style="font-size:1.1rem; font-weight:800; color:#f1f5f9; margin-bottom:8px;">Bienvenido de nuevo</div>
+            <div style="font-size:0.85rem; color:#64748b; margin-bottom:28px;">${email}</div>
+            <button onclick="doBiometricLogin()" style="width:100%; background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:none; padding:18px; border-radius:14px; font-weight:800; font-size:1.05rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; box-shadow:0 4px 20px rgba(16,185,129,0.4); margin-bottom:16px;">
+                <span style="font-size:1.4rem;">☝️</span> Entrar con Huella
+            </button>
+            <button onclick="showPasswordForm()" style="width:100%; background:transparent; color:#64748b; border:1px solid rgba(255,255,255,0.08); padding:12px; border-radius:12px; font-size:0.85rem; cursor:pointer;">
+                Usar correo y contraseña
+            </button>
+        </div>
+    `;
+    loginCard.insertBefore(bioScreen, loginForm);
+}
+
 
 function setupLoginNavigation() {
     const ids = ['loginName', 'loginPhone', 'loginEmail', 'loginPassword', 'loginCode'];
@@ -3108,40 +3148,10 @@ window.addEventListener('appinstalled', () => {
     console.log('[SYD] App instalada ✓');
 });
 
-// Run biometric check immediately (DOM already loaded at this point)
-(function checkBiometricOnLoad() {
-    const biometricEmail = localStorage.getItem('syd_biometric_email');
-    const hasBiometric   = window.PublicKeyCredential && biometricEmail;
-
-    if (hasBiometric) {
-        const loginForm = document.querySelector('.login-form');   // form to hide
-        const loginCard = document.querySelector('.login-card');   // parent container
-        if (!loginForm || !loginCard) return;
-
-        loginForm.style.display = 'none';
-
-        const bioScreen = document.createElement('div');
-        bioScreen.id = 'biometricScreen';
-        bioScreen.innerHTML = `
-            <div style="text-align:center; padding:20px 0 30px;">
-                <div style="font-size:4rem; margin-bottom:16px;">☝️</div>
-                <div style="font-size:1.1rem; font-weight:800; color:#f1f5f9; margin-bottom:8px;">Acceso biométrico</div>
-                <div style="font-size:0.85rem; color:#64748b; margin-bottom:28px;">${biometricEmail}</div>
-                <button onclick="doBiometricLogin()" style="width:100%; background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:none; padding:18px; border-radius:14px; font-weight:800; font-size:1.05rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; box-shadow:0 4px 20px rgba(16,185,129,0.4); margin-bottom:16px;">
-                    <span style="font-size:1.4rem;">☝️</span> Entrar con Huella
-                </button>
-                <button onclick="showPasswordForm()" style="width:100%; background:transparent; color:#64748b; border:1px solid rgba(255,255,255,0.08); padding:12px; border-radius:12px; font-size:0.85rem; cursor:pointer;">
-                    Usar correo y contraseña
-                </button>
-            </div>
-        `;
-        loginCard.insertBefore(bioScreen, loginForm);
-    }
-
-    if (typeof updateBiometricButtonVisibility === 'function') {
-        updateBiometricButtonVisibility();
-    }
-})();
+// Biometric button visibility on login screen (fallback)
+if (typeof updateBiometricButtonVisibility === 'function') {
+    updateBiometricButtonVisibility();
+}
 
 function showPasswordForm() {
     const bio = document.getElementById('biometricScreen');
