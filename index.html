@@ -599,7 +599,7 @@
                 </button>
             </div>
         </div>
-        <div class="login-footer">v1.6.0 · © 2025 SYD Constructores · Todos los derechos reservados</div>
+        <div class="login-footer">v1.7.0 · © 2025 SYD Constructores · Todos los derechos reservados</div>
     </div>
 </div>
 
@@ -1483,66 +1483,54 @@ function updateBiometricButtonVisibility() {
 
 async function doLogin() {
     const email = document.getElementById('loginEmail').value.trim();
-    const pass  = document.getElementById('loginPassword').value;
-    const code  = document.getElementById('loginCode').value.trim();
+    const pass  = document.getElementById('loginCode').value; // In login mode, code field is used as password
     const err   = document.getElementById('loginError');
+    const btn   = document.getElementById('btnLoginAction');
     err.classList.remove('show');
 
-    if(!email || !email.includes('@')) { err.textContent='Ingresa un correo válido.'; err.classList.add('show'); return; }
+    if(!email || !pass) { err.textContent='Ingresa correo y contraseña.'; err.classList.add('show'); return; }
 
-    if(selectedRole === 'master') {
-        if(!code) { err.textContent='Ingresa el código master.'; err.classList.add('show'); return; }
-        if(code !== AUTH.master.code) { err.textContent='Código master incorrecto.'; err.classList.add('show'); return; }
-        session = { role:'master', email };
-    } else if(selectedRole === 'observer') {
-        if(!code) { err.textContent='Ingresa el código supervisor.'; err.classList.add('show'); return; }
-        if(code !== AUTH.observer.code) { err.textContent='Código de supervisor incorrecto.'; err.classList.add('show'); return; }
-        session = { role:'observer', email };
-    } else {
-        if(!pass) { err.textContent='Ingresa tu contraseña.'; err.classList.add('show'); return; }
+    const oldText = btn.textContent;
+    btn.textContent = 'Verificando identidad...';
+    btn.disabled = true;
+
+    try {
+        const userCredential = await firebase.auth().signInWithEmailAndPassword(email.toLowerCase(), pass);
+        const user = userCredential.user;
         
-        try {
-            const btn = document.getElementById('btnLoginAction');
-            const oldText = btn.textContent;
-            btn.textContent = 'Verificando...';
-            btn.disabled = true;
-
-            const snap = await db.collection('clientes')
-                                .where('email', '==', email.toLowerCase())
-                                .where('password', '==', pass)
-                                .get();
-            
-            btn.textContent = oldText;
-            btn.disabled = false;
-
-            if(snap.empty) {
-                err.textContent = 'Correo o contraseña incorrectos.';
-                err.classList.add('show');
-                return;
-            }
-
-            const clientData = snap.docs[0].data();
-            session = { role: 'client', email: clientData.email, nombre: clientData.nombre, telefono: clientData.telefono || '', obra: clientData.obra };
-        } catch(e) {
-            console.error("Login error:", e);
-            err.textContent = 'Error conectando con la base de datos.';
-            err.classList.add('show');
-            return;
-        }
-    }
-
-    localStorage.setItem('sauces_session', JSON.stringify(session));
-    logAccess(email, session.role, 'login');
-    
-    // Routing: master/observer → obra selector; client → direct to app
-    if(session.role === 'client') {
-        if(await loadProjectData(session.obra)) {
-            launchApp();
+        // Fetch role from Firestore
+        const userDoc = await db.collection('users').doc(user.uid).get();
+        let role = 'client';
+        let obra = 'ARAUCA182';
+        
+        if(userDoc.exists) {
+            const userData = userDoc.data();
+            role = userData.role || 'client';
+            obra = userData.obra || 'ARAUCA182';
+            session = { ...userData, uid: user.uid };
         } else {
-            err.textContent='Error cargando datos de la obra.'; err.classList.add('show');
+            session = { role: 'client', email: user.email, uid: user.uid, obra: 'ARAUCA182' };
         }
-    } else {
-        showObraSelector();
+
+        localStorage.setItem('sauces_session', JSON.stringify(session));
+        logAccess(user.email, session.role, 'login', { uid: user.uid });
+
+        // Check Biometric Enrollment
+        if (window.PublicKeyCredential && !localStorage.getItem('syd_biometric_enrolled_' + user.uid)) {
+            setTimeout(offerBiometricEnrollment, 1500);
+        }
+
+        if(session.role === 'client') {
+            if(await loadProjectData(session.obra)) launchApp();
+        } else {
+            showObraSelector();
+        }
+    } catch(e) {
+        console.error("Login error:", e);
+        err.textContent = 'Acceso denegado. Verifica tus credenciales.';
+        err.classList.add('show');
+    } finally {
+        btn.textContent = oldText; btn.disabled = false;
     }
 }
 
@@ -1597,7 +1585,7 @@ function launchApp() {
     if(btnBack) btnBack.style.display = session.role==='client' ? 'none' : 'block';
 
     // Subtitle with real obra name + Version
-    const version = 'v1.6.0';
+    const version = 'v1.7.0';
     document.getElementById('appSubtitle').textContent = (currentObra.name || 'Proyecto') + (currentObra.location ? ' · ' + currentObra.location : '') + ' (' + version + ')';
 
     // Generador de reporte visibility
