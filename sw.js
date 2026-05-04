@@ -1,5 +1,5 @@
-// SYD Constructores — Service Worker v1.7.0 (Security & Biometrics)
-const CACHE_NAME = 'syd-app-v1.7.0';
+// SYD Constructores — Service Worker v1.7.1 (Fix Buttons)
+const CACHE_NAME = 'syd-app-v1.7.1';
 
 const ASSETS = [
     '/syd-constructores/',

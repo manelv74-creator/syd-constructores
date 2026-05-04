@@ -503,7 +503,7 @@
     </style>
 </head>
 <body>
-<div id="versionBadge">v1.7.0</div>
+<div id="versionBadge">v1.7.1</div>
 
 <!-- ══════════════ LOGIN SCREEN ══════════════ -->
 <div id="loginScreen">
@@ -599,7 +599,7 @@
                 </button>
             </div>
         </div>
-        <div class="login-footer">v1.7.0 · © 2025 SYD Constructores · Todos los derechos reservados</div>
+        <div class="login-footer">v1.7.1 · © 2025 SYD Constructores · Todos los derechos reservados</div>
     </div>
 </div>
 
@@ -610,7 +610,7 @@
             <img src="assets/logo_syd.png" class="selector-logo-small" alt="SYD">
             <div>
                 <div class="selector-title">SYD Constructores</div>
-                <div class="selector-subtitle">Selecciona una obra · v1.7.0</div>
+                <div class="selector-subtitle">Selecciona una obra · v1.7.1</div>
             </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px">
@@ -631,7 +631,7 @@
     <div class="header-row">
         <div>
             <div class="app-title">🏗 SYD Constructores</div>
-            <div class="app-subtitle" id="appSubtitle">Sistema de Gestión de Obras v1.7.0</div>
+            <div class="app-subtitle" id="appSubtitle">Sistema de Gestión de Obras v1.7.1</div>
         </div>
         <div class="header-right" style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
             <div style="display:flex; align-items:center; gap:6px;">
@@ -743,7 +743,7 @@
             </div>
             
             <div style="margin-top:20px; text-align:center; opacity:0.3; font-size:0.6rem; color:#fff;">
-                SYD v1.7.0 (SECURITY-BIO) <br>
+                SYD v1.7.1 (SECURITY-BIO-FIX) <br>
                 <span onclick="forceUpdateApp()" style="text-decoration:underline; cursor:pointer;">Forzar actualización de versión</span>
             </div>
         </div>
@@ -1587,7 +1587,7 @@ function launchApp() {
     if(btnBack) btnBack.style.display = session.role==='client' ? 'none' : 'block';
 
     // Subtitle with real obra name + Version
-    const version = 'v1.7.0';
+    const version = 'v1.7.1';
     document.getElementById('appSubtitle').textContent = (currentObra.name || 'Proyecto') + (currentObra.location ? ' · ' + currentObra.location : '') + ' (' + version + ')';
 
     // Generador de reporte visibility
