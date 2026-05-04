@@ -504,7 +504,7 @@
     </style>
 </head>
 <body>
-<div id="versionBadge">v1.7.5</div>
+<div id="versionBadge">v1.7.6</div>
 
 <!-- ══════════════ LOGIN SCREEN ══════════════ -->
 <div id="loginScreen">
@@ -600,7 +600,7 @@
                 </button>
             </div>
         </div>
-        <div class="login-footer">v1.7.5 · © 2025 SYD Constructores · Todos los derechos reservados</div>
+        <div class="login-footer">v1.7.6 · © 2025 SYD Constructores · Todos los derechos reservados</div>
     </div>
 </div>
 
@@ -3105,8 +3105,11 @@ window.addEventListener('appinstalled', () => {
     const hasBiometric   = window.PublicKeyCredential && biometricEmail;
 
     if (hasBiometric) {
-        const loginForm = document.querySelector('.login-form');
-        if (loginForm) loginForm.style.display = 'none';
+        const loginForm = document.querySelector('.login-form');   // form to hide
+        const loginCard = document.querySelector('.login-card');   // parent container
+        if (!loginForm || !loginCard) return;
+
+        loginForm.style.display = 'none';
 
         const bioScreen = document.createElement('div');
         bioScreen.id = 'biometricScreen';
@@ -3123,8 +3126,7 @@ window.addEventListener('appinstalled', () => {
                 </button>
             </div>
         `;
-        const loginBox = document.querySelector('.login-box');
-        if (loginBox) loginBox.insertBefore(bioScreen, loginForm);
+        loginCard.insertBefore(bioScreen, loginForm);
     }
 
     if (typeof updateBiometricButtonVisibility === 'function') {
