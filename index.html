@@ -504,7 +504,7 @@
     </style>
 </head>
 <body>
-<div id="versionBadge">v1.7.4</div>
+<div id="versionBadge">v1.7.5</div>
 
 <!-- ══════════════ LOGIN SCREEN ══════════════ -->
 <div id="loginScreen">
@@ -600,7 +600,7 @@
                 </button>
             </div>
         </div>
-        <div class="login-footer">v1.7.4 · © 2025 SYD Constructores · Todos los derechos reservados</div>
+        <div class="login-footer">v1.7.5 · © 2025 SYD Constructores · Todos los derechos reservados</div>
     </div>
 </div>
 
@@ -3099,12 +3099,12 @@ window.addEventListener('appinstalled', () => {
     console.log('[SYD] App instalada ✓');
 });
 
-window.addEventListener('DOMContentLoaded', () => {
+// Run biometric check immediately (DOM already loaded at this point)
+(function checkBiometricOnLoad() {
     const biometricEmail = localStorage.getItem('syd_biometric_email');
     const hasBiometric   = window.PublicKeyCredential && biometricEmail;
 
     if (hasBiometric) {
-        // ── Show biometric screen, hide password form ──
         const loginForm = document.querySelector('.login-form');
         if (loginForm) loginForm.style.display = 'none';
 
@@ -3123,20 +3123,14 @@ window.addEventListener('DOMContentLoaded', () => {
                 </button>
             </div>
         `;
-        // Insert biometric screen before the login form
         const loginBox = document.querySelector('.login-box');
         if (loginBox) loginBox.insertBefore(bioScreen, loginForm);
-
-        // Auto-trigger biometric after 800ms
-        setTimeout(() => {
-            if (document.getElementById('biometricScreen')) doBiometricLogin();
-        }, 800);
     }
 
     if (typeof updateBiometricButtonVisibility === 'function') {
         updateBiometricButtonVisibility();
     }
-});
+})();
 
 function showPasswordForm() {
     const bio = document.getElementById('biometricScreen');
