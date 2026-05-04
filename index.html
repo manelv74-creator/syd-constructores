@@ -504,7 +504,7 @@
     </style>
 </head>
 <body>
-<div id="versionBadge">v1.7.1</div>
+<div id="versionBadge">v1.7.3</div>
 
 <!-- ══════════════ LOGIN SCREEN ══════════════ -->
 <div id="loginScreen">
@@ -600,7 +600,7 @@
                 </button>
             </div>
         </div>
-        <div class="login-footer">v1.7.2 · © 2025 SYD Constructores · Todos los derechos reservados</div>
+        <div class="login-footer">v1.7.3 · © 2025 SYD Constructores · Todos los derechos reservados</div>
     </div>
 </div>
 
@@ -1470,16 +1470,8 @@ async function doBiometricLogin() {
 
 function updateBiometricButtonVisibility() {
     const btn = document.getElementById('btnBiometric');
-    if (window.PublicKeyCredential && localStorage.getItem('syd_biometric_email')) {
-        btn.style.display = 'flex';
-    } else {
-        btn.style.display = 'none';
-    }
-}
-        err.textContent = 'Error al conectar con la base de datos.';
-        err.classList.add('show');
-        document.getElementById('btnLoginAction').disabled = false;
-        document.getElementById('btnLoginAction').textContent = 'Crear mi cuenta →';
+    if (btn) {
+        btn.style.display = (window.PublicKeyCredential && localStorage.getItem('syd_biometric_email')) ? 'flex' : 'none';
     }
 }
 
