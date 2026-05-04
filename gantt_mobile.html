@@ -1751,11 +1751,17 @@ function selectRole(role, btn) {
         document.getElementById('fieldTelefono').style.display = authMode === 'register' ? 'block' : 'none';
         document.getElementById('dynamicField').style.display = authMode === 'register' ? 'block' : 'none';
     } else {
+        // Reset to login mode for Master/Supervisor
+        if(authMode === 'register') {
+            const loginBtn = document.querySelector('.auth-toggle-btn');
+            if(loginBtn) setAuthMode('login', loginBtn);
+        }
         document.getElementById('clientAuthToggle').style.display = 'none';
         document.getElementById('fieldPassword').style.display = 'none';
         document.getElementById('fieldNombre').style.display = 'none';
         document.getElementById('fieldTelefono').style.display = 'none';
         document.getElementById('dynamicField').style.display = 'block';
+        document.getElementById('btnLoginAction').textContent = 'Acceder al sistema →';
     }
 }
 
