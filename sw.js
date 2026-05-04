@@ -1,5 +1,5 @@
-// SYD Constructores — Service Worker v1.7.3 (Syntax Fix)
-const CACHE_NAME = 'syd-app-v1.7.3';
+// SYD Constructores — Service Worker v1.7.4 (Biometric UX)
+const CACHE_NAME = 'syd-app-v1.7.4';
 
 const ASSETS = [
     '/syd-constructores/',

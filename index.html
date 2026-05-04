@@ -504,7 +504,7 @@
     </style>
 </head>
 <body>
-<div id="versionBadge">v1.7.3</div>
+<div id="versionBadge">v1.7.4</div>
 
 <!-- ══════════════ LOGIN SCREEN ══════════════ -->
 <div id="loginScreen">
@@ -600,7 +600,7 @@
                 </button>
             </div>
         </div>
-        <div class="login-footer">v1.7.3 · © 2025 SYD Constructores · Todos los derechos reservados</div>
+        <div class="login-footer">v1.7.4 · © 2025 SYD Constructores · Todos los derechos reservados</div>
     </div>
 </div>
 
@@ -3100,10 +3100,50 @@ window.addEventListener('appinstalled', () => {
 });
 
 window.addEventListener('DOMContentLoaded', () => {
+    const biometricEmail = localStorage.getItem('syd_biometric_email');
+    const hasBiometric   = window.PublicKeyCredential && biometricEmail;
+
+    if (hasBiometric) {
+        // ── Show biometric screen, hide password form ──
+        const loginForm = document.querySelector('.login-form');
+        if (loginForm) loginForm.style.display = 'none';
+
+        const bioScreen = document.createElement('div');
+        bioScreen.id = 'biometricScreen';
+        bioScreen.innerHTML = `
+            <div style="text-align:center; padding:20px 0 30px;">
+                <div style="font-size:4rem; margin-bottom:16px;">☝️</div>
+                <div style="font-size:1.1rem; font-weight:800; color:#f1f5f9; margin-bottom:8px;">Acceso biométrico</div>
+                <div style="font-size:0.85rem; color:#64748b; margin-bottom:28px;">${biometricEmail}</div>
+                <button onclick="doBiometricLogin()" style="width:100%; background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:none; padding:18px; border-radius:14px; font-weight:800; font-size:1.05rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; box-shadow:0 4px 20px rgba(16,185,129,0.4); margin-bottom:16px;">
+                    <span style="font-size:1.4rem;">☝️</span> Entrar con Huella
+                </button>
+                <button onclick="showPasswordForm()" style="width:100%; background:transparent; color:#64748b; border:1px solid rgba(255,255,255,0.08); padding:12px; border-radius:12px; font-size:0.85rem; cursor:pointer;">
+                    Usar correo y contraseña
+                </button>
+            </div>
+        `;
+        // Insert biometric screen before the login form
+        const loginBox = document.querySelector('.login-box');
+        if (loginBox) loginBox.insertBefore(bioScreen, loginForm);
+
+        // Auto-trigger biometric after 800ms
+        setTimeout(() => {
+            if (document.getElementById('biometricScreen')) doBiometricLogin();
+        }, 800);
+    }
+
     if (typeof updateBiometricButtonVisibility === 'function') {
         updateBiometricButtonVisibility();
     }
 });
+
+function showPasswordForm() {
+    const bio = document.getElementById('biometricScreen');
+    if (bio) bio.remove();
+    const loginForm = document.querySelector('.login-form');
+    if (loginForm) loginForm.style.display = '';
+}
 </script>
 </body>
 </html>
