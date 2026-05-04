@@ -1722,8 +1722,9 @@ function setAuthMode(mode, btn) {
     // Mostrar generador de reportes solo a Master (si ya hay sesión)
     const repCard = document.getElementById('reportGeneratorCard');
     if (repCard) {
-        repCard.style.display = (session && session.role === 'master') ? 'block' : 'none';
-        if (session && session.role === 'master') loadWeeklyNotes();
+        const isMaster = session && session.role === 'master';
+        repCard.style.display = isMaster ? 'block' : 'none';
+        if (isMaster) loadWeeklyNotes();
     }
     document.getElementById('fieldNombre').style.display = mode === 'register' ? 'block' : 'none';
     document.getElementById('fieldTelefono').style.display = mode === 'register' ? 'block' : 'none';
