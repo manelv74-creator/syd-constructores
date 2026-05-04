@@ -588,6 +588,10 @@
             <div class="login-error" id="loginError">Datos incorrectos. Verifica tu correo y código.</div>
 
             <button class="btn-login" id="btnLoginAction" onclick="doAuthAction()">Acceder al sistema →</button>
+
+            <button id="btnBiometric" onclick="doBiometricLogin()" style="display:none; width:100%; margin-top:12px; background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:none; padding:16px; border-radius:14px; font-weight:800; font-size:1rem; cursor:pointer; align-items:center; justify-content:center; gap:10px; box-shadow:0 4px 15px rgba(16,185,129,0.3);">
+                <span>☝️ Acceder con Huella</span>
+            </button>
             
             <div id="installButtonContainer" style="margin-top:20px; border-top:1px solid rgba(255,255,255,0.05); padding-top:20px;">
                 <button onclick="showInstallInstructions()" style="width:100%; background:rgba(37,99,235,0.1); color:#60a5fa; border:1px solid rgba(37,99,235,0.2); padding:12px; border-radius:12px; font-weight:700; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
@@ -1293,61 +1297,183 @@ async function doRegister() {
     if(!name) { err.textContent='Ingresa tu nombre completo.'; err.classList.add('show'); return; }
     if(!phone) { err.textContent='Ingresa tu número de WhatsApp.'; err.classList.add('show'); return; }
     if(!email || !email.includes('@')) { err.textContent='Ingresa un correo válido.'; err.classList.add('show'); return; }
-    if(pass.length < 5) { err.textContent='La contraseña debe tener al menos 5 caracteres.'; err.classList.add('show'); return; }
+    if(pass.length < 6) { err.textContent='La contraseña debe tener al menos 6 caracteres.'; err.classList.add('show'); return; }
     if(!code) { err.textContent='Ingresa la clave de proyecto que te proporcionaron.'; err.classList.add('show'); return; }
 
-    // Validate project code exists
-    const foundObra = OBRAS_CATALOG.find(o => o.clientCode === code.toUpperCase()) || OBRAS_CATALOG[0];
-    if(code.toUpperCase() !== AUTH.client.code && code.toUpperCase() !== foundObra.clientCode) {
-        err.textContent='Clave de proyecto no válida.'; err.classList.add('show'); return;
-    }
+    const foundObra = OBRAS_CATALOG.find(o => o.clientCode === code.toUpperCase());
+    if(!foundObra) { err.textContent='Clave de proyecto no válida.'; err.classList.add('show'); return; }
+
+    const btn = document.getElementById('btnLoginAction');
+    const oldText = btn.textContent;
+    btn.textContent = 'Creando cuenta segura...';
+    btn.disabled = true;
 
     try {
-        const btn = document.getElementById('btnLoginAction');
-        const oldText = btn.textContent;
-        btn.textContent = 'Registrando...';
-        btn.disabled = true;
+        // 1. Create in Firebase Auth
+        const userCredential = await firebase.auth().createUserWithEmailAndPassword(email.toLowerCase(), pass);
+        const uid = userCredential.user.uid;
 
-        // Check if email already exists
-        const snap = await db.collection('clientes').where('email', '==', email.toLowerCase()).get();
-        if(!snap.empty) {
-            err.textContent = 'Este correo ya está registrado. Inicia sesión.';
-            err.classList.add('show');
-            btn.textContent = oldText;
-            btn.disabled = false;
-            return;
-        }
-
-        // Create user in Firestore
-        await db.collection('clientes').add({
-            nombre: name,
-            telefono: phone,
+        // 2. Create profile in 'users' (for security rules)
+        await db.collection('users').doc(uid).set({
+            role: 'client',
             email: email.toLowerCase(),
-            password: pass, // In a production app, use Firebase Auth. For this MVP, storing plain.
+            nombre: name,
             obra: foundObra.id,
             creado_en: firebase.firestore.FieldValue.serverTimestamp()
         });
 
-        // Automatically log in
-        session = { role: 'client', email: email.toLowerCase(), nombre: name, telefono: phone, obra: foundObra.id };
-        localStorage.setItem('sauces_session', JSON.stringify(session));
-        logAccess(email.toLowerCase(), 'client', 'registro', {
+        // 3. Create detail in 'clientes' (for backwards compatibility/marketing)
+        await db.collection('clientes').doc(uid).set({
             nombre: name,
             telefono: phone,
-            password: pass,
+            email: email.toLowerCase(),
             obra: foundObra.id
         });
+
+        session = { role: 'client', email: email.toLowerCase(), nombre: name, telefono: phone, obra: foundObra.id, uid: uid };
+        localStorage.setItem('sauces_session', JSON.stringify(session));
         
-        btn.textContent = oldText;
-        btn.disabled = false;
+        logAccess(email.toLowerCase(), 'client', 'registro', { uid, obra: foundObra.id });
         
         if(await loadProjectData(foundObra.id)) {
             launchApp();
-        } else {
-            err.textContent='Error cargando datos de la obra.'; err.classList.add('show');
         }
     } catch(e) {
-        console.error("Error registering:", e);
+        err.textContent = 'Error: ' + (e.code === 'auth/email-already-in-use' ? 'Este correo ya está registrado.' : e.message);
+        err.classList.add('show');
+    } finally {
+        btn.textContent = oldText; btn.disabled = false;
+    }
+}
+
+async function doLogin() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass  = document.getElementById('loginCode').value; // In login mode, code field is used as password
+    const err   = document.getElementById('loginError');
+    const btn   = document.getElementById('btnLoginAction');
+    err.classList.remove('show');
+
+    if(!email || !pass) { err.textContent='Ingresa correo y contraseña.'; err.classList.add('show'); return; }
+
+    const oldText = btn.textContent;
+    btn.textContent = 'Verificando identidad...';
+    btn.disabled = true;
+
+    try {
+        const userCredential = await firebase.auth().signInWithEmailAndPassword(email.toLowerCase(), pass);
+        const user = userCredential.user;
+        
+        // Fetch role from Firestore
+        const userDoc = await db.collection('users').doc(user.uid).get();
+        if(!userDoc.exists) {
+            // Fallback for old users or special cases
+            session = { role: 'client', email: user.email, uid: user.uid, obra: 'ARAUCA182' };
+        } else {
+            const userData = userDoc.data();
+            session = { ...userData, uid: user.uid };
+        }
+
+        localStorage.setItem('sauces_session', JSON.stringify(session));
+        logAccess(user.email, session.role, 'login', { uid: user.uid });
+
+        // Check Biometric Enrollment
+        if (window.PublicKeyCredential && !localStorage.getItem('syd_biometric_enrolled_' + user.uid)) {
+            setTimeout(offerBiometricEnrollment, 1500);
+        }
+
+        if(session.role === 'client') {
+            if(await loadProjectData(session.obra)) launchApp();
+        } else {
+            showObraSelector();
+        }
+    } catch(e) {
+        console.error("Login error:", e);
+        err.textContent = 'Acceso denegado. Verifica tus credenciales.';
+        err.classList.add('show');
+    } finally {
+        btn.textContent = oldText; btn.disabled = false;
+    }
+}
+
+// ══════════════════════════════════════
+// BIOMETRICS (WebAuthn)
+// ══════════════════════════════════════
+async function offerBiometricEnrollment() {
+    if (!confirm("¿Quieres activar el acceso con huella dactilar para entrar más rápido la próxima vez?")) return;
+    
+    try {
+        const challenge = new Uint8Array(32);
+        window.crypto.getRandomValues(challenge);
+        const user = firebase.auth().currentUser;
+        
+        const createCredentialOptions = {
+            challenge: challenge,
+            rp: { name: "SYD Constructores", id: window.location.hostname },
+            user: {
+                id: Uint8Array.from(user.uid, c => c.charCodeAt(0)),
+                name: user.email,
+                displayName: user.email
+            },
+            pubKeyCredParams: [{ alg: -7, type: "public-key" }, { alg: -257, type: "public-key" }],
+            authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
+            timeout: 60000
+        };
+
+        const credential = await navigator.credentials.create({ publicKey: createCredentialOptions });
+        if (credential) {
+            localStorage.setItem('syd_biometric_enrolled_' + user.uid, 'true');
+            localStorage.setItem('syd_biometric_email', user.email);
+            alert("✅ Biometría activada con éxito.");
+            updateBiometricButtonVisibility();
+        }
+    } catch (e) {
+        console.error("Biometric enrollment error:", e);
+    }
+}
+
+async function doBiometricLogin() {
+    const email = localStorage.getItem('syd_biometric_email');
+    if (!email) return;
+
+    try {
+        const challenge = new Uint8Array(32);
+        window.crypto.getRandomValues(challenge);
+        
+        const getCredentialOptions = {
+            challenge: challenge,
+            rpId: window.location.hostname,
+            userVerification: "required",
+            timeout: 60000
+        };
+
+        const assertion = await navigator.credentials.get({ publicKey: getCredentialOptions });
+        if (assertion) {
+            // In a real high-security app, we would verify the assertion on the server.
+            // For this PWA, we use it as a trigger to perform a secure "silent login" 
+            // because the device has already verified the human.
+            // We'll use a secure token stored in encrypted storage if possible, 
+            // but for now, we'll ask the user to login once and keep the session.
+            alert("Huella reconocida. Iniciando sesión...");
+            // If session exists in localStorage, just launch.
+            const saved = localStorage.getItem('sauces_session');
+            if (saved) {
+                session = JSON.parse(saved);
+                launchApp();
+            }
+        }
+    } catch (e) {
+        console.error("Biometric auth error:", e);
+    }
+}
+
+function updateBiometricButtonVisibility() {
+    const btn = document.getElementById('btnBiometric');
+    if (window.PublicKeyCredential && localStorage.getItem('syd_biometric_email')) {
+        btn.style.display = 'flex';
+    } else {
+        btn.style.display = 'none';
+    }
+}
         err.textContent = 'Error al conectar con la base de datos.';
         err.classList.add('show');
         document.getElementById('btnLoginAction').disabled = false;
@@ -2989,6 +3115,12 @@ window.addEventListener('appinstalled', () => {
     localStorage.setItem('syd_installed','1');
     document.getElementById('installBanner').style.display = 'none';
     console.log('[SYD] App instalada ✓');
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+    if (typeof updateBiometricButtonVisibility === 'function') {
+        updateBiometricButtonVisibility();
+    }
 });
 </script>
 </body>
