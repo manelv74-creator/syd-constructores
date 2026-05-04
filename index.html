@@ -1592,17 +1592,7 @@ function renderTareas() {
         <div class="stat-card animate-in"><div class="stat-value" style="color:#8b5cf6">${TOTAL_WEEKS-currentWeek}</div><div class="stat-label">Semanas restantes</div></div>
     `;
 
-    // Readonly banner for non-master
-    if(session.role !== 'master') {
-        document.getElementById('clientZoneHeader').style.display='block';
-        document.getElementById('clientZoneHeader').innerHTML=`
-            <div class="client-zone-header">
-                <div class="client-zone-icon">🔒</div>
-                <div><div class="client-zone-name">Proyecto SAUCES</div><div class="client-zone-sub">Vista de seguimiento · Solo lectura</div></div>
-            </div>`;
-    } else {
-        document.getElementById('clientZoneHeader').style.display='none';
-    }
+    document.getElementById('clientZoneHeader').style.display='none';
 
     let html='';
     zones.forEach(({data:row,idx},i)=>{
