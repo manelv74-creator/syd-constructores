@@ -1,5 +1,5 @@
-// SYD Constructores — Service Worker v1.7.1 (Fix Buttons)
-const CACHE_NAME = 'syd-app-v1.7.1';
+// SYD Constructores — Service Worker v1.7.2 (Critical JS Fix)
+const CACHE_NAME = 'syd-app-v1.7.2';
 
 const ASSETS = [
     '/syd-constructores/',
