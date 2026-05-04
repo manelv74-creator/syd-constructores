@@ -1235,7 +1235,6 @@ function setAuthMode(mode, btn) {
     btn.classList.add('active');
     // Mostrar generador de reportes solo a Master (si ya hay sesión)
     const repCard = document.getElementById('reportGeneratorCard');
-    const repCard = document.getElementById('reportGeneratorCard');
     if (repCard) {
         const isMaster = session && session.role === 'master';
         repCard.style.display = isMaster ? 'block' : 'none';
