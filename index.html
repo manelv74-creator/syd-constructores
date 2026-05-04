@@ -504,7 +504,7 @@
     </style>
 </head>
 <body>
-<div id="versionBadge">v1.7.8</div>
+<div id="versionBadge">v1.7.9</div>
 
 <!-- ══════════════ LOGIN SCREEN ══════════════ -->
 <div id="loginScreen">
@@ -600,7 +600,7 @@
                 </button>
             </div>
         </div>
-        <div class="login-footer">v1.7.8 · © 2025 SYD Constructores · Todos los derechos reservados</div>
+        <div class="login-footer">v1.7.9 · © 2025 SYD Constructores · Todos los derechos reservados</div>
     </div>
 </div>
 
@@ -1398,83 +1398,93 @@ async function doLogin() {
 }
 
 // ══════════════════════════════════════
-// BIOMETRICS (WebAuthn)
+// BIOMETRICS — simplified approach
 // ══════════════════════════════════════
 async function offerBiometricEnrollment() {
-    // 1. Check if device actually has a biometric authenticator (finger, face, Windows Hello)
+    // Only offer on devices with real biometric sensor
     if (!window.PublicKeyCredential) return;
     const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable().catch(() => false);
-    if (!available) {
-        console.log('[SYD] No biometric authenticator available on this device.');
-        return; // Silently skip — no popup on PCs without sensors
-    }
+    if (!available) return; // Silent — no popup on PCs without sensors
+
+    const user = firebase.auth().currentUser;
+    if (!user) return;
+    if (localStorage.getItem('syd_biometric_enrolled_' + user.uid)) return;
 
     if (!confirm("¿Quieres activar el acceso con huella dactilar para entrar más rápido la próxima vez?")) return;
-    
+
     try {
         const challenge = new Uint8Array(32);
         window.crypto.getRandomValues(challenge);
-        const user = firebase.auth().currentUser;
-        
-        const createCredentialOptions = {
-            challenge,
-            rp: { name: "SYD Constructores", id: window.location.hostname },
-            user: {
-                id: Uint8Array.from(user.uid, c => c.charCodeAt(0)),
-                name: user.email,
-                displayName: user.email
-            },
-            pubKeyCredParams: [{ alg: -7, type: "public-key" }, { alg: -257, type: "public-key" }],
-            authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
-            timeout: 60000
-        };
 
-        const credential = await navigator.credentials.create({ publicKey: createCredentialOptions });
+        const credential = await navigator.credentials.create({
+            publicKey: {
+                challenge,
+                rp: { name: "SYD Constructores", id: window.location.hostname },
+                user: {
+                    id: Uint8Array.from(user.uid, c => c.charCodeAt(0)),
+                    name: user.email,
+                    displayName: user.email
+                },
+                pubKeyCredParams: [{ alg: -7, type: "public-key" }, { alg: -257, type: "public-key" }],
+                authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
+                timeout: 60000
+            }
+        });
         if (credential) {
             localStorage.setItem('syd_biometric_enrolled_' + user.uid, 'true');
             localStorage.setItem('syd_biometric_email', user.email);
             alert("✅ ¡Huella activada! La próxima vez entrarás sin contraseña.");
-            updateBiometricButtonVisibility();
         }
     } catch (e) {
-        console.error("Biometric enrollment error:", e);
-        // Don't show error to user — just skip silently
+        console.warn("Biometric enrollment skipped:", e.message);
+        // Silently skip
     }
 }
 
 async function doBiometricLogin() {
     const email = localStorage.getItem('syd_biometric_email');
-    if (!email) return;
+    if (!email) { showPasswordForm(); return; }
 
     try {
         const challenge = new Uint8Array(32);
         window.crypto.getRandomValues(challenge);
-        
-        const getCredentialOptions = {
-            challenge: challenge,
-            rpId: window.location.hostname,
-            userVerification: "required",
-            timeout: 60000
-        };
 
-        const assertion = await navigator.credentials.get({ publicKey: getCredentialOptions });
+        const assertion = await navigator.credentials.get({
+            publicKey: {
+                challenge,
+                rpId: window.location.hostname,
+                userVerification: "required",
+                timeout: 60000
+            }
+        });
+
         if (assertion) {
-            // In a real high-security app, we would verify the assertion on the server.
-            // For this PWA, we use it as a trigger to perform a secure "silent login" 
-            // because the device has already verified the human.
-            // We'll use a secure token stored in encrypted storage if possible, 
-            // but for now, we'll ask the user to login once and keep the session.
-            alert("Huella reconocida. Iniciando sesión...");
-            // If session exists in localStorage, just launch.
+            // Biometric verified — restore session from localStorage
             const saved = localStorage.getItem('sauces_session');
             if (saved) {
                 session = JSON.parse(saved);
-                launchApp();
+                if (session.obra) {
+                    if (await loadProjectData(session.obra)) { launchApp(); return; }
+                } else {
+                    showObraSelector(); return;
+                }
             }
+            // Session expired — need full re-login
+            clearBiometricData();
+            showPasswordForm();
         }
     } catch (e) {
-        console.error("Biometric auth error:", e);
+        console.warn("Biometric login failed:", e.message);
+        // No passkey found or user cancelled — clear bad enrollment and show password form
+        clearBiometricData();
+        showPasswordForm();
     }
+}
+
+function clearBiometricData() {
+    localStorage.removeItem('syd_biometric_email');
+    // Clear all enrolled flags
+    Object.keys(localStorage).filter(k => k.startsWith('syd_biometric_enrolled_')).forEach(k => localStorage.removeItem(k));
 }
 
 function updateBiometricButtonVisibility() {
@@ -1966,35 +1976,46 @@ function showInstallInstructions() {
 // BOOT
 // ══════════════════════════════════════
 window.onload = async function() {
-    await loadGlobalData(); // Cargar catálogo de obras
+    await loadGlobalData();
 
-    const saved = localStorage.getItem('sauces_session');
-    if(saved) {
-        try {
-            session = JSON.parse(saved);
-            if(session.obra) {
-                if(await loadProjectData(session.obra)) {
-                    launchApp();
-                    return;
+    // Check Firebase Auth state first (handles persistence automatically)
+    firebase.auth().onAuthStateChanged(async (firebaseUser) => {
+        if (firebaseUser) {
+            // Firebase has an active session — restore it
+            try {
+                const saved = localStorage.getItem('sauces_session');
+                if (saved) {
+                    session = JSON.parse(saved);
+                } else {
+                    // Rebuild session from Firestore
+                    const userDoc = await db.collection('users').doc(firebaseUser.uid).get();
+                    session = userDoc.exists
+                        ? { ...userDoc.data(), uid: firebaseUser.uid }
+                        : { role: 'client', email: firebaseUser.email, uid: firebaseUser.uid, obra: 'ARAUCA182' };
+                    localStorage.setItem('sauces_session', JSON.stringify(session));
                 }
-            } else if(session.role === 'master' || session.role === 'observer') {
-                showObraSelector();
-                return;
+                if (session.obra) {
+                    if (await loadProjectData(session.obra)) { launchApp(); return; }
+                } else {
+                    showObraSelector(); return;
+                }
+            } catch(e) {
+                console.error('Session restore error:', e);
             }
-        } catch(e) { localStorage.removeItem('sauces_session'); }
-    }
+        }
 
-    // No valid session — show login. Check for biometric first.
-    setupLoginNavigation();
-    document.getElementById('loginScreen').style.display = 'flex';
+        // No Firebase session — show login screen
+        setupLoginNavigation();
+        document.getElementById('loginScreen').style.display = 'flex';
 
-    const biometricEmail = localStorage.getItem('syd_biometric_email');
-    const hasAuthenticator = window.PublicKeyCredential &&
-        await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable().catch(() => false);
-
-    if (biometricEmail && hasAuthenticator) {
-        showBiometricScreen(biometricEmail);
-    }
+        // Show biometric screen if enrolled
+        const biometricEmail = localStorage.getItem('syd_biometric_email');
+        const hasAuth = window.PublicKeyCredential &&
+            await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable().catch(() => false);
+        if (biometricEmail && hasAuth) {
+            showBiometricScreen(biometricEmail);
+        }
+    });
 };
 
 function showBiometricScreen(email) {

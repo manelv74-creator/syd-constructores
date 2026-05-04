@@ -1,5 +1,5 @@
-// SYD Constructores — Service Worker v1.7.8 (Biometric Boot Fix)
-const CACHE_NAME = 'syd-app-v1.7.8';
+// SYD Constructores — Service Worker v1.7.9 (Firebase Persistence)
+const CACHE_NAME = 'syd-app-v1.7.9';
 const ASSETS = ['/syd-constructores/','/syd-constructores/index.html','/syd-constructores/gantt_mobile.html','/syd-constructores/assets/logo_syd.png','/syd-constructores/database/projects.json','/syd-constructores/manifest.json'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))); self.skipWaiting(); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))))); self.clients.claim(); });
