@@ -504,7 +504,7 @@
     </style>
 </head>
 <body>
-<div id="versionBadge">v1.8.2</div>
+<div id="versionBadge">v1.8.3</div>
 
 <!-- ══════════════ LOGIN SCREEN ══════════════ -->
 <div id="loginScreen">
@@ -600,7 +600,7 @@
                 </button>
             </div>
         </div>
-        <div class="login-footer">v1.8.2 · © 2025 SYD Constructores · Todos los derechos reservados</div>
+        <div class="login-footer">v1.8.3 · © 2025 SYD Constructores · Todos los derechos reservados</div>
     </div>
 </div>
 
@@ -611,7 +611,7 @@
             <img src="assets/logo_syd.png" class="selector-logo-small" alt="SYD">
             <div>
                 <div class="selector-title">SYD Constructores</div>
-                <div class="selector-subtitle">Selecciona una obra · v1.8.2</div>
+                <div class="selector-subtitle">Selecciona una obra · v1.8.3</div>
             </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px">
@@ -632,7 +632,7 @@
     <div class="header-row">
         <div>
             <div class="app-title">🏗 SYD Constructores</div>
-            <div class="app-subtitle" id="appSubtitle">Sistema de Gestión de Obras v1.8.2</div>
+            <div class="app-subtitle" id="appSubtitle">Sistema de Gestión de Obras v1.8.3</div>
         </div>
         <div class="header-right" style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
             <div style="display:flex; align-items:center; gap:6px;">
@@ -744,7 +744,7 @@
             </div>
             
             <div style="margin-top:20px; text-align:center; opacity:0.3; font-size:0.6rem; color:#fff;">
-                SYD v1.8.2 (REAL-BIO-VALIDATION) <br>
+                SYD v1.8.3 (APP-LOCK-SYSTEM) <br>
                 <span onclick="forceUpdateApp()" style="text-decoration:underline; cursor:pointer;">Forzar actualización de versión</span>
             </div>
         </div>
@@ -1446,10 +1446,19 @@ async function doBiometricLogin() {
     if (!email) { showPasswordForm(); return; }
 
     const firebaseUser = firebase.auth().currentUser;
+    // Si no hay usuario de Firebase, hay que pedir contraseña (sesión expirada)
+    if (!firebaseUser) {
+        alert("Tu sesión ha expirado. Por favor, ingresa tu contraseña.");
+        clearBiometricData();
+        showPasswordForm();
+        return;
+    }
 
     try {
         const challenge = new Uint8Array(32);
         window.crypto.getRandomValues(challenge);
+        
+        // PETICIÓN AL SENSOR DEL MÓVIL
         const assertion = await navigator.credentials.get({
             publicKey: {
                 challenge,
@@ -1459,17 +1468,21 @@ async function doBiometricLogin() {
             }
         });
 
-        if (assertion && firebaseUser) {
-            // VALIDACIÓN EXITOSA
+        if (assertion) {
+            // HUELLA CORRECTA -> Quitamos el cerrojo y entramos
+            localStorage.removeItem('syd_app_locked');
             await restoreFirebaseSession(firebaseUser);
-        } else {
-            throw new Error('Validación incompleta');
         }
     } catch (e) {
-        console.warn('Fallo de biometría:', e.message);
-        // Si falla la huella, NO entramos. Limpiamos y pedimos contraseña.
-        alert("No se pudo validar la identidad biométrica. Por favor, usa tu contraseña.");
-        clearBiometricData();
+        console.error('Error de biometría:', e);
+        // Si el error es que no hay llaves, pedimos contraseña y limpiamos
+        if (e.name === 'NotAllowedError' || e.name === 'NotFoundError') {
+            alert("No se encontró una huella válida o se canceló. Usa tu contraseña.");
+        } else {
+            alert("Error de sensor. Por favor, usa tu contraseña.");
+        }
+        // No borramos syd_biometric_email para que pueda reintentar, 
+        // pero mostramos el formulario de pass.
         showPasswordForm();
     }
 }
@@ -1560,26 +1573,22 @@ async function doLogin() {
 }
 
 function doLogout() {
-    // LOCK the app — keeps Firebase session alive for biometric re-entry
+    // LOCK the app — keeps Firebase session alive but requires biometric to return
     if(session) logAccess(session.email, session.role, 'logout');
+    
     localStorage.removeItem('sauces_session');
+    localStorage.setItem('syd_app_locked', 'true'); // PONEMOS EL CERROJO
+    
     session = null; currentObra = null;
 
-    // Hide app screens
     document.getElementById('appShell').style.display = 'none';
     document.getElementById('obraSelector').style.display = 'none';
-
-    // Show login screen
     document.getElementById('loginScreen').style.display = 'flex';
 
-    // If biometric is enrolled, show fingerprint screen
     const bioEmail = localStorage.getItem('syd_biometric_email');
     if (bioEmail) {
         showBiometricScreen(bioEmail);
     } else {
-        // No biometric — show password form
-        document.getElementById('loginEmail').value = '';
-        document.getElementById('loginCode').value = '';
         showPasswordForm();
     }
 }
@@ -1640,7 +1649,7 @@ function launchApp() {
     if(btnBack) btnBack.style.display = session.role==='client' ? 'none' : 'block';
 
     // Subtitle with real obra name + Version
-    const version = 'v1.8.2';
+    const version = 'v1.8.3';
     document.getElementById('appSubtitle').textContent = (currentObra.name || 'Proyecto') + (currentObra.location ? ' · ' + currentObra.location : '') + ' (' + version + ')';
 
     // Generador de reporte visibility
@@ -2020,16 +2029,16 @@ function showInstallInstructions() {
 window.onload = async function() {
     await loadGlobalData();
 
-    // Check Firebase Auth state first (handles persistence automatically)
     firebase.auth().onAuthStateChanged(async (firebaseUser) => {
-        if (firebaseUser) {
-            // Firebase has an active session — restore it
+        const isLocked = localStorage.getItem('syd_app_locked') === 'true';
+
+        // Solo entramos automáticamente si hay usuario Y NO hay cerrojo puesto
+        if (firebaseUser && !isLocked) {
             try {
                 const saved = localStorage.getItem('sauces_session');
                 if (saved) {
                     session = JSON.parse(saved);
                 } else {
-                    // Rebuild session from Firestore
                     const userDoc = await db.collection('users').doc(firebaseUser.uid).get();
                     session = userDoc.exists
                         ? { ...userDoc.data(), uid: firebaseUser.uid }
@@ -2046,11 +2055,10 @@ window.onload = async function() {
             }
         }
 
-        // No Firebase session — show login screen
+        // Si está bloqueado o no hay usuario, mostramos login
         setupLoginNavigation();
         document.getElementById('loginScreen').style.display = 'flex';
 
-        // Show biometric screen if enrolled
         const biometricEmail = localStorage.getItem('syd_biometric_email');
         const hasAuth = window.PublicKeyCredential &&
             await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable().catch(() => false);
