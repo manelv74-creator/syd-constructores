@@ -504,7 +504,7 @@
     </style>
 </head>
 <body>
-<div id="versionBadge">v1.8.4</div>
+<div id="versionBadge">v1.8.5</div>
 
 <!-- ══════════════ LOGIN SCREEN ══════════════ -->
 <div id="loginScreen">
@@ -593,6 +593,12 @@
             <button id="btnBiometric" onclick="doBiometricLogin()" style="display:none; width:100%; margin-top:12px; background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:none; padding:16px; border-radius:14px; font-weight:800; font-size:1rem; cursor:pointer; align-items:center; justify-content:center; gap:10px; box-shadow:0 4px 15px rgba(16,185,129,0.3);">
                 <span>☝️ Acceder con Huella</span>
             </button>
+
+            <div id="btnUsePassword" style="display:none; text-align:center; margin-top:15px;">
+                <button onclick="showPasswordForm()" style="background:none; border:none; color:#94a3b8; font-size:0.85rem; text-decoration:underline; cursor:pointer;">
+                    Usar correo y contraseña
+                </button>
+            </div>
             
             <div id="installButtonContainer" style="margin-top:20px; border-top:1px solid rgba(255,255,255,0.05); padding-top:20px;">
                 <button onclick="showInstallInstructions()" style="width:100%; background:rgba(37,99,235,0.1); color:#60a5fa; border:1px solid rgba(37,99,235,0.2); padding:12px; border-radius:12px; font-weight:700; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
@@ -600,7 +606,7 @@
                 </button>
             </div>
         </div>
-        <div class="login-footer">v1.8.4 · © 2025 SYD Constructores · Todos los derechos reservados</div>
+        <div class="login-footer">v1.8.5 · © 2025 SYD Constructores · Todos los derechos reservados</div>
     </div>
 </div>
 
@@ -611,7 +617,7 @@
             <img src="assets/logo_syd.png" class="selector-logo-small" alt="SYD">
             <div>
                 <div class="selector-title">SYD Constructores</div>
-                <div class="selector-subtitle">Selecciona una obra · v1.8.4</div>
+                <div class="selector-subtitle">Selecciona una obra · v1.8.5</div>
             </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px">
@@ -632,7 +638,7 @@
     <div class="header-row">
         <div>
             <div class="app-title">🏗 SYD Constructores</div>
-            <div class="app-subtitle" id="appSubtitle">Sistema de Gestión de Obras v1.8.4</div>
+            <div class="app-subtitle" id="appSubtitle">Sistema de Gestión de Obras v1.8.5</div>
         </div>
         <div class="header-right" style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
             <div style="display:flex; align-items:center; gap:6px;">
@@ -744,7 +750,7 @@
             </div>
             
             <div style="margin-top:20px; text-align:center; opacity:0.3; font-size:0.6rem; color:#fff;">
-                SYD v1.8.4 (EXACT-CRED-ID) <br>
+                SYD v1.8.5 (EMERGENCY-UNLOCK) <br>
                 <span onclick="forceUpdateApp()" style="text-decoration:underline; cursor:pointer;">Forzar actualización de versión</span>
             </div>
         </div>
@@ -1664,7 +1670,7 @@ function launchApp() {
     if(btnBack) btnBack.style.display = session.role==='client' ? 'none' : 'block';
 
     // Subtitle with real obra name + Version
-    const version = 'v1.8.4';
+    const version = 'v1.8.5';
     document.getElementById('appSubtitle').textContent = (currentObra.name || 'Proyecto') + (currentObra.location ? ' · ' + currentObra.location : '') + ' (' + version + ')';
 
     // Generador de reporte visibility
