@@ -1,4 +1,10 @@
-<!DOCTYPE html>
+import os
+
+def reset():
+    path = r'e:\NEGOCIO\GUADALAJARA\PROYECTOS\Aplicacion SYD\index.html'
+    sw_path = r'e:\NEGOCIO\GUADALAJARA\PROYECTOS\Aplicacion SYD\sw.js'
+    
+    html = """<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -47,4 +53,15 @@
         }
     </script>
 </body>
-</html>
+</html>"""
+
+    with open(path, 'w', encoding='utf-8') as f:
+        f.write(html)
+    
+    with open(sw_path, 'w', encoding='utf-8') as f:
+        f.write("self.addEventListener('install', e => self.skipWaiting()); self.addEventListener('fetch', e => e.respondWith(fetch(e.request)));")
+    
+    print("Reset v2.0.0 successful")
+
+if __name__ == "__main__":
+    reset()
