@@ -2,44 +2,51 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Función para verificar si es el Master (Manel)
-    function isMaster() {
-      return request.auth != null && (
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'master'
-      );
+    // Funciones de verificación de Rol
+    function isSignedIn() {
+      return request.auth != null;
     }
 
-    // Regla para Obras: Todos pueden leer, solo Master puede escribir
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isMaster() {
+      return isSignedIn() && getUserData().role == 'master';
+    }
+
+    function isObserver() {
+      return isSignedIn() && getUserData().role == 'observer';
+    }
+
+    function isClientOf(obraId) {
+      return isSignedIn() && getUserData().role == 'client' && getUserData().obra == obraId;
+    }
+
+    // Regla para Obras: Solo Master/Observer ven todo. Clientes solo SU obra.
     match /obras/{obraId} {
-      allow read: if true;
+      allow read: if isMaster() || isObserver() || isClientOf(obraId);
       allow write: if isMaster();
       
-      // Regla para fotos dentro de la obra
-      match /fotos/{fotoId} {
-        allow read: if true;
-        allow write: if isMaster();
-        allow delete: if isMaster();
-      }
-      
-      // Regla para notas semanales
-      match /weekly_notes/{noteId} {
-        allow read: if true;
+      // Regla para fotos y notas dentro de la obra (heredan permiso)
+      match /{allSubcollections=**} {
+        allow read: if isMaster() || isObserver() || isClientOf(obraId);
         allow write: if isMaster();
       }
     }
 
-    // Regla para Logs de Acceso: 
-    // Cualquiera puede crear un log (al entrar), pero NADIE puede borrarlos ni editarlos
+    // Regla para Logs de Acceso: Master lee, cualquiera logueado escribe.
     match /access_logs/{logId} {
-      allow create: if true;
+      allow create: if isSignedIn();
       allow read: if isMaster();
       allow update, delete: if false; 
     }
     
-    // Regla para Perfiles de Usuario (si usamos Firebase Auth en el futuro)
+    // Regla para Perfiles de Usuario: Solo el propio usuario lee su perfil.
     match /users/{userId} {
-      allow read: if request.auth != null && request.auth.uid == userId;
-      allow write: if false; // Solo se crean vía Admin/Cloud Functions
+      allow read: if isSignedIn() && request.auth.uid == userId;
+      allow create: if isSignedIn(); // Permitir creación inicial al registrarse
+      allow update, delete: if isMaster();
     }
   }
 }
