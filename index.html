@@ -1010,7 +1010,7 @@
 
 <body>
 
-<div id="versionBadge">v1.9.3</div>
+<div id="versionBadge">v1.9.4</div>
 
 
 
@@ -1186,7 +1186,7 @@
 
                 <button onclick="showInstallInstructions()" style="width:100%; background:rgba(37,99,235,0.1); color:#60a5fa; border:1px solid rgba(37,99,235,0.2); padding:12px; border-radius:12px; font-weight:700; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
 
-                    <span style="font-size:1.2rem;">Ã°Å¸â€œÂ²</span> Instalar como aplicación (Recomendado)
+                    <span style="font-size:1.2rem;">📱</span> Instalar como aplicación (Recomendado)
 
                 </button>
 
@@ -1194,7 +1194,7 @@
 
         </div>
 
-        <div class="login-footer">v1.9.3 · © 2025 SYD Constructores · Todos los derechos reservados</div>
+        <div class="login-footer">v1.9.4 · © 2025 SYD Constructores · Todos los derechos reservados</div>
 
     </div>
 
@@ -1216,7 +1216,7 @@
 
                 <div class="selector-title">SYD Constructores</div>
 
-                <div class="selector-subtitle">Selecciona una obra · v1.9.3</div>
+                <div class="selector-subtitle">Selecciona una obra · v1.9.4</div>
 
             </div>
 
@@ -1258,7 +1258,7 @@
 
             <div class="app-title">Ã°Å¸Â â€” SYD Constructores</div>
 
-            <div class="app-subtitle" id="appSubtitle">Sistema de Gestión de Obras v1.9.3</div>
+            <div class="app-subtitle" id="appSubtitle">Sistema de Gestión de Obras v1.9.4</div>
 
         </div>
 
@@ -1482,7 +1482,7 @@
 
             <div style="margin-top:20px; text-align:center; opacity:0.3; font-size:0.6rem; color:#fff;">
 
-                SYD v1.9.3 (BIO-RECOVERY) <br>
+                SYD v1.9.4 (BIO-RECOVERY) <br>
 
                 <span onclick="forceUpdateApp()" style="text-decoration:underline; cursor:pointer;">Forzar actualización de versión</span>
 
@@ -2132,7 +2132,7 @@ async function renderAccesos() {
 
                        font-family:Inter,sans-serif;cursor:pointer">
 
-                Ã°Å¸â€œÂ² Accesos (${db?'activo':'sin conex.'})
+                📱 Accesos (${db?'activo':'sin conex.'})
 
             </button>
 
@@ -2516,7 +2516,7 @@ function launchApp() {
     const roleIcons = { master:'⚡ Master', observer:'👁 Supervisor', client:'🏠 Cliente' };
     document.getElementById('roleBadge').textContent = roleIcons[session.role] || session.role;
     document.getElementById('roleBadge').className = 'role-badge ' + session.role;
-    document.getElementById('appSubtitle').textContent = (currentObra.name || 'Proyecto') + ' · v1.9.3';
+    document.getElementById('appSubtitle').textContent = (currentObra.name || 'Proyecto') + ' · v1.9.4';
     const heroImg = document.getElementById('obraHeroImg');
     if(currentObra.img && heroImg) {
         heroImg.src = currentObra.img;
@@ -2531,7 +2531,7 @@ function launchApp() {
     buildWeekDots(); buildGanttTable(); updateDashboard();
 }[session.role];
 
-    document.getElementById('appSubtitle').textContent = (currentObra.name || 'Proyecto') + ' (v1.9.3)';
+    document.getElementById('appSubtitle').textContent = (currentObra.name || 'Proyecto') + ' (v1.9.4)';
 
     if(session.role === 'master') document.getElementById('tabAccesos').style.display = '';
 
@@ -5148,7 +5148,7 @@ function imageToBase64(file, maxWidth, quality) {
 
     <div class="install-btns">
 
-        <button class="btn-install" id="btnInstall">Ã°Å¸â€œÂ² Instalar gratis</button>
+        <button class="btn-install" id="btnInstall">📱 Instalar gratis</button>
 
         <button class="btn-dismiss" onclick="document.getElementById('installBanner').style.display='none'">Ahora no</button>
 
