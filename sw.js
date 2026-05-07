@@ -1,1 +1,1 @@
-const CACHE_NAME = 'syd-app-v1.9.6'; self.addEventListener('install', e => e.waitUntil(caches.open(CACHE_NAME))); self.addEventListener('fetch', e => e.respondWith(fetch(e.request)));
+const CACHE_NAME = 'syd-app-v1.9.7'; self.addEventListener('install', e => e.waitUntil(caches.open(CACHE_NAME))); self.addEventListener('fetch', e => e.respondWith(fetch(e.request)));

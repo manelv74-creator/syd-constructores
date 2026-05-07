@@ -1,4 +1,11 @@
-<!DOCTYPE html>
+import os
+
+def build_v197():
+    path = r'e:\NEGOCIO\GUADALAJARA\PROYECTOS\Aplicacion SYD\index.html'
+    sw_path = r'e:\NEGOCIO\GUADALAJARA\PROYECTOS\Aplicacion SYD\sw.js'
+    
+    # Version 1.9.7 - Full Restoration
+    full_html = """<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -284,3 +291,13 @@
     </script>
 </body>
 </html>
+"""
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(full_html)
+    
+    if os.path.exists(sw_path):
+        with open(sw_path, "w", encoding="utf-8") as f:
+            f.write("const CACHE_NAME = 'syd-app-v1.9.7'; self.addEventListener('install', e => e.waitUntil(caches.open(CACHE_NAME))); self.addEventListener('fetch', e => e.respondWith(fetch(e.request)));")
+
+if __name__ == "__main__":
+    build_v197()
