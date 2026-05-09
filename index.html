@@ -538,7 +538,7 @@
 </style>
 </head>
 <body>
-<div id="versionBadge">v2.3.1</div>
+<div id="versionBadge">v2.3.2</div>
 
 <!-- ══════════════ LOGIN SCREEN ══════════════ -->
 <div id="loginScreen">
@@ -630,7 +630,7 @@
                 </button>
             </div>
         </div>
-        <div class="login-footer">v2.3.1 · © 2025 SYD Constructores · Todos los derechos reservados</div>
+        <div class="login-footer">v2.3.2 · © 2025 SYD Constructores · Todos los derechos reservados</div>
     </div>
 </div>
 
@@ -641,7 +641,7 @@
             <img src="assets/logo_syd.png" class="selector-logo-small" alt="SYD">
             <div>
                 <div class="selector-title">SYD Constructores</div>
-                <div class="selector-subtitle">Selecciona una obra · v2.3.1</div>
+                <div class="selector-subtitle">Selecciona una obra · v2.3.2</div>
             </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px">
@@ -662,10 +662,11 @@
     <div class="header-row">
         <div>
             <div class="app-title">🏗 SYD Constructores</div>
-            <div class="app-subtitle" id="appSubtitle">Sistema de Gestión de Obras v2.3.1</div>
+            <div class="app-subtitle" id="appSubtitle">Sistema de Gestión de Obras v2.3.2</div>
         </div>
         <div class="header-right" style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
             <div style="display:flex; align-items:center; gap:6px;">
+                <button id="btnNotificaciones" onclick="requestPushPermission()" style="display:none; background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.4); color:#6ee7b7; padding:4px 10px; border-radius:20px; font-size:0.75rem; font-weight:700; cursor:pointer; align-items:center; gap:5px;">🔔 Activar Notificaciones</button>
                 <span class="role-badge" id="clientEmailBadge" style="display:none;background:rgba(255,255,255,0.1);color:#cbd5e1;font-weight:normal;text-transform:lowercase;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
                 <span class="role-badge" id="roleBadge"></span>
                 <span class="week-badge" id="weekBadge">Sem 1</span>
@@ -774,7 +775,7 @@
             </div>
             
             <div style="margin-top:20px; text-align:center; opacity:0.3; font-size:0.6rem; color:#fff;">
-                SYD v2.3.1 (FIX-LOGIN-SCROLL) <br>
+                SYD v2.3.2 (FIX-LOGIN-SCROLL) <br>
                 <span onclick="forceUpdateApp()" style="text-decoration:underline; cursor:pointer;">Forzar actualización de versión</span>
             </div>
         </div>
@@ -1520,7 +1521,7 @@ function launchApp() {
     if(btnBack) btnBack.style.display = session.role==='client' ? 'none' : 'block';
 
     // Subtitle with real obra name + Version
-    const version = 'v2.3.1';
+    const version = 'v2.3.2';
     document.getElementById('appSubtitle').textContent = (currentObra.name || 'Proyecto') + (currentObra.location ? ' · ' + currentObra.location : '') + ' (' + version + ')';
 
     // Generador de reporte visibility
