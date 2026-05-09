@@ -30,6 +30,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
 
     <style>
         :root {
@@ -537,7 +538,7 @@
 </style>
 </head>
 <body>
-<div id="versionBadge">v2.2.0</div>
+<div id="versionBadge">v2.3.0</div>
 
 <!-- ══════════════ LOGIN SCREEN ══════════════ -->
 <div id="loginScreen">
@@ -629,7 +630,7 @@
                 </button>
             </div>
         </div>
-        <div class="login-footer">v2.2.0 · © 2025 SYD Constructores · Todos los derechos reservados</div>
+        <div class="login-footer">v2.3.0 · © 2025 SYD Constructores · Todos los derechos reservados</div>
     </div>
 </div>
 
@@ -640,7 +641,7 @@
             <img src="assets/logo_syd.png" class="selector-logo-small" alt="SYD">
             <div>
                 <div class="selector-title">SYD Constructores</div>
-                <div class="selector-subtitle">Selecciona una obra · v2.2.0</div>
+                <div class="selector-subtitle">Selecciona una obra · v2.3.0</div>
             </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px">
@@ -661,7 +662,7 @@
     <div class="header-row">
         <div>
             <div class="app-title">🏗 SYD Constructores</div>
-            <div class="app-subtitle" id="appSubtitle">Sistema de Gestión de Obras v2.2.0</div>
+            <div class="app-subtitle" id="appSubtitle">Sistema de Gestión de Obras v2.3.0</div>
         </div>
         <div class="header-right" style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
             <div style="display:flex; align-items:center; gap:6px;">
@@ -773,7 +774,7 @@
             </div>
             
             <div style="margin-top:20px; text-align:center; opacity:0.3; font-size:0.6rem; color:#fff;">
-                SYD v2.2.0 (FIX-LOGIN-SCROLL) <br>
+                SYD v2.3.0 (FIX-LOGIN-SCROLL) <br>
                 <span onclick="forceUpdateApp()" style="text-decoration:underline; cursor:pointer;">Forzar actualización de versión</span>
             </div>
         </div>
@@ -1492,8 +1493,22 @@ function launchApp() {
     if(session.email) {
         document.getElementById('clientEmailBadge').textContent = session.email;
         document.getElementById('clientEmailBadge').style.display = 'inline-block';
+
+    // Mostrar botón de notificaciones
+    const btnNotif = document.getElementById('btnNotificaciones');
+    if(btnNotif) {
+        btnNotif.style.display = 'inline-flex';
+    }
+
     } else {
         document.getElementById('clientEmailBadge').style.display = 'none';
+
+    // Mostrar botón de notificaciones
+    const btnNotif = document.getElementById('btnNotificaciones');
+    if(btnNotif) {
+        btnNotif.style.display = 'inline-flex';
+    }
+
     }
 
     // Accesos tab: only Master
@@ -1505,7 +1520,7 @@ function launchApp() {
     if(btnBack) btnBack.style.display = session.role==='client' ? 'none' : 'block';
 
     // Subtitle with real obra name + Version
-    const version = 'v2.2.0';
+    const version = 'v2.3.0';
     document.getElementById('appSubtitle').textContent = (currentObra.name || 'Proyecto') + (currentObra.location ? ' · ' + currentObra.location : '') + ' (' + version + ')';
 
     // Generador de reporte visibility
@@ -3066,6 +3081,67 @@ function applyUpdate() {
         newWorker.postMessage('SKIP_WAITING');
     }
 }
+</script>
+<script>
+
+// ══ NOTIFICACIONES PUSH ══
+async function requestPushPermission() {
+    try {
+        const btn = document.getElementById('btnNotificaciones');
+        btn.textContent = '⏳ Solicitando...';
+        
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted') {
+            console.log('[SYD] Permiso de notificación concedido.');
+            
+            // Inicializar Messaging
+            const messaging = firebase.messaging();
+            
+            // OBTENER TOKEN
+            // REEMPLAZA EL VAPID KEY CON EL QUE OBTENGAS DE TU CONSOLA FIREBASE
+            const currentToken = await messaging.getToken({ vapidKey: 'TU_LLAVE_VAPID_AQUI' });
+            
+            if (currentToken) {
+                console.log('[SYD] FCM Token obtenido:', currentToken);
+                
+                // Guardar token en Firestore asociado a la obra
+                await db.collection('obras').doc('SAUCES').collection('tokens').doc(session.email).set({
+                    token: currentToken,
+                    email: session.email,
+                    role: session.role,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                btn.innerHTML = '✅ Notificaciones Activas';
+                btn.style.background = 'rgba(16,185,129,0.3)';
+                btn.onclick = null; // Desactivar click
+                
+            } else {
+                console.log('[SYD] No se pudo obtener el token de registro.');
+                btn.textContent = '❌ Error de Token';
+            }
+        } else {
+            console.log('[SYD] Permiso denegado.');
+            btn.textContent = '🔕 Notificaciones Bloqueadas';
+        }
+    } catch (error) {
+        console.error('[SYD] Error al solicitar permiso:', error);
+        document.getElementById('btnNotificaciones').textContent = '❌ Error';
+    }
+}
+
+// Escuchar mensajes en primer plano (foreground)
+if (typeof firebase !== 'undefined' && firebase.messaging) {
+    try {
+        const messaging = firebase.messaging();
+        messaging.onMessage((payload) => {
+            console.log('[SYD] Mensaje recibido en primer plano:', payload);
+            // Mostrar alerta en pantalla
+            alert('🔔 SYD: ' + (payload.notification?.title || 'Nueva Notificación') + '\n' + (payload.notification?.body || ''));
+        });
+    } catch(e) { console.warn('[SYD] Error iniciando messaging en primer plano:', e); }
+}
+
 </script>
 </body>
 <script src="debug_gemini.js"></script>
