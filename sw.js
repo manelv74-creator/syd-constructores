@@ -1,5 +1,5 @@
-// SYD Constructores — Service Worker v2.2.0 (Update Banner Feature)
-const CACHE_NAME = 'syd-app-v2.2.0';
+// SYD Constructores — Service Worker v2.3.2
+const CACHE_NAME = 'syd-app-v2.3.2';
 
 const ASSETS = [
     './',

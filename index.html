@@ -3071,13 +3071,16 @@ if ('serviceWorker' in navigator) {
         let refreshing;
         navigator.serviceWorker.addEventListener('controllerchange', () => {
             if (refreshing) return;
-            window.location.reload();
             refreshing = true;
+            window.location.reload();
         });
     });
 }
 
 function applyUpdate() {
+    // Ocultar banner inmediatamente al hacer click
+    document.getElementById('updateBanner').classList.remove('show');
+    document.getElementById('updateBanner').style.display = 'none';
     if (newWorker) {
         newWorker.postMessage('SKIP_WAITING');
     }
