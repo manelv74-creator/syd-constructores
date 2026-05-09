@@ -1,52 +1,31 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // Funciones de verificación de Rol
-    function isSignedIn() {
-      return request.auth != null;
+
+    // ══ ACCESS LOGS ══
+    // Cualquiera puede crear un log (al iniciar sesión).
+    // Cualquiera puede leer y borrar (el Master valida en frontend).
+    match /access_logs/{logId} {
+      allow read, write: if true;
     }
 
-    function getUserData() {
-      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    // ══ CLIENTES (registro de cuentas) ══
+    match /clientes/{docId} {
+      allow read, write: if true;
     }
 
-    function isMaster() {
-      return isSignedIn() && getUserData().role == 'master';
-    }
-
-    function isObserver() {
-      return isSignedIn() && getUserData().role == 'observer';
-    }
-
-    function isClientOf(obraId) {
-      return isSignedIn() && getUserData().role == 'client' && getUserData().obra == obraId;
-    }
-
-    // Regla para Obras: Solo Master/Observer ven todo. Clientes solo SU obra.
+    // ══ OBRAS y sub-colecciones (galería, tokens, notas) ══
     match /obras/{obraId} {
-      allow read: if isMaster() || isObserver() || isClientOf(obraId);
-      allow write: if isMaster();
-      
-      // Regla para fotos y notas dentro de la obra (heredan permiso)
+      allow read, write: if true;
+
       match /{allSubcollections=**} {
-        allow read: if isMaster() || isObserver() || isClientOf(obraId);
-        allow write: if isMaster();
+        allow read, write: if true;
       }
     }
 
-    // Regla para Logs de Acceso: Master lee, cualquiera logueado escribe.
-    match /access_logs/{logId} {
-      allow create: if isSignedIn();
-      allow read: if isMaster();
-      allow update, delete: if false; 
-    }
-    
-    // Regla para Perfiles de Usuario: Solo el propio usuario lee su perfil.
+    // ══ USERS (perfiles) ══
     match /users/{userId} {
-      allow read: if isSignedIn() && request.auth.uid == userId;
-      allow create: if isSignedIn(); // Permitir creación inicial al registrarse
-      allow update, delete: if isMaster();
+      allow read, write: if true;
     }
   }
 }

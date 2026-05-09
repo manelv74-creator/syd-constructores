@@ -3095,27 +3095,36 @@ async function requestPushPermission() {
         if (permission === 'granted') {
             console.log('[SYD] Permiso de notificación concedido.');
             
+            // Registrar el SW de Firebase Messaging explícitamente
+            const swReg = await navigator.serviceWorker.register('./firebase-messaging-sw.js');
+            console.log('[SYD] Firebase Messaging SW registrado:', swReg.scope);
+            
             // Inicializar Messaging
             const messaging = firebase.messaging();
             
-            // OBTENER TOKEN
-            // REEMPLAZA EL VAPID KEY CON EL QUE OBTENGAS DE TU CONSOLA FIREBASE
-            const currentToken = await messaging.getToken({ vapidKey: 'BP5uGPJZJZMo96OJrijWl6mik2e2gd7RmJnzD6VNqTbt6HEroOWDsVFjlrLsmYLGUGCmBKWPOeNMsr8zG1kWg_c' });
+            // OBTENER TOKEN con el SW registrado
+            const currentToken = await messaging.getToken({
+                vapidKey: 'BP5uGPJZJZMo96OJrijWl6mik2e2gd7RmJnzD6VNqTbt6HEroOWDsVFjlrLsmYLGUGCmBKWPOeNMsr8zG1kWg_c',
+                serviceWorkerRegistration: swReg
+            });
             
             if (currentToken) {
                 console.log('[SYD] FCM Token obtenido:', currentToken);
                 
-                // Guardar token en Firestore asociado a la obra
-                await db.collection('obras').doc('SAUCES').collection('tokens').doc(session.email).set({
+                // Guardar token en Firestore asociado a la obra actual
+                const obraId = (currentObra && currentObra.id) ? currentObra.id : 'sauces';
+                await db.collection('obras').doc(obraId).collection('tokens').doc(session.email).set({
                     token: currentToken,
                     email: session.email,
                     role: session.role,
+                    obra: obraId,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 
                 btn.innerHTML = '✅ Notificaciones Activas';
                 btn.style.background = 'rgba(16,185,129,0.3)';
                 btn.onclick = null; // Desactivar click
+                console.log('[SYD] Token guardado en obras/' + obraId + '/tokens/' + session.email);
                 
             } else {
                 console.log('[SYD] No se pudo obtener el token de registro.');
@@ -3127,7 +3136,7 @@ async function requestPushPermission() {
         }
     } catch (error) {
         console.error('[SYD] Error al solicitar permiso:', error);
-        document.getElementById('btnNotificaciones').textContent = '❌ Error';
+        document.getElementById('btnNotificaciones').textContent = '❌ Error: ' + error.message;
     }
 }
 
