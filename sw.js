@@ -1,14 +1,11 @@
-// SYD Constructores — Service Worker v1.4.2 (FIX-ZONAS)
-const CACHE_NAME = 'syd-app-v1.4.2';
+// SYD Constructores — Service Worker v2.2.0 (Update Banner Feature)
+const CACHE_NAME = 'syd-app-v2.2.0';
 
 const ASSETS = [
-    '/syd-constructores/',
-    '/syd-constructores/index.html',
-    '/syd-constructores/assets/logo_syd.png',
-    '/syd-constructores/assets/obra_sauces.jpg',
-    '/syd-constructores/database/projects.json',
-    '/syd-constructores/database/sauces.json',
-    '/syd-constructores/manifest.json'
+    './',
+    './index.html',
+    './manifest.json',
+    './assets/icon-solid-192.png'
 ];
 
 // Instalación: cachear recursos clave
@@ -16,7 +13,8 @@ self.addEventListener('install', e => {
     e.waitUntil(
         caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
     );
-    self.skipWaiting();
+    // IMPORTANTE: Removemos self.skipWaiting() para que el nuevo SW no tome el control
+    // sin avisar al usuario. El control se tomará cuando el usuario pulse el botón "Actualizar".
 });
 
 // Activación: limpiar caches viejos
@@ -40,4 +38,11 @@ self.addEventListener('fetch', e => {
             })
             .catch(() => caches.match(e.request))
     );
+});
+
+// Mensajes: Escuchar cuando la UI nos dice que saltemos la espera (botón Actualizar pulsado)
+self.addEventListener('message', event => {
+    if (event.data === 'SKIP_WAITING') {
+        self.skipWaiting();
+    }
 });

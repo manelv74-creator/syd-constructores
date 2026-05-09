@@ -501,9 +501,43 @@
             opacity: 0.7;
         }
     </style>
+
+<style>
+/* UPDATE BANNER */
+#updateBanner {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 50px;
+    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+    z-index: 999999;
+    font-size: 0.9rem;
+    font-weight: 600;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+#updateBanner:hover {
+    transform: translateX(-50%) scale(1.05);
+}
+#updateBanner.show {
+    display: flex;
+    animation: slideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+@keyframes slideUp {
+    from { bottom: -100px; opacity: 0; }
+    to { bottom: 20px; opacity: 1; }
+}
+</style>
 </head>
 <body>
-<div id="versionBadge">v2.1.2</div>
+<div id="versionBadge">v2.2.0</div>
 
 <!-- ══════════════ LOGIN SCREEN ══════════════ -->
 <div id="loginScreen">
@@ -595,7 +629,7 @@
                 </button>
             </div>
         </div>
-        <div class="login-footer">v2.1.2 · © 2025 SYD Constructores · Todos los derechos reservados</div>
+        <div class="login-footer">v2.2.0 · © 2025 SYD Constructores · Todos los derechos reservados</div>
     </div>
 </div>
 
@@ -606,7 +640,7 @@
             <img src="assets/logo_syd.png" class="selector-logo-small" alt="SYD">
             <div>
                 <div class="selector-title">SYD Constructores</div>
-                <div class="selector-subtitle">Selecciona una obra · v2.1.2</div>
+                <div class="selector-subtitle">Selecciona una obra · v2.2.0</div>
             </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px">
@@ -627,7 +661,7 @@
     <div class="header-row">
         <div>
             <div class="app-title">🏗 SYD Constructores</div>
-            <div class="app-subtitle" id="appSubtitle">Sistema de Gestión de Obras v2.1.2</div>
+            <div class="app-subtitle" id="appSubtitle">Sistema de Gestión de Obras v2.2.0</div>
         </div>
         <div class="header-right" style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
             <div style="display:flex; align-items:center; gap:6px;">
@@ -739,7 +773,7 @@
             </div>
             
             <div style="margin-top:20px; text-align:center; opacity:0.3; font-size:0.6rem; color:#fff;">
-                SYD v2.1.2 (FIX-LOGIN-SCROLL) <br>
+                SYD v2.2.0 (FIX-LOGIN-SCROLL) <br>
                 <span onclick="forceUpdateApp()" style="text-decoration:underline; cursor:pointer;">Forzar actualización de versión</span>
             </div>
         </div>
@@ -1471,7 +1505,7 @@ function launchApp() {
     if(btnBack) btnBack.style.display = session.role==='client' ? 'none' : 'block';
 
     // Subtitle with real obra name + Version
-    const version = 'v2.1.2';
+    const version = 'v2.2.0';
     document.getElementById('appSubtitle').textContent = (currentObra.name || 'Proyecto') + (currentObra.location ? ' · ' + currentObra.location : '') + ' (' + version + ')';
 
     // Generador de reporte visibility
@@ -2990,6 +3024,48 @@ window.addEventListener('appinstalled', () => {
     document.getElementById('installBanner').style.display = 'none';
     console.log('[SYD] App instalada ✓');
 });
+</script>
+
+<!-- UPDATE BANNER -->
+<div id="updateBanner" onclick="applyUpdate()">
+    <span>🚀 Hay una nueva versión disponible</span>
+    <span style="background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 20px; font-size: 0.8rem;">Actualizar</span>
+</div>
+
+<script>
+// SERVICE WORKER & UPDATES
+let newWorker;
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').then(reg => {
+            console.log('[SYD] Service Worker Registrado');
+
+            reg.addEventListener('updatefound', () => {
+                newWorker = reg.installing;
+                newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                        // Hay una actualización esperando
+                        document.getElementById('updateBanner').classList.add('show');
+                    }
+                });
+            });
+        }).catch(err => console.log('[SYD] Fallo SW:', err));
+
+        let refreshing;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            if (refreshing) return;
+            window.location.reload();
+            refreshing = true;
+        });
+    });
+}
+
+function applyUpdate() {
+    if (newWorker) {
+        newWorker.postMessage('SKIP_WAITING');
+    }
+}
 </script>
 </body>
 <script src="debug_gemini.js"></script>
