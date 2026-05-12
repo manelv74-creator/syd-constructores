@@ -1,5 +1,5 @@
-// SYD Constructores — Service Worker v2.4.1
-const CACHE_NAME = 'syd-app-v2.4.1';
+// SYD Constructores — Service Worker v2.4.2
+const CACHE_NAME = 'syd-app-v2.4.2';
 
 const ASSETS = [
     './',
