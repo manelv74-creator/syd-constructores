@@ -654,5 +654,11 @@
         0
       ]
     }
+  ],
+  "documentos": [
+    {
+      "nombre": "Predial 2026.pdf",
+      "ruta": "obras/sauces/Documentos/Predial 2026.pdf"
+    }
   ]
 }

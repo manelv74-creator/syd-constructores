@@ -538,7 +538,7 @@
 </style>
 </head>
 <body>
-<div id="versionBadge">v2.4.2</div>
+<div id="versionBadge">v2.4.3</div>
 
 <!-- ══════════════ LOGIN SCREEN ══════════════ -->
 <div id="loginScreen">
@@ -630,7 +630,7 @@
                 </button>
             </div>
         </div>
-        <div class="login-footer">v2.4.2 · © 2025 SYD Constructores · Todos los derechos reservados</div>
+        <div class="login-footer">v2.4.3 · © 2025 SYD Constructores · Todos los derechos reservados</div>
     </div>
 </div>
 
@@ -641,7 +641,7 @@
             <img src="assets/logo_syd.png" class="selector-logo-small" alt="SYD">
             <div>
                 <div class="selector-title">SYD Constructores</div>
-                <div class="selector-subtitle">Selecciona una obra · v2.4.2</div>
+                <div class="selector-subtitle">Selecciona una obra · v2.4.3</div>
             </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px">
@@ -662,7 +662,7 @@
     <div class="header-row">
         <div>
             <div class="app-title">🏗 SYD Constructores</div>
-            <div class="app-subtitle" id="appSubtitle">Sistema de Gestión de Obras v2.4.2</div>
+            <div class="app-subtitle" id="appSubtitle">Sistema de Gestión de Obras v2.4.3</div>
         </div>
         <div class="header-right" style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
             <div style="display:flex; align-items:center; gap:6px;">
@@ -692,6 +692,7 @@
     <button class="tab-btn" onclick="switchTab('gantt',this)">&#x1F4CA; Gantt</button>
     <button class="tab-btn" onclick="switchTab('detalle',this)">&#x1F4CC; Detalle</button>
     <button class="tab-btn" onclick="switchTab('avance',this)">&#x1F4C8; Avance</button>
+    <button class="tab-btn" onclick="switchTab('documentos',this)">&#x1F4C1; Docs</button>
         <button class="tab-btn" id="tabBitacora" style="display:none" onclick="switchTab('bitacora',this)">&#x1F4DD; Bitácora</button>
     <button class="tab-btn" id="tabAccesos" style="display:none" onclick="switchTab('accesos',this)">&#x1F465; Accesos</button>
 </nav>
@@ -776,7 +777,7 @@
             </div>
             
             <div style="margin-top:20px; text-align:center; opacity:0.3; font-size:0.6rem; color:#fff;">
-                SYD v2.4.2 (FIX-LOGIN-SCROLL) <br>
+                SYD v2.4.3 (FIX-LOGIN-SCROLL) <br>
                 <span onclick="forceUpdateApp()" style="text-decoration:underline; cursor:pointer;">Forzar actualización de versión</span>
             </div>
         </div>
@@ -796,6 +797,11 @@
     <div class="view" id="view-avance">
         <div class="detail-section-title">Avance acumulado por zona</div>
         <div id="avanceContent"></div>
+        <div class="section-gap"></div>
+    </div>
+    <div class="view" id="view-documentos">
+        <div class="detail-section-title">Documentos del Proyecto</div>
+        <div id="documentosContent" style="padding: 0 4px;"></div>
         <div class="section-gap"></div>
     </div>
     <div class="view" id="view-accesos">
@@ -1241,6 +1247,7 @@ async function loadProjectData(obraId) {
         const data = await resp.json();
         projectData = data.zones;
         currentObra = obra;
+        currentObra.documentos = data.documentos || [];
         TOTAL_WEEKS = currentObra.totalSemanas || 32;
         return true;
     } catch(e) {
@@ -1580,7 +1587,7 @@ function launchApp() {
     if(btnBack) btnBack.style.display = session.role==='client' ? 'none' : 'block';
 
     // Subtitle with real obra name + Version
-    const version = 'v2.4.2';
+    const version = 'v2.4.3';
     document.getElementById('appSubtitle').textContent = (currentObra.name || 'Proyecto') + (currentObra.location ? ' · ' + currentObra.location : '') + ' (' + version + ')';
 
     // Generador de reporte visibility
@@ -1829,6 +1836,31 @@ function renderAvance() {
     document.getElementById('avanceContent').innerHTML=html;
 }
 
+function renderDocumentos() {
+    const container = document.getElementById('documentosContent');
+    if (!currentObra.documentos || currentObra.documentos.length === 0) {
+        container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted)">No hay documentos disponibles para esta obra.</div>';
+        return;
+    }
+    
+    let html = '';
+    currentObra.documentos.forEach((doc, i) => {
+        html += `
+        <a href="${doc.ruta}" target="_blank" style="text-decoration:none; display:block; animation-delay:${i*0.05}s;" class="animate-in">
+            <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:16px; display:flex; align-items:center; gap:14px; transition:all 0.2s; cursor:pointer; margin-bottom:10px;" onmouseover="this.style.borderColor='var(--accent)';" onmouseout="this.style.borderColor='var(--border)';">
+                <div style="background:rgba(239,68,68,0.15); color:#ef4444; width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0;">📄</div>
+                <div style="flex:1; overflow:hidden;">
+                    <div style="font-size:0.9rem; font-weight:700; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${doc.nombre.replace('.pdf','')}</div>
+                    <div style="font-size:0.65rem; color:var(--muted); margin-top:3px; text-transform:uppercase; letter-spacing:0.05em;">Documento PDF</div>
+                </div>
+                <div style="color:var(--accent); font-size:1.1rem; flex-shrink:0;">→</div>
+            </div>
+        </a>
+        `;
+    });
+    container.innerHTML = html;
+}
+
 // ══════════════════════════════════════
 // ACTIONS
 // ══════════════════════════════════════
@@ -1850,6 +1882,7 @@ function switchTab(tabId, btn) {
     else if(tabId==='gantt') updateGantt();
     else if(tabId==='detalle') renderDetalle();
     else if(tabId==='avance') renderAvance();
+    else if(tabId==='documentos') renderDocumentos();
     else if(tabId==='accesos') renderAccesos();
 }
 
@@ -3110,7 +3143,7 @@ window.addEventListener('appinstalled', () => {
 
 <script>
 // SERVICE WORKER & UPDATES
-const APP_VERSION = 'v2.4.2';
+const APP_VERSION = 'v2.4.3';
 let newWorker;
 
 if ('serviceWorker' in navigator) {

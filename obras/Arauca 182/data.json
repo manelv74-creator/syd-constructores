@@ -2182,5 +2182,15 @@
         0
       ]
     }
+  ],
+  "documentos": [
+    {
+      "nombre": "Fianza.pdf",
+      "ruta": "obras/Arauca 182/Documentos/Fianza.pdf"
+    },
+    {
+      "nombre": "Predial 2026_1.pdf",
+      "ruta": "obras/Arauca 182/Documentos/Predial 2026_1.pdf"
+    }
   ]
 }
