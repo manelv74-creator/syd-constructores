@@ -2185,8 +2185,16 @@
   ],
   "documentos": [
     {
+      "nombre": "ESTRUCTURAL CASA ARAUCA.pdf",
+      "ruta": "obras/Arauca 182/Documentos/ESTRUCTURAL CASA ARAUCA.pdf"
+    },
+    {
       "nombre": "Fianza.pdf",
       "ruta": "obras/Arauca 182/Documentos/Fianza.pdf"
+    },
+    {
+      "nombre": "PLANO DE PERMISOS ARAUCA 182.pdf",
+      "ruta": "obras/Arauca 182/Documentos/PLANO DE PERMISOS ARAUCA 182.pdf"
     },
     {
       "nombre": "Predial 2026_1.pdf",
